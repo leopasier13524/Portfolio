@@ -103,12 +103,12 @@ export function BottomNav({
     >
       <div
         ref={containerRef}
-        className="relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full bg-white/22 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.52),0_24px_70px_rgba(0,0,0,0.38)] backdrop-blur-2xl backdrop-saturate-150 sm:justify-center sm:gap-1"
+        className="relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-white/15 bg-black/70 p-1 sm:justify-center sm:gap-1"
       >
         <span
           ref={pillRef}
           aria-hidden
-          className="absolute top-1.5 bottom-1.5 left-0 rounded-full bg-white opacity-0 shadow-[0_10px_28px_rgba(255,255,255,0.28)]"
+          className="absolute top-1 bottom-1 left-0 rounded-full bg-white opacity-0"
         />
         {items.map((item) => {
           const isActive = activeView === item.id;
@@ -125,7 +125,7 @@ export function BottomNav({
                 item.id === "projects" ? onProjectsIntent : undefined
               }
               className={`relative z-10 min-h-11 flex-1 rounded-full px-3 py-2.5 text-[10px] uppercase tracking-[0.22em] transition-colors duration-300 sm:flex-none sm:px-5 sm:tracking-[0.34em] md:min-h-0 md:px-7 md:py-3 md:text-[11px] ${
-                isActive ? "text-black" : "text-white/88 hover:text-white"
+                isActive ? "text-black" : "text-white/80 hover:text-white"
               }`}
             >
               {item.label}

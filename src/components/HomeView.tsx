@@ -66,8 +66,7 @@ export function HomeView({ active = true }: { active?: boolean }) {
       >
         <div className="grid items-center gap-10 md:grid-cols-[0.95fr_1.05fr] md:gap-14">
           <div data-home-item className="relative mx-auto w-full max-w-[280px] opacity-0 sm:max-w-sm md:max-w-none">
-            <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-white/10 via-transparent to-[#df5f38]/20 blur-2xl md:-inset-4" />
-            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2.5 shadow-[0_30px_120px_rgba(0,0,0,0.45)] sm:rounded-[1.75rem] sm:p-3">
+            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2.5 sm:rounded-[1.75rem] sm:p-3">
               <div className="relative aspect-[4/5] max-h-[52svh] overflow-hidden rounded-[1.15rem] sm:rounded-[1.35rem] md:max-h-none">
                 <Image
                   src={portfolioOwner.portraitImage}
@@ -77,7 +76,6 @@ export function HomeView({ active = true }: { active?: boolean }) {
                   className="object-cover object-top"
                   sizes="(max-width: 768px) 80vw, 420px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
               </div>
               <div className="mt-3 flex items-center justify-between gap-3 px-1.5 pb-0.5 sm:mt-4 sm:px-2 sm:pb-1">
                 <div className="min-w-0">
@@ -182,9 +180,9 @@ function SkillRow({ items }: { items: string[] }) {
       {items.map((item) => (
         <span
           key={item}
-          className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] py-1.5 pl-1.5 pr-3 text-[10px] uppercase tracking-[0.12em] text-white/78 sm:gap-2.5 sm:py-2 sm:pl-2 sm:pr-4 sm:text-[11px] sm:tracking-[0.14em] md:text-xs"
+          className="inline-flex max-w-full items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] py-2 pl-3 pr-3.5 text-[10px] uppercase tracking-[0.12em] text-white/78 sm:gap-3 sm:py-2.5 sm:pl-3.5 sm:pr-4 sm:text-[11px] sm:tracking-[0.14em] md:text-xs"
         >
-          <SkillIcon name={item} size="sm" />
+          <SkillIcon name={item} size="md" />
           <span className="truncate">{item}</span>
         </span>
       ))}

@@ -207,15 +207,13 @@ export function SkillIcon({ name, className = "", size = "sm" }: SkillIconProps)
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.05] ${
-        isMd ? "h-9 w-9" : "h-7 w-7"
-      } ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center ${className}`}
       style={{ color }}
       aria-hidden
     >
       <svg
         viewBox="0 0 24 24"
-        className={isMd ? "h-[18px] w-[18px]" : "h-3.5 w-3.5"}
+        className={isMd ? "h-6 w-6" : "h-5 w-5"}
         role="img"
       >
         <Glyph name={name} />
