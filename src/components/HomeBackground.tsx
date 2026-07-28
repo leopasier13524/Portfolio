@@ -44,25 +44,28 @@ function placeStar(
   positions: Float32Array,
   colors: Float32Array,
   index: number,
-  mode: "full" | "far" = "full"
+  mode: "full" | "recycle" = "full"
 ) {
   const i3 = index * 3;
-  // Prefer deeper layers so the tunnel feels thick in Z
-  const depthT = Math.pow(Math.random(), 0.7);
-  const depth = mode === "far" ? 0.55 + depthT * 0.45 : depthT;
+  // Keep depth well populated — recycle across the whole Z range, not only the back
+  const depthT = Math.random();
 
-  positions[i3] =
-    mode === "far"
-      ? (Math.random() - 0.55) * FIELD_SPREAD_X * 2
-      : (Math.random() - 0.5) * FIELD_SPREAD_X * 2;
+  if (mode === "recycle") {
+    // Always re-enter from the left so the stream never thins out
+    positions[i3] = -FIELD_SPREAD_X * (0.95 + Math.random() * 0.55);
+  } else {
+    positions[i3] = (Math.random() - 0.5) * FIELD_SPREAD_X * 2;
+  }
+
   positions[i3 + 1] = (Math.random() - 0.5) * FIELD_SPREAD_Y * 2;
-  positions[i3 + 2] = -6 - depth * FIELD_DEPTH;
+  positions[i3 + 2] = -8 - depthT * FIELD_DEPTH;
 
-  const nearness = 1 - depth;
-  const shade = 0.5 + nearness * 0.5;
+  // Farther stars a bit brighter so depth stays readable
+  const farness = depthT;
+  const shade = 0.52 + farness * 0.48 + Math.random() * 0.08;
   const cool = Math.random() > 0.9;
-  colors[i3] = cool ? shade * 0.85 : shade;
-  colors[i3 + 1] = cool ? shade * 0.9 : shade;
+  colors[i3] = cool ? shade * 0.88 : shade;
+  colors[i3 + 1] = cool ? shade * 0.92 : shade;
   colors[i3 + 2] = shade;
 }
 
@@ -84,7 +87,7 @@ export function HomeBackground({ active = true }: { active?: boolean }) {
     let frame = 0;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x030305, 0.007);
+    scene.fog = new THREE.FogExp2(0x030305, 0.0055);
 
     const camera = new THREE.PerspectiveCamera(
       62,
@@ -164,25 +167,29 @@ export function HomeBackground({ active = true }: { active?: boolean }) {
       }
 
       const arr = positionAttr.array as Float32Array;
+      let recycled = false;
+
       for (let i = 0; i < starCount; i += 1) {
         const i3 = i * 3;
         const depth = Math.abs(arr[i3 + 2]);
         const nearness = 1 - Math.min(1, depth / FIELD_DEPTH);
-        // Closer stars move faster — sells the 3D fly-through
         const speedScale = 0.35 + nearness * 1.35;
 
         arr[i3] += DRIFT_RIGHT * speedScale;
-        // Toward camera (negative Z → 0)
         arr[i3 + 2] += DRIFT_TOWARD * speedScale;
 
         const offRight = arr[i3] > edgeX;
         const passedCamera = arr[i3 + 2] > 1.5;
         if (offRight || passedCamera) {
-          placeStar(arr, colors, i, "far");
-          colorAttr.needsUpdate = true;
+          placeStar(arr, colors, i, "recycle");
+          recycled = true;
         }
       }
+
       positionAttr.needsUpdate = true;
+      if (recycled) {
+        colorAttr.needsUpdate = true;
+      }
 
       renderer.render(scene, camera);
     };
