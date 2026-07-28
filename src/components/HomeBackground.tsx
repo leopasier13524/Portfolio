@@ -3,10 +3,18 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const STAR_COUNT = 2200;
+const STAR_COUNT_DESKTOP = 2200;
+const STAR_COUNT_MOBILE = 900;
 const FIELD_DEPTH = 140;
 const FIELD_SPREAD = 55;
 const TRAVEL_SPEED = 0.018;
+
+function getStarCount() {
+  if (typeof window === "undefined") {
+    return STAR_COUNT_DESKTOP;
+  }
+  return window.innerWidth < 768 ? STAR_COUNT_MOBILE : STAR_COUNT_DESKTOP;
+}
 
 function createStarTexture() {
   const size = 64;
@@ -79,21 +87,25 @@ export function HomeBackground({ active = true }: { active?: boolean }) {
     );
     camera.position.set(0, 0, 0);
 
+    const isMobile = window.innerWidth < 768;
+    const starCount = getStarCount();
+    const dustCount = isMobile ? 120 : 280;
+
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !isMobile,
       alpha: true,
       powerPreference: "high-performance",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.setClearColor(0x050508, 1);
     renderer.domElement.style.position = "absolute";
     renderer.domElement.style.inset = "0";
     mount.appendChild(renderer.domElement);
 
-    const positions = new Float32Array(STAR_COUNT * 3);
-    const colors = new Float32Array(STAR_COUNT * 3);
-    for (let i = 0; i < STAR_COUNT; i += 1) {
+    const positions = new Float32Array(starCount * 3);
+    const colors = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i += 1) {
       placeStar(positions, colors, i);
     }
 
@@ -102,7 +114,7 @@ export function HomeBackground({ active = true }: { active?: boolean }) {
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 0.085,
+      size: isMobile ? 0.1 : 0.085,
       map: createStarTexture(),
       transparent: true,
       depthWrite: false,
@@ -116,7 +128,6 @@ export function HomeBackground({ active = true }: { active?: boolean }) {
     scene.add(stars);
 
     // Distant faint cool dust cloud — no warm core
-    const dustCount = 280;
     const dustPos = new Float32Array(dustCount * 3);
     const dustCol = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i += 1) {
@@ -154,7 +165,9 @@ export function HomeBackground({ active = true }: { active?: boolean }) {
       const h = Math.max(mount.clientHeight, 1);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2)
+      );
       renderer.setSize(w, h);
     };
 
@@ -172,7 +185,7 @@ export function HomeBackground({ active = true }: { active?: boolean }) {
       }
 
       const arr = positionAttr.array as Float32Array;
-      for (let i = 0; i < STAR_COUNT; i += 1) {
+      for (let i = 0; i < starCount; i += 1) {
         const i3 = i * 3;
         // Travel forward through the field — depth-based so near stars feel faster
         const depthFactor = 0.45 + Math.min(1, Math.abs(arr[i3 + 2]) / FIELD_DEPTH) * 0.55;

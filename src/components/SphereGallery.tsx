@@ -68,7 +68,9 @@ const DRAG_FISHEYE_STRENGTH = 0.28;
 const IDLE_FISHEYE_ZOOM = 0.96;
 const DRAG_FISHEYE_ZOOM = 0.96;
 const IDLE_CAMERA_Z = 10.2;
+const IDLE_CAMERA_Z_MOBILE = 13.8;
 const DRAG_CAMERA_Z = 13.2;
+const DRAG_CAMERA_Z_MOBILE = 17.2;
 const CARD_BORDER_OPACITY = 0.22;
 const CARD_BORDER_HOVER_OPACITY = 0.72;
 const ORB_CANVAS_SIZE = 512;
@@ -238,7 +240,16 @@ const MAX_RENDER_PIXEL_RATIO = 2;
 const MAX_CARD_TEXTURE_WIDTH = 2400;
 
 function getRendererPixelRatio() {
-  return Math.min(window.devicePixelRatio || 1, MAX_RENDER_PIXEL_RATIO);
+  const max = window.innerWidth < 768 ? 1.5 : MAX_RENDER_PIXEL_RATIO;
+  return Math.min(window.devicePixelRatio || 1, max);
+}
+
+function getIdleCameraZ() {
+  return window.innerWidth < 768 ? IDLE_CAMERA_Z_MOBILE : IDLE_CAMERA_Z;
+}
+
+function getDragCameraZ() {
+  return window.innerWidth < 768 ? DRAG_CAMERA_Z_MOBILE : DRAG_CAMERA_Z;
 }
 
 function drawCoverImage(
@@ -406,12 +417,12 @@ export function SphereGallery({
     scene.background = new THREE.Color("#050505");
 
     const camera = new THREE.PerspectiveCamera(
-      42,
+      window.innerWidth < 768 ? 48 : 42,
       Math.max(mount.clientWidth, 1) / Math.max(mount.clientHeight, 1),
       0.1,
       100
     );
-    camera.position.set(0, 0, 10.2);
+    camera.position.set(0, 0, getIdleCameraZ());
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({
@@ -887,8 +898,8 @@ export function SphereGallery({
         currentViewZoom
       );
       camera.position.z = THREE.MathUtils.lerp(
-        IDLE_CAMERA_Z,
-        DRAG_CAMERA_Z,
+        getIdleCameraZ(),
+        getDragCameraZ(),
         currentViewZoom
       );
 
@@ -1159,13 +1170,14 @@ export function SphereGallery({
 
   return (
     <div
-      className={`relative z-0 h-screen w-full overflow-hidden bg-black ${
+      className={`relative z-0 h-[100dvh] w-full overflow-hidden bg-black ${
         activeProjectSlug ? "pointer-events-none" : ""
       }`}
     >
       <div
         ref={mountRef}
         className="absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing"
+        style={{ touchAction: "none" }}
         aria-label="Interactive project wall gallery"
       />
     </div>

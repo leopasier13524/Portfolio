@@ -44,7 +44,11 @@ export function ProjectDetailOverlay({
     }
 
     const vw = window.innerWidth;
-    const heroHeight = Math.min(window.innerHeight * 0.72, 760);
+    const isMobile = vw < 768;
+    const heroHeight = Math.min(
+      window.innerHeight * (isMobile ? 0.48 : 0.72),
+      isMobile ? 420 : 760
+    );
     const start = fromRect ?? {
       left: vw * 0.5 - 180,
       top: window.innerHeight * 0.5 - 120,
@@ -184,20 +188,20 @@ export function ProjectDetailOverlay({
 
           <div
             ref={chromeRef}
-            className="absolute inset-x-0 top-0 z-10 flex items-start justify-between px-4 py-5 md:px-8 md:py-7"
+            className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 px-4 pb-4 pt-[max(1.25rem,env(safe-area-inset-top))] md:px-8 md:py-7"
           >
             <div className="max-w-xl">
               <p className="text-[10px] uppercase tracking-[0.42em] text-white/60">
                 {project.year} / {project.category}
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:mt-3 sm:text-3xl md:text-5xl">
                 {project.title}
               </h2>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full border border-white/20 bg-black/40 px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-white/85 backdrop-blur-md transition hover:border-white/45 hover:text-white md:px-5 md:py-3"
+              className="min-h-11 shrink-0 rounded-full border border-white/20 bg-black/40 px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-white/85 backdrop-blur-md transition hover:border-white/45 hover:text-white md:min-h-0 md:px-5 md:py-3"
             >
               Close
             </button>
@@ -206,7 +210,7 @@ export function ProjectDetailOverlay({
 
         <div
           ref={contentRef}
-          className="relative mx-auto w-full max-w-4xl px-4 pb-16 pt-10 md:px-8 md:pb-24"
+          className="relative mx-auto w-full max-w-4xl px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-8 md:px-8 md:pb-24 md:pt-10"
         >
           <p className="max-w-2xl text-base leading-8 text-white/78 md:text-lg">
             {project.summary}

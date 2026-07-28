@@ -9,10 +9,22 @@ type SplashIntroProps = {
   onComplete: () => void;
 };
 
-const PARTICLE_COUNT = 3200;
+const PARTICLE_COUNT_DESKTOP = 3200;
+const PARTICLE_COUNT_MOBILE = 1400;
 
-function setSpherePositions(target: Float32Array, radius: number) {
-  for (let i = 0; i < PARTICLE_COUNT; i += 1) {
+function getParticleCount() {
+  if (typeof window === "undefined") {
+    return PARTICLE_COUNT_DESKTOP;
+  }
+  return window.innerWidth < 768 ? PARTICLE_COUNT_MOBILE : PARTICLE_COUNT_DESKTOP;
+}
+
+function setSpherePositions(
+  target: Float32Array,
+  radius: number,
+  count: number
+) {
+  for (let i = 0; i < count; i += 1) {
     const u = Math.random();
     const v = Math.random();
     const theta = 2 * Math.PI * u;
@@ -25,8 +37,12 @@ function setSpherePositions(target: Float32Array, radius: number) {
   }
 }
 
-function setCloudPositions(target: Float32Array, spread: number) {
-  for (let i = 0; i < PARTICLE_COUNT; i += 1) {
+function setCloudPositions(
+  target: Float32Array,
+  spread: number,
+  count: number
+) {
+  for (let i = 0; i < count; i += 1) {
     const i3 = i * 3;
     target[i3] = (Math.random() - 0.5) * spread;
     target[i3 + 1] = (Math.random() - 0.5) * spread;
@@ -34,9 +50,13 @@ function setCloudPositions(target: Float32Array, spread: number) {
   }
 }
 
-function setRingPositions(target: Float32Array, radius: number) {
-  for (let i = 0; i < PARTICLE_COUNT; i += 1) {
-    const angle = (i / PARTICLE_COUNT) * Math.PI * 2;
+function setRingPositions(
+  target: Float32Array,
+  radius: number,
+  count: number
+) {
+  for (let i = 0; i < count; i += 1) {
+    const angle = (i / count) * Math.PI * 2;
     const wobble = (Math.random() - 0.5) * 0.55;
     const r = radius + (Math.random() - 0.5) * 0.8;
     const i3 = i * 3;
@@ -75,10 +95,10 @@ function createParticleTexture() {
   return texture;
 }
 
-function paintVignette(canvas: HTMLCanvasElement) {
+function paintVignette(canvas: HTMLCanvasElement, lightweight = false) {
   const width = Math.max(1, Math.round(window.innerWidth));
   const height = Math.max(1, Math.round(window.innerHeight));
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  const dpr = Math.min(window.devicePixelRatio || 1, lightweight ? 1 : 1.5);
 
   canvas.width = Math.round(width * dpr);
   canvas.height = Math.round(height * dpr);
@@ -98,7 +118,6 @@ function paintVignette(canvas: HTMLCanvasElement) {
   const radius = Math.max(width, height) * 0.78;
   const gradient = ctx.createRadialGradient(cx, cy, radius * 0.12, cx, cy, radius);
 
-  // Many soft stops + slight noise later to kill banding
   gradient.addColorStop(0, "rgba(0,0,0,0)");
   gradient.addColorStop(0.22, "rgba(0,0,0,0.04)");
   gradient.addColorStop(0.4, "rgba(0,0,0,0.14)");
@@ -110,7 +129,11 @@ function paintVignette(canvas: HTMLCanvasElement) {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
 
-  // Tiny dither noise breaks visible contour lines
+  // Skip expensive dither noise on phones — it can freeze low-end devices
+  if (lightweight) {
+    return;
+  }
+
   const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const data = image.data;
   for (let i = 0; i < data.length; i += 16) {
@@ -145,11 +168,14 @@ export function SplashIntro({ onComplete }: SplashIntroProps) {
       return;
     }
 
+    let failSafe = 0;
+
     const finish = () => {
       if (completedRef.current) {
         return;
       }
       completedRef.current = true;
+      window.clearTimeout(failSafe);
       onCompleteRef.current();
     };
 
@@ -163,285 +189,320 @@ export function SplashIntro({ onComplete }: SplashIntroProps) {
       return;
     }
 
+    const isMobile = window.innerWidth < 768;
+    const particleCount = getParticleCount();
+    // Always escape splash even if WebGL/GSAP stalls on phones
+    failSafe = window.setTimeout(finish, isMobile ? 5200 : 7000);
+
     let animationFrame = 0;
     let disposed = false;
+    let timeline: gsap.core.Timeline | null = null;
+    let renderer: THREE.WebGLRenderer | null = null;
+    let geometry: THREE.BufferGeometry | null = null;
+    let material: THREE.PointsMaterial | null = null;
 
-    paintVignette(vignetteCanvas);
+    try {
+      paintVignette(vignetteCanvas, isMobile);
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      55,
-      Math.max(mount.clientWidth, 1) / Math.max(mount.clientHeight, 1),
-      0.1,
-      100
-    );
-    camera.position.set(0, 0, 9.5);
-
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: "high-performance",
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
-    renderer.setClearColor(0x000000, 0);
-    renderer.domElement.style.position = "absolute";
-    renderer.domElement.style.inset = "0";
-    mount.appendChild(renderer.domElement);
-
-    const cloud = new Float32Array(PARTICLE_COUNT * 3);
-    const sphere = new Float32Array(PARTICLE_COUNT * 3);
-    const ring = new Float32Array(PARTICLE_COUNT * 3);
-    const current = new Float32Array(PARTICLE_COUNT * 3);
-    const colors = new Float32Array(PARTICLE_COUNT * 3);
-
-    setCloudPositions(cloud, 18);
-    setSpherePositions(sphere, 2.35);
-    setRingPositions(ring, 3.1);
-    current.set(cloud);
-
-    // No bright white — keeps the name readable over the particle field
-    const palette = [
-      new THREE.Color("#df5f38"),
-      new THREE.Color("#8a79ff"),
-      new THREE.Color("#39d0c1"),
-      new THREE.Color("#c4b5fd"),
-    ];
-
-    for (let i = 0; i < PARTICLE_COUNT; i += 1) {
-      const color = palette[i % palette.length].clone();
-      color.multiplyScalar(0.75 + Math.random() * 0.45);
-      const i3 = i * 3;
-      colors[i3] = color.r;
-      colors[i3 + 1] = color.g;
-      colors[i3 + 2] = color.b;
-    }
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(current, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-    const material = new THREE.PointsMaterial({
-      size: 0.055,
-      map: createParticleTexture(),
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      vertexColors: true,
-      opacity: 0,
-      sizeAttenuation: true,
-    });
-
-    const points = new THREE.Points(geometry, material);
-    scene.add(points);
-
-    const state = {
-      morph: 0,
-      explode: 0,
-      cameraZ: 9.5,
-      spin: 0.35,
-      particleSize: 0.055,
-    };
-
-    const mixPositions = () => {
-      const morph = state.morph;
-      const explode = state.explode;
-      const positions = geometry.attributes.position.array as Float32Array;
-
-      for (let i = 0; i < PARTICLE_COUNT; i += 1) {
-        const i3 = i * 3;
-        const fromX = cloud[i3];
-        const fromY = cloud[i3 + 1];
-        const fromZ = cloud[i3 + 2];
-
-        const midX = THREE.MathUtils.lerp(sphere[i3], ring[i3], Math.max(0, morph - 1));
-        const midY = THREE.MathUtils.lerp(
-          sphere[i3 + 1],
-          ring[i3 + 1],
-          Math.max(0, morph - 1)
-        );
-        const midZ = THREE.MathUtils.lerp(
-          sphere[i3 + 2],
-          ring[i3 + 2],
-          Math.max(0, morph - 1)
-        );
-
-        const formedX = THREE.MathUtils.lerp(fromX, midX, Math.min(1, morph));
-        const formedY = THREE.MathUtils.lerp(fromY, midY, Math.min(1, morph));
-        const formedZ = THREE.MathUtils.lerp(fromZ, midZ, Math.min(1, morph));
-
-        const burst = 1 + explode * (2.8 + (i % 17) * 0.05);
-        positions[i3] = formedX * burst;
-        positions[i3 + 1] = formedY * burst;
-        positions[i3 + 2] = formedZ * burst;
-      }
-
-      geometry.attributes.position.needsUpdate = true;
-    };
-
-    const resize = () => {
-      const width = Math.max(mount.clientWidth, 1);
-      const height = Math.max(mount.clientHeight, 1);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      renderer.setSize(width, height);
-      paintVignette(vignetteCanvas);
-    };
-
-    const tick = () => {
-      if (disposed) {
-        return;
-      }
-
-      animationFrame = window.requestAnimationFrame(tick);
-      points.rotation.y += 0.0028 * state.spin;
-      points.rotation.x += 0.0009 * state.spin;
-      camera.position.z = state.cameraZ;
-      material.size = state.particleSize;
-      mixPositions();
-      renderer.render(scene, camera);
-    };
-
-    const kicker = root.querySelector("[data-splash-kicker]");
-    const nameLines = root.querySelectorAll("[data-splash-name]");
-    const role = root.querySelector("[data-splash-role]");
-    const meter = root.querySelector("[data-splash-meter]");
-    const center = root.querySelector("[data-splash-center]");
-    const vignette = vignetteCanvas;
-
-    const counterState = { value: 0 };
-
-    gsap.set([kicker, role, meter], { autoAlpha: 0, y: 20 });
-    gsap.set(nameLines, { yPercent: 115 });
-    gsap.set(progress, { scaleX: 0, transformOrigin: "left center" });
-    gsap.set(vignette, { autoAlpha: 0 });
-    gsap.set(material, { opacity: 0 });
-
-    const timeline = gsap.timeline({
-      defaults: { ease: "power3.out" },
-      onComplete: finish,
-    });
-
-    timeline
-      .to(vignette, { autoAlpha: 1, duration: 0.55 }, 0)
-      .to(material, { opacity: 1, duration: 0.85 }, 0.05)
-      .to(
-        state,
-        {
-          morph: 1,
-          duration: 1.55,
-          ease: "power2.inOut",
-        },
-        0.15
-      )
-      .to(kicker, { autoAlpha: 1, y: 0, duration: 0.65 }, 0.7)
-      .to(
-        nameLines,
-        {
-          yPercent: 0,
-          duration: 1.05,
-          stagger: 0.12,
-          ease: "power4.out",
-        },
-        0.85
-      )
-      .to(role, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.2)
-      .to(meter, { autoAlpha: 1, y: 0, duration: 0.55 }, 1.35)
-      .to(
-        counterState,
-        {
-          value: 100,
-          duration: 1.65,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            counter.textContent = String(Math.round(counterState.value)).padStart(
-              3,
-              "0"
-            );
-          },
-        },
-        1.4
-      )
-      .to(
-        progress,
-        {
-          scaleX: 1,
-          duration: 1.65,
-          ease: "power2.inOut",
-        },
-        1.4
-      )
-      .to(
-        state,
-        {
-          morph: 2,
-          duration: 1.1,
-          ease: "power2.inOut",
-        },
-        2.2
-      )
-      .to(
-        state,
-        {
-          spin: 1.35,
-          particleSize: 0.072,
-          duration: 1.1,
-          ease: "power2.inOut",
-        },
-        2.2
-      )
-      .to(
-        center,
-        {
-          autoAlpha: 0,
-          y: -20,
-          filter: "blur(8px)",
-          duration: 0.5,
-          ease: "power2.in",
-        },
-        3.35
-      )
-      .to(
-        state,
-        {
-          explode: 1,
-          cameraZ: 4.4,
-          particleSize: 0.034,
-          spin: 2.1,
-          duration: 1.1,
-          ease: "power3.in",
-        },
-        3.4
-      )
-      .to(material, { opacity: 0, duration: 0.75, ease: "power2.in" }, 3.7)
-      .to(vignette, { autoAlpha: 0, duration: 0.7, ease: "power2.inOut" }, 3.85)
-      .to(
-        root,
-        {
-          autoAlpha: 0,
-          duration: 0.65,
-          ease: "power2.inOut",
-        },
-        4.05
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        isMobile ? 60 : 55,
+        Math.max(mount.clientWidth, 1) / Math.max(mount.clientHeight, 1),
+        0.1,
+        100
       );
+      camera.position.set(0, 0, isMobile ? 10.5 : 9.5);
 
-    tick();
-    window.addEventListener("resize", resize);
+      renderer = new THREE.WebGLRenderer({
+        antialias: !isMobile,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
+      renderer.setSize(mount.clientWidth, mount.clientHeight);
+      renderer.setClearColor(0x000000, 0);
+      renderer.domElement.style.position = "absolute";
+      renderer.domElement.style.inset = "0";
+      mount.appendChild(renderer.domElement);
 
-    return () => {
-      disposed = true;
-      timeline.kill();
-      window.cancelAnimationFrame(animationFrame);
-      window.removeEventListener("resize", resize);
-      geometry.dispose();
-      material.map?.dispose();
-      material.dispose();
-      renderer.dispose();
-      if (renderer.domElement.parentElement === mount) {
-        mount.removeChild(renderer.domElement);
+      const cloud = new Float32Array(particleCount * 3);
+      const sphere = new Float32Array(particleCount * 3);
+      const ring = new Float32Array(particleCount * 3);
+      const current = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+
+      setCloudPositions(cloud, 18, particleCount);
+      setSpherePositions(sphere, 2.35, particleCount);
+      setRingPositions(ring, 3.1, particleCount);
+      current.set(cloud);
+
+      const palette = [
+        new THREE.Color("#df5f38"),
+        new THREE.Color("#8a79ff"),
+        new THREE.Color("#39d0c1"),
+        new THREE.Color("#c4b5fd"),
+      ];
+
+      for (let i = 0; i < particleCount; i += 1) {
+        const color = palette[i % palette.length].clone();
+        color.multiplyScalar(0.75 + Math.random() * 0.45);
+        const i3 = i * 3;
+        colors[i3] = color.r;
+        colors[i3 + 1] = color.g;
+        colors[i3 + 2] = color.b;
       }
-    };
+
+      geometry = new THREE.BufferGeometry();
+      geometry.setAttribute("position", new THREE.BufferAttribute(current, 3));
+      geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+      material = new THREE.PointsMaterial({
+        size: isMobile ? 0.07 : 0.055,
+        map: createParticleTexture(),
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        vertexColors: true,
+        opacity: 0,
+        sizeAttenuation: true,
+      });
+
+      const points = new THREE.Points(geometry, material);
+      scene.add(points);
+
+      const state = {
+        morph: 0,
+        explode: 0,
+        cameraZ: isMobile ? 10.5 : 9.5,
+        spin: 0.35,
+        particleSize: isMobile ? 0.07 : 0.055,
+      };
+
+      const mixPositions = () => {
+        const morph = state.morph;
+        const explode = state.explode;
+        const positions = geometry!.attributes.position.array as Float32Array;
+
+        for (let i = 0; i < particleCount; i += 1) {
+          const i3 = i * 3;
+          const fromX = cloud[i3];
+          const fromY = cloud[i3 + 1];
+          const fromZ = cloud[i3 + 2];
+
+          const midX = THREE.MathUtils.lerp(
+            sphere[i3],
+            ring[i3],
+            Math.max(0, morph - 1)
+          );
+          const midY = THREE.MathUtils.lerp(
+            sphere[i3 + 1],
+            ring[i3 + 1],
+            Math.max(0, morph - 1)
+          );
+          const midZ = THREE.MathUtils.lerp(
+            sphere[i3 + 2],
+            ring[i3 + 2],
+            Math.max(0, morph - 1)
+          );
+
+          const formedX = THREE.MathUtils.lerp(fromX, midX, Math.min(1, morph));
+          const formedY = THREE.MathUtils.lerp(fromY, midY, Math.min(1, morph));
+          const formedZ = THREE.MathUtils.lerp(fromZ, midZ, Math.min(1, morph));
+
+          const burst = 1 + explode * (2.8 + (i % 17) * 0.05);
+          positions[i3] = formedX * burst;
+          positions[i3 + 1] = formedY * burst;
+          positions[i3 + 2] = formedZ * burst;
+        }
+
+        geometry!.attributes.position.needsUpdate = true;
+      };
+
+      const resize = () => {
+        if (!renderer) {
+          return;
+        }
+        const width = Math.max(mount.clientWidth, 1);
+        const height = Math.max(mount.clientHeight, 1);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setPixelRatio(
+          Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2)
+        );
+        renderer.setSize(width, height);
+        paintVignette(vignetteCanvas, isMobile);
+      };
+
+      const tick = () => {
+        if (disposed || !renderer || !material) {
+          return;
+        }
+
+        animationFrame = window.requestAnimationFrame(tick);
+        points.rotation.y += 0.0028 * state.spin;
+        points.rotation.x += 0.0009 * state.spin;
+        camera.position.z = state.cameraZ;
+        material.size = state.particleSize;
+        mixPositions();
+        renderer.render(scene, camera);
+      };
+
+      const kicker = root.querySelector("[data-splash-kicker]");
+      const nameLines = root.querySelectorAll("[data-splash-name]");
+      const role = root.querySelector("[data-splash-role]");
+      const meter = root.querySelector("[data-splash-meter]");
+      const center = root.querySelector("[data-splash-center]");
+      const vignette = vignetteCanvas;
+
+      const counterState = { value: 0 };
+
+      gsap.set([kicker, role, meter], { autoAlpha: 0, y: 20 });
+      gsap.set(nameLines, { yPercent: 115 });
+      gsap.set(progress, { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(vignette, { autoAlpha: 0 });
+      gsap.set(material, { opacity: 0 });
+
+      timeline = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        onComplete: finish,
+      });
+
+      const speed = isMobile ? 0.85 : 1;
+
+      timeline
+        .to(vignette, { autoAlpha: 1, duration: 0.55 * speed }, 0)
+        .to(material, { opacity: 1, duration: 0.85 * speed }, 0.05)
+        .to(
+          state,
+          {
+            morph: 1,
+            duration: 1.55 * speed,
+            ease: "power2.inOut",
+          },
+          0.15
+        )
+        .to(kicker, { autoAlpha: 1, y: 0, duration: 0.65 * speed }, 0.7 * speed)
+        .to(
+          nameLines,
+          {
+            yPercent: 0,
+            duration: 1.05 * speed,
+            stagger: 0.12,
+            ease: "power4.out",
+          },
+          0.85 * speed
+        )
+        .to(role, { autoAlpha: 1, y: 0, duration: 0.6 * speed }, 1.2 * speed)
+        .to(meter, { autoAlpha: 1, y: 0, duration: 0.55 * speed }, 1.35 * speed)
+        .to(
+          counterState,
+          {
+            value: 100,
+            duration: 1.65 * speed,
+            ease: "power2.inOut",
+            onUpdate: () => {
+              counter.textContent = String(
+                Math.round(counterState.value)
+              ).padStart(3, "0");
+            },
+          },
+          1.4 * speed
+        )
+        .to(
+          progress,
+          {
+            scaleX: 1,
+            duration: 1.65 * speed,
+            ease: "power2.inOut",
+          },
+          1.4 * speed
+        )
+        .to(
+          state,
+          {
+            morph: 2,
+            duration: 1.1 * speed,
+            ease: "power2.inOut",
+          },
+          2.2 * speed
+        )
+        .to(
+          state,
+          {
+            spin: 1.35,
+            particleSize: isMobile ? 0.085 : 0.072,
+            duration: 1.1 * speed,
+            ease: "power2.inOut",
+          },
+          2.2 * speed
+        )
+        .to(
+          center,
+          {
+            autoAlpha: 0,
+            y: -20,
+            filter: "blur(8px)",
+            duration: 0.5 * speed,
+            ease: "power2.in",
+          },
+          3.35 * speed
+        )
+        .to(
+          state,
+          {
+            explode: 1,
+            cameraZ: isMobile ? 5.2 : 4.4,
+            particleSize: isMobile ? 0.045 : 0.034,
+            spin: 2.1,
+            duration: 1.1 * speed,
+            ease: "power3.in",
+          },
+          3.4 * speed
+        )
+        .to(
+          material,
+          { opacity: 0, duration: 0.75 * speed, ease: "power2.in" },
+          3.7 * speed
+        )
+        .to(
+          vignette,
+          { autoAlpha: 0, duration: 0.7 * speed, ease: "power2.inOut" },
+          3.85 * speed
+        )
+        .to(
+          root,
+          {
+            autoAlpha: 0,
+            duration: 0.65 * speed,
+            ease: "power2.inOut",
+          },
+          4.05 * speed
+        );
+
+      tick();
+      window.addEventListener("resize", resize);
+
+      return () => {
+        disposed = true;
+        window.clearTimeout(failSafe);
+        timeline?.kill();
+        window.cancelAnimationFrame(animationFrame);
+        window.removeEventListener("resize", resize);
+        geometry?.dispose();
+        material?.map?.dispose();
+        material?.dispose();
+        renderer?.dispose();
+        if (renderer && renderer.domElement.parentElement === mount) {
+          mount.removeChild(renderer.domElement);
+        }
+      };
+    } catch {
+      window.clearTimeout(failSafe);
+      finish();
+      return () => {
+        disposed = true;
+      };
+    }
   }, []);
 
   return (
@@ -460,7 +521,7 @@ export function SplashIntro({ onComplete }: SplashIntroProps) {
 
       <div
         data-splash-center
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6"
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6"
       >
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[22rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/55 blur-3xl md:h-[26rem] md:w-[42rem]" />
 
@@ -476,7 +537,7 @@ export function SplashIntro({ onComplete }: SplashIntroProps) {
             <div className="overflow-hidden">
               <h1
                 data-splash-name
-                className="text-5xl font-semibold tracking-tight text-white drop-shadow-[0_8px_40px_rgba(0,0,0,0.85)] md:text-7xl lg:text-8xl"
+                className="text-4xl font-semibold tracking-tight text-white drop-shadow-[0_8px_40px_rgba(0,0,0,0.85)] sm:text-5xl md:text-7xl lg:text-8xl"
               >
                 {portfolioOwner.firstName}
               </h1>
@@ -484,7 +545,7 @@ export function SplashIntro({ onComplete }: SplashIntroProps) {
             <div className="overflow-hidden">
               <h1
                 data-splash-name
-                className="text-5xl font-semibold tracking-tight text-white/90 drop-shadow-[0_8px_40px_rgba(0,0,0,0.85)] md:text-7xl lg:text-8xl"
+                className="text-4xl font-semibold tracking-tight text-white/90 drop-shadow-[0_8px_40px_rgba(0,0,0,0.85)] sm:text-5xl md:text-7xl lg:text-8xl"
               >
                 {portfolioOwner.lastName}
               </h1>

@@ -62,33 +62,33 @@ export function HomeView({ active = true }: { active?: boolean }) {
 
       <div
         ref={contentRef}
-        className="relative z-10 mx-auto max-w-6xl px-5 pb-32 pt-16 md:px-8 md:pb-36 md:pt-20"
+        className="relative z-10 mx-auto max-w-6xl px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-[max(3.5rem,calc(2rem+env(safe-area-inset-top)))] sm:px-5 md:px-8 md:pb-36 md:pt-20"
       >
         <div className="grid items-center gap-10 md:grid-cols-[0.95fr_1.05fr] md:gap-14">
-          <div data-home-item className="relative mx-auto w-full max-w-md opacity-0 md:max-w-none">
-            <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-white/10 via-transparent to-[#df5f38]/20 blur-2xl" />
-            <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-3 shadow-[0_30px_120px_rgba(0,0,0,0.45)]">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.35rem]">
+          <div data-home-item className="relative mx-auto w-full max-w-[280px] opacity-0 sm:max-w-sm md:max-w-none">
+            <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-white/10 via-transparent to-[#df5f38]/20 blur-2xl md:-inset-4" />
+            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2.5 shadow-[0_30px_120px_rgba(0,0,0,0.45)] sm:rounded-[1.75rem] sm:p-3">
+              <div className="relative aspect-[4/5] max-h-[52svh] overflow-hidden rounded-[1.15rem] sm:rounded-[1.35rem] md:max-h-none">
                 <Image
                   src={portfolioOwner.portraitImage}
                   alt={`${portfolioOwner.firstName} ${portfolioOwner.lastName}`}
                   fill
                   priority
                   className="object-cover object-top"
-                  sizes="(max-width: 768px) 90vw, 420px"
+                  sizes="(max-width: 768px) 80vw, 420px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
               </div>
-              <div className="mt-4 flex items-center justify-between px-2 pb-1">
-                <div>
+              <div className="mt-3 flex items-center justify-between gap-3 px-1.5 pb-0.5 sm:mt-4 sm:px-2 sm:pb-1">
+                <div className="min-w-0">
                   <p className="text-[10px] uppercase tracking-[0.38em] text-white/45">
                     Based in
                   </p>
-                  <p className="mt-1 text-sm text-white/78">
+                  <p className="mt-1 truncate text-sm text-white/78">
                     {portfolioOwner.location}
                   </p>
                 </div>
-                <div className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] text-white/55">
+                <div className="shrink-0 rounded-full border border-white/10 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.24em] text-white/55 sm:px-3 sm:text-[10px] sm:tracking-[0.28em]">
                   Available
                 </div>
               </div>
@@ -104,7 +104,7 @@ export function HomeView({ active = true }: { active?: boolean }) {
             </p>
             <h1
               data-home-item
-              className="mt-4 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight opacity-0 md:text-6xl"
+              className="mt-4 max-w-xl text-[2rem] font-semibold leading-[1.05] tracking-tight opacity-0 sm:text-4xl md:text-6xl"
             >
               Hi! I&apos;m {portfolioOwner.firstName}
               <span className="block text-white/88">{portfolioOwner.lastName}</span>
@@ -178,14 +178,14 @@ export function HomeView({ active = true }: { active?: boolean }) {
 
 function SkillRow({ items }: { items: string[] }) {
   return (
-    <div className="flex flex-wrap gap-2.5">
+    <div className="flex flex-wrap gap-2 sm:gap-2.5">
       {items.map((item) => (
         <span
           key={item}
-          className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] py-2 pl-2 pr-4 text-[11px] uppercase tracking-[0.14em] text-white/78 md:text-xs"
+          className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] py-1.5 pl-1.5 pr-3 text-[10px] uppercase tracking-[0.12em] text-white/78 sm:gap-2.5 sm:py-2 sm:pl-2 sm:pr-4 sm:text-[11px] sm:tracking-[0.14em] md:text-xs"
         >
-          <SkillIcon name={item} size="md" />
-          {item}
+          <SkillIcon name={item} size="sm" />
+          <span className="truncate">{item}</span>
         </span>
       ))}
     </div>

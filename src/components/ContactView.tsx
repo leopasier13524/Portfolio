@@ -51,7 +51,7 @@ export function ContactView({ active = true }: { active?: boolean }) {
 
       <div
         ref={contentRef}
-        className="relative z-10 mx-auto flex min-h-full max-w-3xl flex-col justify-center px-5 pb-32 pt-16 md:px-8 md:pb-36 md:pt-20"
+        className="relative z-10 mx-auto flex min-h-full max-w-3xl flex-col justify-center px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-[max(3.5rem,calc(2rem+env(safe-area-inset-top)))] sm:px-5 md:px-8 md:pb-36 md:pt-20"
       >
         <p
           data-contact-item
@@ -61,7 +61,7 @@ export function ContactView({ active = true }: { active?: boolean }) {
         </p>
         <h1
           data-contact-item
-          className="mt-4 text-4xl font-semibold tracking-tight opacity-0 md:text-6xl"
+          className="mt-4 text-[2rem] font-semibold tracking-tight opacity-0 sm:text-4xl md:text-6xl"
         >
           Let&apos;s build something memorable.
         </h1>

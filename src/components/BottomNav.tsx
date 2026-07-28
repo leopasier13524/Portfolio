@@ -95,7 +95,7 @@ export function BottomNav({
   return (
     <nav
       aria-label="Primary"
-      className={`pointer-events-auto fixed bottom-5 left-1/2 z-40 -translate-x-1/2 transition-all duration-500 md:bottom-8 ${
+      className={`pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transition-all duration-500 md:bottom-8 md:w-auto ${
         hidden
           ? "pointer-events-none translate-y-8 opacity-0"
           : "translate-y-0 opacity-100"
@@ -103,7 +103,7 @@ export function BottomNav({
     >
       <div
         ref={containerRef}
-        className="relative flex items-center gap-1 rounded-full bg-white/22 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.52),0_24px_70px_rgba(0,0,0,0.38)] backdrop-blur-2xl backdrop-saturate-150"
+        className="relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full bg-white/22 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.52),0_24px_70px_rgba(0,0,0,0.38)] backdrop-blur-2xl backdrop-saturate-150 sm:justify-center sm:gap-1"
       >
         <span
           ref={pillRef}
@@ -124,7 +124,7 @@ export function BottomNav({
               onPointerEnter={
                 item.id === "projects" ? onProjectsIntent : undefined
               }
-              className={`relative z-10 rounded-full px-5 py-2.5 text-[10px] uppercase tracking-[0.34em] transition-colors duration-300 md:px-7 md:py-3 md:text-[11px] ${
+              className={`relative z-10 min-h-11 flex-1 rounded-full px-3 py-2.5 text-[10px] uppercase tracking-[0.22em] transition-colors duration-300 sm:flex-none sm:px-5 sm:tracking-[0.34em] md:min-h-0 md:px-7 md:py-3 md:text-[11px] ${
                 isActive ? "text-black" : "text-white/88 hover:text-white"
               }`}
             >

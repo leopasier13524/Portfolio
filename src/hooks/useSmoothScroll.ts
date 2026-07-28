@@ -29,14 +29,19 @@ export function useSmoothScroll(
       return;
     }
 
+    // Native touch scrolling feels better on phones; Lenis only for wheel.
+    const isTouch =
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
     const lenis = new Lenis({
       wrapper,
       content,
       autoRaf,
-      lerp: 0.085,
+      lerp: isTouch ? 0.14 : 0.085,
       smoothWheel: true,
-      syncTouch: true,
-      touchMultiplier: 1.05,
+      syncTouch: false,
+      touchMultiplier: 1.2,
       wheelMultiplier: 0.92,
     });
 

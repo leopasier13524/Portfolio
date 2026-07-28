@@ -145,7 +145,7 @@ export function PortfolioExperience() {
   }, []);
 
   return (
-    <div className="relative h-screen overflow-hidden bg-black text-white">
+    <div className="relative h-[100dvh] overflow-hidden bg-black text-white">
       {!introDone ? <SplashIntro onComplete={handleIntroComplete} /> : null}
 
       <div
@@ -179,20 +179,22 @@ export function PortfolioExperience() {
             projectOpen ? "opacity-0" : "opacity-100"
           }`}
         >
-          <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-black via-black/50 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black via-black/55 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black via-black/50 to-transparent md:h-36" />
+          <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black via-black/55 to-transparent md:h-44" />
         </div>
 
         <div
           ref={projectsHintRef}
-          className={`pointer-events-none absolute inset-x-0 bottom-24 z-20 px-4 opacity-0 md:px-8 ${
+          className={`pointer-events-none absolute inset-x-0 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-20 px-4 opacity-0 md:bottom-24 md:px-8 ${
             projectOpen ? "opacity-0" : ""
           }`}
         >
-          <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.32em] text-white/48">
-            <span>Drag to explore</span>
-            <span className="h-1 w-1 rounded-full bg-white/28" />
-            <span>Click card to enter project</span>
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[10px] uppercase tracking-[0.28em] text-white/48 md:justify-start md:tracking-[0.32em]">
+            <span className="md:hidden">Swipe to explore</span>
+            <span className="hidden md:inline">Drag to explore</span>
+            <span className="hidden h-1 w-1 rounded-full bg-white/28 sm:block" />
+            <span className="md:hidden">Tap a card</span>
+            <span className="hidden md:inline">Click card to enter project</span>
           </div>
         </div>
       </div>
