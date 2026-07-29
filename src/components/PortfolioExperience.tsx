@@ -8,6 +8,7 @@ import { BottomNav, type AppView } from "./BottomNav";
 import { ContactView } from "./ContactView";
 import { HomeView } from "./HomeView";
 import { ProjectDetailOverlay, type CardScreenRect } from "./ProjectDetailOverlay";
+import { SpaceField } from "./SpaceField";
 import { SplashIntro } from "./SplashIntro";
 
 const SphereGallery = dynamic(
@@ -18,7 +19,7 @@ const SphereGallery = dynamic(
 function viewLayerClass(isActive: boolean) {
   return isActive
     ? "visible opacity-100 pointer-events-auto"
-    : "invisible opacity-0 pointer-events-none";
+    : "hidden opacity-0 pointer-events-none";
 }
 
 function projectsLayerClass(isActive: boolean) {
@@ -29,9 +30,12 @@ function projectsLayerClass(isActive: boolean) {
 
 export function PortfolioExperience() {
   const [introDone, setIntroDone] = useState(false);
+  const [splashMounted, setSplashMounted] = useState(true);
   const [navView, setNavView] = useState<AppView>("home");
   const [contentView, setContentView] = useState<AppView>("home");
   const [galleryMounted, setGalleryMounted] = useState(false);
+  const splashRootRef = useRef<HTMLDivElement | null>(null);
+  const homeRootRef = useRef<HTMLDivElement | null>(null);
   const contentFrameRef = useRef<number | null>(null);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   const [projectFromRect, setProjectFromRect] = useState<CardScreenRect | null>(
@@ -140,22 +144,54 @@ export function PortfolioExperience() {
     void import("./SphereGallery");
   };
 
-  const handleIntroComplete = useCallback(() => {
+  const handleIntroHandoff = useCallback(() => {
     setIntroDone(true);
   }, []);
 
+  const handleIntroComplete = useCallback(() => {
+    setIntroDone(true);
+    setSplashMounted(false);
+  }, []);
+
+  const spaceActive = !introDone || contentView === "home";
+
   return (
     <div className="relative h-[100dvh] overflow-hidden bg-black text-white">
-      {!introDone ? <SplashIntro onComplete={handleIntroComplete} /> : null}
+      <div
+        className={`pointer-events-none fixed inset-0 z-0 transition-opacity duration-500 ${
+          spaceActive ? "opacity-100" : "opacity-0"
+        }`}
+        aria-hidden
+      >
+        <SpaceField
+          splashRootRef={splashRootRef}
+          homeRootRef={homeRootRef}
+          playIntro={splashMounted}
+          active={spaceActive}
+          onHandoff={handleIntroHandoff}
+          onIntroComplete={handleIntroComplete}
+        />
+      </div>
+
+      {splashMounted ? <SplashIntro ref={splashRootRef} /> : null}
 
       <div
-        className={`absolute inset-0 overflow-hidden ${viewLayerClass(contentView === "home")}`}
+        className={`absolute inset-0 z-10 overflow-hidden ${
+          contentView === "home"
+            ? introDone
+              ? "visible opacity-100 pointer-events-auto"
+              : "visible opacity-0 pointer-events-none"
+            : "hidden opacity-0 pointer-events-none"
+        }`}
       >
-        <HomeView active={introDone && contentView === "home"} />
+        <HomeView
+          rootRef={homeRootRef}
+          active={introDone && contentView === "home"}
+        />
       </div>
 
       <div
-        className={`absolute inset-0 overflow-hidden ${viewLayerClass(contentView === "contact")}`}
+        className={`absolute inset-0 z-10 overflow-hidden ${viewLayerClass(contentView === "contact")}`}
       >
         <ContactView active={introDone && contentView === "contact"} />
       </div>

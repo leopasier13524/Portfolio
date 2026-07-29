@@ -44,11 +44,6 @@ export function ContactView({ active = true }: { active?: boolean }) {
       ref={rootRef}
       className="relative h-full min-h-0 overflow-x-hidden overflow-y-auto overscroll-y-contain bg-black text-white"
     >
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute -right-16 top-16 h-[22rem] w-[22rem] rounded-full bg-[#39d0c1]/16 blur-[130px]" />
-        <div className="absolute -bottom-16 -left-16 h-[26rem] w-[26rem] rounded-full bg-[#8a79ff]/14 blur-[130px]" />
-      </div>
-
       <div
         ref={contentRef}
         className="relative z-10 mx-auto flex min-h-full max-w-3xl flex-col justify-center px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-[max(3.5rem,calc(2rem+env(safe-area-inset-top)))] sm:px-5 md:px-8 md:pb-36 md:pt-20"

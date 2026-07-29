@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { gsap } from "gsap";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import {
@@ -11,11 +11,17 @@ import {
   portfolioOwner,
   softwareExperience,
 } from "@/content/portfolio";
-import { HomeBackground } from "./HomeBackground";
 import { SkillIcon } from "./SkillIcon";
 
-export function HomeView({ active = true }: { active?: boolean }) {
-  const rootRef = useRef<HTMLDivElement | null>(null);
+export function HomeView({
+  active = true,
+  rootRef: externalRootRef,
+}: {
+  active?: boolean;
+  rootRef?: RefObject<HTMLDivElement | null>;
+}) {
+  const localRootRef = useRef<HTMLDivElement | null>(null);
+  const rootRef = externalRootRef ?? localRootRef;
   const contentRef = useRef<HTMLDivElement | null>(null);
   const hasAnimatedRef = useRef(false);
 
@@ -37,14 +43,14 @@ export function HomeView({ active = true }: { active?: boolean }) {
 
     gsap.fromTo(
       items,
-      { autoAlpha: 0, y: hasAnimatedRef.current ? 18 : 28 },
+      { autoAlpha: 0, y: hasAnimatedRef.current ? 18 : 10 },
       {
         autoAlpha: 1,
         y: 0,
         duration: hasAnimatedRef.current ? 0.7 : 0.85,
         ease: "power3.out",
-        stagger: 0.07,
-        delay: 0.06,
+        stagger: hasAnimatedRef.current ? 0.07 : 0.045,
+        delay: hasAnimatedRef.current ? 0.06 : 0,
       }
     );
 
@@ -54,12 +60,8 @@ export function HomeView({ active = true }: { active?: boolean }) {
   return (
     <div
       ref={rootRef}
-      className="relative h-full min-h-0 overflow-x-hidden overflow-y-auto overscroll-y-contain bg-black text-white"
+      className="relative h-full min-h-0 overflow-x-hidden overflow-y-auto overscroll-y-contain bg-transparent text-white"
     >
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <HomeBackground active={active} />
-      </div>
-
       <div
         ref={contentRef}
         className="relative z-10 mx-auto max-w-6xl px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-[max(3.5rem,calc(2rem+env(safe-area-inset-top)))] sm:px-5 md:px-8 md:pb-36 md:pt-20"
@@ -73,7 +75,7 @@ export function HomeView({ active = true }: { active?: boolean }) {
                   alt={`${portfolioOwner.firstName} ${portfolioOwner.lastName}`}
                   fill
                   priority
-                  className="object-cover object-top"
+                  className="object-cover object-top brightness-[0.84] saturate-[0.78]"
                   sizes="(max-width: 768px) 80vw, 420px"
                 />
               </div>
