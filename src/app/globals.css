@@ -67,3 +67,32 @@ button {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
 }
+
+@keyframes portrait-drift {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.045) translate3d(-0.8%, -1%, 0);
+  }
+}
+
+.portrait-mark__frame {
+  isolation: isolate;
+}
+
+.portrait-mark__image {
+  transform-origin: 50% 28%;
+}
+
+.portrait-mark__image--motion {
+  will-change: transform;
+  animation: portrait-drift 32s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait-mark__image--motion {
+    animation: none;
+    transform: none;
+  }
+}

@@ -18,14 +18,7 @@ export const SplashIntro = forwardRef<HTMLDivElement>(function SplashIntro(
         className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6"
       >
         <div className="relative text-center">
-          <p
-            data-splash-kicker
-            className="text-[10px] uppercase tracking-[0.48em] text-white/55"
-          >
-            {portfolioOwner.location}
-          </p>
-
-          <div className="mt-7">
+          <div>
             <div className="overflow-hidden">
               <h1
                 data-splash-name
@@ -53,7 +46,7 @@ export const SplashIntro = forwardRef<HTMLDivElement>(function SplashIntro(
 
           <div
             data-splash-meter
-            className="mx-auto mt-14 flex w-full max-w-[220px] flex-col items-center gap-3"
+            className="mx-auto mt-24 flex w-full max-w-[220px] flex-col items-center gap-3 sm:mt-28 md:mt-32"
           >
             <div className="flex w-full items-baseline justify-between text-[10px] uppercase tracking-[0.34em] text-white/45">
               <span>Loading</span>

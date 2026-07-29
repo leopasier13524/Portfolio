@@ -103,7 +103,7 @@ export function BottomNav({
     >
       <div
         ref={containerRef}
-        className="relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-white/15 bg-black/70 p-1 sm:justify-center sm:gap-1"
+        className="relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-white/20 bg-white/25 p-1 backdrop-blur-md sm:justify-center sm:gap-1"
       >
         <span
           ref={pillRef}
@@ -125,7 +125,7 @@ export function BottomNav({
                 item.id === "projects" ? onProjectsIntent : undefined
               }
               className={`relative z-10 min-h-11 flex-1 rounded-full px-3 py-2.5 text-[10px] uppercase tracking-[0.22em] transition-colors duration-300 sm:flex-none sm:px-5 sm:tracking-[0.34em] md:min-h-0 md:px-7 md:py-3 md:text-[11px] ${
-                isActive ? "text-black" : "text-white/80 hover:text-white"
+                isActive ? "text-black" : "text-white/85 hover:text-white"
               }`}
             >
               {item.label}

@@ -16,9 +16,12 @@ import { SkillIcon } from "./SkillIcon";
 export function HomeView({
   active = true,
   rootRef: externalRootRef,
+  portraitMotion = true,
 }: {
   active?: boolean;
   rootRef?: RefObject<HTMLDivElement | null>;
+  /** Ken Burns only after intro so assemble dust can lock to the still crop */
+  portraitMotion?: boolean;
 }) {
   const localRootRef = useRef<HTMLDivElement | null>(null);
   const rootRef = externalRootRef ?? localRootRef;
@@ -37,24 +40,40 @@ export function HomeView({
     gsap.killTweensOf(items);
 
     if (!active) {
-      gsap.set(items, { autoAlpha: 0, y: 18 });
+      gsap.set(items, { autoAlpha: 0, y: hasAnimatedRef.current ? 18 : 0 });
+      return;
+    }
+
+    // First intro: soft opacity-only fade under particles (no slide/stagger)
+    if (!hasAnimatedRef.current) {
+      gsap.fromTo(
+        items,
+        { autoAlpha: 0, y: 0 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.85,
+          ease: "sine.inOut",
+          stagger: 0,
+          delay: 0.02,
+        }
+      );
+      hasAnimatedRef.current = true;
       return;
     }
 
     gsap.fromTo(
       items,
-      { autoAlpha: 0, y: hasAnimatedRef.current ? 18 : 10 },
+      { autoAlpha: 0, y: 14 },
       {
         autoAlpha: 1,
         y: 0,
-        duration: hasAnimatedRef.current ? 0.7 : 0.85,
-        ease: "power3.out",
-        stagger: hasAnimatedRef.current ? 0.07 : 0.045,
-        delay: hasAnimatedRef.current ? 0.06 : 0,
+        duration: 0.75,
+        ease: "sine.inOut",
+        stagger: 0.06,
+        delay: 0.06,
       }
     );
-
-    hasAnimatedRef.current = true;
   }, [active]);
 
   return (
@@ -66,32 +85,43 @@ export function HomeView({
         ref={contentRef}
         className="relative z-10 mx-auto max-w-6xl px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-[max(3.5rem,calc(2rem+env(safe-area-inset-top)))] sm:px-5 md:px-8 md:pb-36 md:pt-20"
       >
-        <div className="grid items-center gap-10 md:grid-cols-[0.95fr_1.05fr] md:gap-14">
-          <div data-home-item className="relative mx-auto w-full max-w-[280px] opacity-0 sm:max-w-sm md:max-w-none">
-            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-2.5 sm:rounded-[1.75rem] sm:p-3">
-              <div className="relative aspect-[4/5] max-h-[52svh] overflow-hidden rounded-[1.15rem] sm:rounded-[1.35rem] md:max-h-none">
-                <Image
-                  src={portfolioOwner.portraitImage}
-                  alt={`${portfolioOwner.firstName} ${portfolioOwner.lastName}`}
-                  fill
-                  priority
-                  className="object-cover object-top brightness-[0.84] saturate-[0.78]"
-                  sizes="(max-width: 768px) 80vw, 420px"
-                />
-              </div>
-              <div className="mt-3 flex items-center justify-between gap-3 px-1.5 pb-0.5 sm:mt-4 sm:px-2 sm:pb-1">
-                <div className="min-w-0">
-                  <p className="text-[10px] uppercase tracking-[0.38em] text-white/45">
-                    Based in
-                  </p>
-                  <p className="mt-1 truncate text-sm text-white/78">
-                    {portfolioOwner.location}
-                  </p>
-                </div>
-                <div className="shrink-0 rounded-full border border-white/10 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.24em] text-white/55 sm:px-3 sm:text-[10px] sm:tracking-[0.28em]">
-                  Available
-                </div>
-              </div>
+        <div className="grid items-center gap-10 md:grid-cols-[1.05fr_0.95fr] md:gap-10 lg:gap-12">
+          <div className="portrait-mark relative mx-auto w-full max-w-[300px] sm:max-w-[360px] md:mx-0 md:max-w-none">
+            <div
+              data-home-item
+              data-home-portrait
+              className="portrait-mark__frame relative aspect-[3/4] max-h-[58svh] overflow-hidden opacity-0 md:max-h-[min(74svh,720px)]"
+            >
+              <Image
+                src={portfolioOwner.portraitImage}
+                alt={`${portfolioOwner.firstName} ${portfolioOwner.lastName}`}
+                fill
+                priority
+                className={`portrait-mark__image object-cover object-[center_14%] brightness-[0.84] saturate-[0.78] ${
+                  portraitMotion ? "portrait-mark__image--motion" : ""
+                }`}
+                sizes="(max-width: 768px) 82vw, 460px"
+              />
+              <div
+                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent from-35% via-black/20 via-70% to-black/85 md:to-black/95"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-black/80 via-black/35 to-transparent"
+                aria-hidden
+              />
+            </div>
+            <div
+              className="mt-4 flex items-baseline justify-between gap-4 opacity-0"
+              data-home-item
+              data-assemble-skip
+            >
+              <p className="min-w-0 truncate text-[10px] uppercase tracking-[0.36em] text-white/48">
+                {portfolioOwner.location}
+              </p>
+              <p className="shrink-0 text-[10px] uppercase tracking-[0.32em] text-white/38">
+                Available
+              </p>
             </div>
           </div>
 
@@ -137,7 +167,11 @@ export function HomeView({
           </div>
         </div>
 
-        <section data-home-item className="mt-12 grid gap-8 opacity-0 md:mt-14 md:grid-cols-2">
+        <section
+          data-home-item
+          data-assemble-skip
+          className="mt-12 grid gap-8 opacity-0 md:mt-14 md:grid-cols-2"
+        >
           <div>
             <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/42">
               Tools
@@ -152,7 +186,11 @@ export function HomeView({
           </div>
         </section>
 
-        <section data-home-item className="mt-12 space-y-4 opacity-0 md:mt-14">
+        <section
+          data-home-item
+          data-assemble-skip
+          className="mt-12 space-y-4 opacity-0 md:mt-14"
+        >
           <p className="text-[10px] uppercase tracking-[0.34em] text-white/42">
             Experience
           </p>

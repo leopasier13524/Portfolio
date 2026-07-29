@@ -158,9 +158,9 @@ export function PortfolioExperience() {
   return (
     <div className="relative h-[100dvh] overflow-hidden bg-black text-white">
       <div
-        className={`pointer-events-none fixed inset-0 z-0 transition-opacity duration-500 ${
-          spaceActive ? "opacity-100" : "opacity-0"
-        }`}
+        className={`pointer-events-none fixed inset-0 transition-opacity duration-500 ${
+          splashMounted ? "z-30" : "z-0"
+        } ${spaceActive ? "opacity-100" : "opacity-0"}`}
         aria-hidden
       >
         <SpaceField
@@ -176,7 +176,7 @@ export function PortfolioExperience() {
       {splashMounted ? <SplashIntro ref={splashRootRef} /> : null}
 
       <div
-        className={`absolute inset-0 z-10 overflow-hidden ${
+        className={`absolute inset-0 z-10 overflow-hidden transition-opacity duration-700 ease-in-out ${
           contentView === "home"
             ? introDone
               ? "visible opacity-100 pointer-events-auto"
@@ -187,6 +187,7 @@ export function PortfolioExperience() {
         <HomeView
           rootRef={homeRootRef}
           active={introDone && contentView === "home"}
+          portraitMotion={!splashMounted}
         />
       </div>
 
