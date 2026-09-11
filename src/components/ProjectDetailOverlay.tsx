@@ -58,14 +58,30 @@ export function ProjectDetailOverlay({
         root.querySelectorAll<HTMLElement>(
           'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
         )
-      ).filter((node) => !node.hasAttribute("disabled") && node.tabIndex !== -1);
+      ).filter((node) => {
+        if (node.hasAttribute("disabled") || node.tabIndex === -1) {
+          return false;
+        }
+        const style = window.getComputedStyle(node);
+        return style.visibility !== "hidden" && style.display !== "none";
+      });
     };
 
     const focusClose = () => {
       closeButtonRef.current?.focus();
+      if (document.activeElement !== closeButtonRef.current) {
+        root?.focus();
+      }
     };
 
-    const focusFrame = window.requestAnimationFrame(focusClose);
+    let cancelled = false;
+    const focusFrame = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        if (!cancelled) {
+          focusClose();
+        }
+      });
+    });
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -102,6 +118,7 @@ export function ProjectDetailOverlay({
 
     return () => {
       window.cancelAnimationFrame(focusFrame);
+      cancelled = true;
       document.removeEventListener("keydown", onKeyDown);
       previouslyFocused?.focus();
     };
@@ -135,7 +152,7 @@ export function ProjectDetailOverlay({
     const ctx = gsap.context(() => {
       gsap.set(root, { autoAlpha: 1 });
       gsap.set(backdrop, { autoAlpha: 0 });
-      gsap.set(chrome, { autoAlpha: 0, y: 8 });
+      gsap.set(chrome, { opacity: 0, y: 8, visibility: "visible" });
       gsap.set(content, { autoAlpha: 0, y: 20 });
       gsap.set(hero, {
         position: "fixed",
@@ -198,7 +215,7 @@ export function ProjectDetailOverlay({
       tl.to(
         chrome,
         {
-          autoAlpha: 1,
+          opacity: 1,
           y: 0,
           duration: 0.35,
           ease: "power2.out",
@@ -231,6 +248,7 @@ export function ProjectDetailOverlay({
       aria-modal="true"
       role="dialog"
       aria-labelledby={titleId}
+      tabIndex={-1}
     >
       <div
         ref={backdropRef}

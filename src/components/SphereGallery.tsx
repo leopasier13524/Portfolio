@@ -813,7 +813,11 @@ export function SphereGallery({
       tapSlop = getTapSlop(event);
       velocityPanX = 0;
       velocityPanY = 0;
-      mount.setPointerCapture(event.pointerId);
+      try {
+        mount.setPointerCapture(event.pointerId);
+      } catch {
+        // Synthetic or already-captured pointers can throw; drag/tap still work.
+      }
     };
 
     const onPointerMove = (event: PointerEvent) => {
@@ -863,7 +867,11 @@ export function SphereGallery({
 
     const onPointerUp = (event: PointerEvent) => {
       if (pointerDown) {
-        mount.releasePointerCapture(event.pointerId);
+        try {
+          mount.releasePointerCapture(event.pointerId);
+        } catch {
+          // Ignore if capture was never set.
+        }
       }
 
       const wasMoved = moved;
