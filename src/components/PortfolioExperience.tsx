@@ -106,11 +106,11 @@ export function PortfolioExperience() {
     );
   }, [projectsVisible, projectOpen]);
 
-  const closeProject = () => {
+  const closeProject = useCallback(() => {
     setActiveProjectSlug(null);
     setProjectFromRect(null);
     setProjectPreviewSrc(null);
-  };
+  }, []);
 
   const selectProject = (slug: string, rect: CardScreenRect, previewSrc: string) => {
     setProjectFromRect(rect);
@@ -157,6 +157,7 @@ export function PortfolioExperience() {
 
   return (
     <div className="relative h-[100dvh] overflow-hidden bg-black text-white">
+      <div {...(projectOpen ? { inert: true } : {})}>
       <div
         className={`pointer-events-none fixed inset-0 transition-opacity duration-500 ${
           splashMounted ? "z-30" : "z-0"
@@ -242,6 +243,7 @@ export function PortfolioExperience() {
         onProjectsIntent={handleProjectsIntent}
         hidden={!introDone || projectOpen}
       />
+      </div>
 
       <ProjectDetailOverlay
         project={activeProject}
