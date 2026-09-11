@@ -749,14 +749,6 @@ export function SphereGallery({
       };
     };
 
-    const getCardPreview = (card: CardMesh) => {
-      const map = card.material.map;
-      if (map instanceof THREE.CanvasTexture && map.image instanceof HTMLCanvasElement) {
-        return map.image.toDataURL("image/png");
-      }
-      return card.userData.project.heroImage;
-    };
-
     const focusCard = (card: CardMesh) => {
       if (focused || activeSlugRef.current) {
         return;
@@ -770,9 +762,13 @@ export function SphereGallery({
       }
 
       const rect = getCardScreenRect(card);
-      const previewSrc = getCardPreview(card);
-
-      projectSelectRef.current(card.userData.project, rect, previewSrc);
+      // Reuse the already-decoded hero asset — never encode the 2400px card
+      // canvas on the main thread during tap.
+      projectSelectRef.current(
+        card.userData.project,
+        rect,
+        card.userData.project.heroImage
+      );
     };
 
     const resetFocus = () => {

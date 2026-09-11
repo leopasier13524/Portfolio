@@ -23,7 +23,7 @@ const iconColors: Record<string, string> = {
   WordPress: "#21759B",
   HTML: "#E34F26",
   JavaScript: "#F7DF1E",
-  Django: "#092E20",
+  Django: "#44B78B",
   CSS3: "#1572B6",
   PHP: "#777BB4",
   MySQL: "#4479A1",
