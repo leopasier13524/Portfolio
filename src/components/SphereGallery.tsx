@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { gsap } from "gsap";
 import type { PortfolioProject } from "@/content/portfolio";
-import { FISHEYE_STRENGTH, FISHEYE_ZOOM, ndcToDisplayScreen } from "@/lib/fisheye";
+import {
+  FISHEYE_STRENGTH,
+  FISHEYE_ZOOM,
+  displayPointerToLinearNdc,
+  ndcToDisplayScreen,
+} from "@/lib/fisheye";
 
 type SphereGalleryProps = {
   projects: PortfolioProject[];
@@ -76,6 +81,25 @@ const CARD_BORDER_HOVER_OPACITY = 0.72;
 const ORB_CANVAS_SIZE = 512;
 const ORB_OVERLAY_OPACITY = 0.52;
 const HOVER_BACKGROUND_OPACITY = 0.24;
+const TAP_SLOP_MOUSE = 8;
+const TAP_SLOP_TOUCH = 12;
+
+function getTapSlop(event: PointerEvent) {
+  return event.pointerType === "mouse" ? TAP_SLOP_MOUSE : TAP_SLOP_TOUCH;
+}
+
+function isWebGLAvailable() {
+  try {
+    const canvas = document.createElement("canvas");
+    return Boolean(
+      canvas.getContext("webgl2") ||
+        canvas.getContext("webgl") ||
+        canvas.getContext("experimental-webgl")
+    );
+  } catch {
+    return false;
+  }
+}
 
 function createOrbHighlightState(): OrbHighlightState {
   const canvas = document.createElement("canvas");
@@ -377,6 +401,7 @@ export function SphereGallery({
   onSelectProject,
 }: SphereGalleryProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
+  const [webglFailed, setWebglFailed] = useState(() => !isWebGLAvailable());
   const projectSelectRef = useRef(onSelectProject);
   const activeSlugRef = useRef(activeProjectSlug);
   const galleryActiveRef = useRef(active);
@@ -400,7 +425,7 @@ export function SphereGallery({
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount || projects.length === 0) {
+    if (webglFailed || !mount || projects.length === 0) {
       return;
     }
 
@@ -425,11 +450,17 @@ export function SphereGallery({
     camera.position.set(0, 0, getIdleCameraZ());
     camera.lookAt(0, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: false,
-      powerPreference: "high-performance",
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      queueMicrotask(() => setWebglFailed(true));
+      return;
+    }
     const pixelRatio = getRendererPixelRatio();
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(mount.clientWidth, mount.clientHeight);
@@ -478,6 +509,9 @@ export function SphereGallery({
     let moved = false;
     let pressX = 0;
     let pressY = 0;
+    let lastX = 0;
+    let lastY = 0;
+    let tapSlop = TAP_SLOP_MOUSE;
     let targetPanX = 0;
     let targetPanY = 0;
     let currentPanX = 0;
@@ -691,7 +725,13 @@ export function SphereGallery({
         const world = corner.clone();
         card.localToWorld(world);
         world.project(camera);
-        return ndcToDisplayScreen(world.x, world.y, canvasRect);
+        return ndcToDisplayScreen(
+          world.x,
+          world.y,
+          canvasRect,
+          fisheyeMaterial.uniforms.strength.value,
+          fisheyeMaterial.uniforms.zoom.value
+        );
       });
 
       const xs = corners.map((c) => c.x);
@@ -749,8 +789,15 @@ export function SphereGallery({
 
     const updatePointer = (clientX: number, clientY: number) => {
       const rect = renderer.domElement.getBoundingClientRect();
-      pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      const ndc = displayPointerToLinearNdc(
+        clientX,
+        clientY,
+        rect,
+        fisheyeMaterial.uniforms.strength.value,
+        fisheyeMaterial.uniforms.zoom.value
+      );
+      pointer.x = ndc.x;
+      pointer.y = ndc.y;
     };
 
     const onPointerDown = (event: PointerEvent) => {
@@ -761,10 +808,11 @@ export function SphereGallery({
       moved = false;
       pressX = event.clientX;
       pressY = event.clientY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      tapSlop = getTapSlop(event);
       velocityPanX = 0;
       velocityPanY = 0;
-      targetViewZoom = 1;
-      highlight(null);
       mount.setPointerCapture(event.pointerId);
     };
 
@@ -780,21 +828,29 @@ export function SphereGallery({
           return;
         }
 
-        const dx = event.clientX - pressX;
-        const dy = event.clientY - pressY;
-
-        if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+        if (!moved) {
+          const dist = Math.hypot(event.clientX - pressX, event.clientY - pressY);
+          if (dist <= tapSlop) {
+            return;
+          }
           moved = true;
           highlight(null);
+          targetViewZoom = 1;
+          lastX = event.clientX;
+          lastY = event.clientY;
+          return;
         }
+
+        const dx = event.clientX - lastX;
+        const dy = event.clientY - lastY;
 
         targetPanX -= dx * PAN_SCALE;
         targetPanY -= dy * PAN_SCALE;
         velocityPanX = -dx * PAN_SCALE;
         velocityPanY = -dy * PAN_SCALE;
 
-        pressX = event.clientX;
-        pressY = event.clientY;
+        lastX = event.clientX;
+        lastY = event.clientY;
         return;
       }
 
@@ -835,6 +891,11 @@ export function SphereGallery({
       if (!pointerDown) {
         highlight(null);
       }
+    };
+
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+      setWebglFailed(true);
     };
 
     const resize = () => {
@@ -1014,6 +1075,7 @@ export function SphereGallery({
       mount.addEventListener("pointercancel", onPointerUp);
       mount.addEventListener("pointerleave", onPointerLeave);
       window.addEventListener("resize", resize);
+      renderer.domElement.addEventListener("webglcontextlost", onContextLost);
       startTextureLoading();
       tick();
     };
@@ -1136,6 +1198,7 @@ export function SphereGallery({
       mount.removeEventListener("pointercancel", onPointerUp);
       mount.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("resize", resize);
+      renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
       resetFocus();
       resetFocusRef.current = null;
 
@@ -1160,7 +1223,7 @@ export function SphereGallery({
       scene.clear();
       clearMount(mount);
     };
-  }, [projects]);
+  }, [projects, webglFailed]);
 
   useEffect(() => {
     if (activeProjectSlug === null) {
@@ -1168,18 +1231,102 @@ export function SphereGallery({
     }
   }, [activeProjectSlug]);
 
+  const openProjectFromList = (
+    project: PortfolioProject,
+    rect: { left: number; top: number; width: number; height: number }
+  ) => {
+    onSelectProject(project, rect, project.heroImage);
+  };
+
   return (
     <div
       className={`relative z-0 h-[100dvh] w-full overflow-hidden bg-black ${
         activeProjectSlug ? "pointer-events-none" : ""
       }`}
     >
+      <ProjectAccessList
+        projects={projects}
+        visible={webglFailed}
+        available={active && !activeProjectSlug}
+        onSelect={openProjectFromList}
+      />
       <div
         ref={mountRef}
-        className="absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing"
+        className={`absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing ${
+          webglFailed ? "hidden" : ""
+        }`}
         style={{ touchAction: "none" }}
-        aria-label="Interactive project wall gallery"
+        aria-hidden={!webglFailed}
       />
     </div>
+  );
+}
+
+function ProjectAccessList({
+  projects,
+  visible,
+  available,
+  onSelect,
+}: {
+  projects: PortfolioProject[];
+  visible: boolean;
+  available: boolean;
+  onSelect: (
+    project: PortfolioProject,
+    rect: { left: number; top: number; width: number; height: number }
+  ) => void;
+}) {
+  return (
+    <nav
+      aria-label="Projects"
+      aria-hidden={!available || undefined}
+      {...(!available ? { inert: true } : {})}
+      className={
+        visible
+          ? "absolute inset-0 z-10 overflow-y-auto overscroll-y-contain px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-[max(3.5rem,calc(2rem+env(safe-area-inset-top)))] md:px-8"
+          : "sr-only"
+      }
+    >
+      {visible ? (
+        <p className="mb-6 text-[10px] uppercase tracking-[0.42em] text-white/45">
+          Projects
+        </p>
+      ) : null}
+      <ul className={visible ? "mx-auto flex max-w-3xl flex-col gap-3" : undefined}>
+        {projects.map((project) => (
+          <li key={project.slug}>
+            <button
+              type="button"
+              disabled={!available}
+              onClick={(event) => {
+                const rect = event.currentTarget.getBoundingClientRect();
+                onSelect(project, {
+                  left: rect.left,
+                  top: rect.top,
+                  width: Math.max(rect.width, 1),
+                  height: Math.max(rect.height, 1),
+                });
+              }}
+              className={
+                visible
+                  ? "w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left transition hover:border-white/22 hover:bg-white/[0.05] disabled:opacity-50"
+                  : undefined
+              }
+            >
+              <span className={visible ? "block font-medium" : undefined}>
+                {project.title}
+              </span>
+              {visible ? (
+                <span className="mt-1 block text-sm text-white/62">
+                  {project.year} / {project.cardLabel}
+                </span>
+              ) : (
+                <span>{` — ${project.year}, ${project.cardLabel}`}</span>
+              )}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }

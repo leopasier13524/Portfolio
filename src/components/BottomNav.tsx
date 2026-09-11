@@ -95,6 +95,8 @@ export function BottomNav({
   return (
     <nav
       aria-label="Primary"
+      aria-hidden={hidden || undefined}
+      {...(hidden ? { inert: true } : {})}
       className={`pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transition-all duration-500 md:bottom-8 md:w-auto ${
         hidden
           ? "pointer-events-none translate-y-8 opacity-0"
@@ -124,6 +126,7 @@ export function BottomNav({
               onPointerEnter={
                 item.id === "projects" ? onProjectsIntent : undefined
               }
+              tabIndex={hidden ? -1 : undefined}
               className={`relative z-10 min-h-11 flex-1 rounded-full px-3 py-2.5 text-[10px] uppercase tracking-[0.22em] transition-colors duration-300 sm:flex-none sm:px-5 sm:tracking-[0.34em] md:min-h-0 md:px-7 md:py-3 md:text-[11px] ${
                 isActive ? "text-black" : "text-white/85 hover:text-white"
               }`}

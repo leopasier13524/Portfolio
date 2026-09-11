@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { gsap } from "gsap";
 import type { PortfolioProject } from "@/content/portfolio";
 
@@ -30,6 +30,82 @@ export function ProjectDetailOverlay({
   const previewRef = useRef<HTMLImageElement | null>(null);
   const chromeRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  const titleId = useId();
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!project) {
+      return;
+    }
+
+    const root = rootRef.current;
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    const getFocusable = () => {
+      if (!root) {
+        return [];
+      }
+
+      return Array.from(
+        root.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((node) => !node.hasAttribute("disabled") && node.tabIndex !== -1);
+    };
+
+    const focusClose = () => {
+      closeButtonRef.current?.focus();
+    };
+
+    const focusFrame = window.requestAnimationFrame(focusClose);
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const nodes = getFocusable();
+      if (nodes.length === 0) {
+        event.preventDefault();
+        focusClose();
+        return;
+      }
+
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && (active === first || !root?.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !root?.contains(active))) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener("keydown", onKeyDown);
+      previouslyFocused?.focus();
+    };
+  }, [project]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -154,6 +230,7 @@ export function ProjectDetailOverlay({
       className="fixed inset-0 z-50 overflow-y-auto overscroll-contain text-white"
       aria-modal="true"
       role="dialog"
+      aria-labelledby={titleId}
     >
       <div
         ref={backdropRef}
@@ -194,11 +271,15 @@ export function ProjectDetailOverlay({
               <p className="text-[10px] uppercase tracking-[0.42em] text-white/60">
                 {project.year} / {project.category}
               </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:mt-3 sm:text-3xl md:text-5xl">
+              <h2
+                id={titleId}
+                className="mt-2 text-2xl font-semibold tracking-tight sm:mt-3 sm:text-3xl md:text-5xl"
+              >
                 {project.title}
               </h2>
             </div>
             <button
+              ref={closeButtonRef}
               type="button"
               onClick={onClose}
               className="min-h-11 shrink-0 rounded-full border border-white/20 bg-black/40 px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-white/85 backdrop-blur-md transition hover:border-white/45 hover:text-white md:min-h-0 md:px-5 md:py-3"

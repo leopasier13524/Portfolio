@@ -569,6 +569,7 @@ export function SpaceField({
 
     let disposed = false;
     let frame = 0;
+    let splashWaitFrame = 0;
     let timeline: gsap.core.Timeline | null = null;
     let failSafe = 0;
     let handedOff = !playIntroRef.current;
@@ -693,7 +694,7 @@ export function SpaceField({
       colorMix: 0,
     };
 
-    if (!playIntroRef.current) {
+    const jumpToHomeField = () => {
       current.set(home);
       colors.set(homeColors);
       geometry.attributes.position.needsUpdate = true;
@@ -703,7 +704,16 @@ export function SpaceField({
       state.particleSize = isMobile ? 0.19 : 0.15;
       state.colorMix = 1;
       state.dissolve = 1;
+      state.spin = 0;
+      state.spinAngle = 0;
+      material.opacity = 1;
+      material.size = state.particleSize;
       phaseRef.current = "home";
+      gsap.set(vignetteCanvas, { autoAlpha: 0 });
+    };
+
+    if (!playIntroRef.current) {
+      jumpToHomeField();
     }
 
     const mixSplash = () => {
@@ -938,9 +948,14 @@ export function SpaceField({
     };
 
     const startSplash = () => {
+      splashWaitFrame = 0;
+      if (disposed || introFinished) {
+        return;
+      }
+
       const root = splashRootRef.current;
       if (!root) {
-        requestAnimationFrame(startSplash);
+        splashWaitFrame = window.requestAnimationFrame(startSplash);
         return;
       }
 
@@ -1117,17 +1132,19 @@ export function SpaceField({
     frame = window.requestAnimationFrame(tick);
     window.addEventListener("resize", resize);
 
-    if (playIntroRef.current) {
-      requestAnimationFrame(() => requestAnimationFrame(startSplash));
-    } else {
-      gsap.set(vignetteCanvas, { autoAlpha: 0 });
-    }
-
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+
     if (reduceMotion && playIntroRef.current) {
+      jumpToHomeField();
       finishIntro();
+    } else if (playIntroRef.current) {
+      splashWaitFrame = window.requestAnimationFrame(() => {
+        splashWaitFrame = window.requestAnimationFrame(startSplash);
+      });
+    } else {
+      gsap.set(vignetteCanvas, { autoAlpha: 0 });
     }
 
     return () => {
@@ -1135,6 +1152,7 @@ export function SpaceField({
       window.clearTimeout(failSafe);
       timeline?.kill();
       window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(splashWaitFrame);
       window.removeEventListener("resize", resize);
       geometry.dispose();
       material.map?.dispose();
