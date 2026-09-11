@@ -522,6 +522,14 @@ export function SphereGallery({
     let currentViewZoom = 0;
     let hovered: CardMesh | null = null;
     let focused: CardMesh | null = null;
+    let focusTimeline: gsap.core.Timeline | null = null;
+
+    const isFocusTimelineActive = () => focusTimeline?.isActive() === true;
+
+    const stopFocusTimeline = () => {
+      focusTimeline?.kill();
+      focusTimeline = null;
+    };
 
     const cardMeshes: CardMesh[] = [];
     const cardCount = RENDER_COLS * RENDER_ROWS;
@@ -693,7 +701,7 @@ export function SphereGallery({
     };
 
     const highlight = (card: CardMesh | null) => {
-      if (focused && card) {
+      if ((isFocusTimelineActive() || activeSlugRef.current) && card) {
         return;
       }
 
@@ -750,11 +758,12 @@ export function SphereGallery({
     };
 
     const focusCard = (card: CardMesh) => {
-      if (focused || activeSlugRef.current) {
+      if (activeSlugRef.current || isFocusTimelineActive()) {
         return;
       }
 
       focused = card;
+      stopFocusTimeline();
 
       if (hovered) {
         snapCardHighlightOff(hovered);
@@ -771,14 +780,41 @@ export function SphereGallery({
       );
     };
 
-    const resetFocus = () => {
+    const resetFocus = (immediate = false) => {
+      stopFocusTimeline();
       focused = null;
+      pointerDown = false;
+      moved = false;
+
+      const finish = () => {
+        if (focused) {
+          focused = null;
+        }
+        focusTimeline = null;
+      };
+
       for (const mesh of cardMeshes) {
         gsap.killTweensOf(mesh.position);
         gsap.killTweensOf(mesh.material);
         snapCardHighlightOff(mesh);
         mesh.position.z = 0;
-        gsap.to(mesh.material, { opacity: 1, duration: 0.35 });
+      }
+
+      if (immediate || cardMeshes.length === 0) {
+        for (const mesh of cardMeshes) {
+          mesh.material.opacity = 1;
+        }
+        finish();
+        return;
+      }
+
+      const tl = gsap.timeline({
+        onComplete: finish,
+      });
+      focusTimeline = tl;
+
+      for (const mesh of cardMeshes) {
+        tl.to(mesh.material, { opacity: 1, duration: 0.35 }, 0);
       }
     };
     resetFocusRef.current = resetFocus;
@@ -797,7 +833,12 @@ export function SphereGallery({
     };
 
     const onPointerDown = (event: PointerEvent) => {
-      if (!ready || !galleryActiveRef.current || activeSlugRef.current) {
+      if (
+        !ready ||
+        !galleryActiveRef.current ||
+        activeSlugRef.current ||
+        isFocusTimelineActive()
+      ) {
         return;
       }
       pointerDown = true;
@@ -809,11 +850,6 @@ export function SphereGallery({
       tapSlop = getTapSlop(event);
       velocityPanX = 0;
       velocityPanY = 0;
-      try {
-        mount.setPointerCapture(event.pointerId);
-      } catch {
-        // Synthetic or already-captured pointers can throw; drag/tap still work.
-      }
     };
 
     const onPointerMove = (event: PointerEvent) => {
@@ -838,6 +874,11 @@ export function SphereGallery({
           targetViewZoom = 1;
           lastX = event.clientX;
           lastY = event.clientY;
+          try {
+            mount.setPointerCapture(event.pointerId);
+          } catch {
+            // Synthetic or already-captured pointers can throw; drag still works.
+          }
           return;
         }
 
@@ -854,7 +895,7 @@ export function SphereGallery({
         return;
       }
 
-      if (!focused) {
+      if (!isFocusTimelineActive() && !activeSlugRef.current) {
         raycaster.setFromCamera(pointer, camera);
         const [hit] = raycaster.intersectObjects(pickTargets, false);
         highlight(findCardMesh(hit?.object ?? null));
@@ -873,7 +914,12 @@ export function SphereGallery({
       const wasMoved = moved;
       pointerDown = false;
 
-      if (!ready || !galleryActiveRef.current || activeSlugRef.current) {
+      if (
+        !ready ||
+        !galleryActiveRef.current ||
+        activeSlugRef.current ||
+        isFocusTimelineActive()
+      ) {
         return;
       }
 
@@ -895,6 +941,10 @@ export function SphereGallery({
       if (!pointerDown) {
         highlight(null);
       }
+    };
+
+    const onLostPointerCapture = () => {
+      pointerDown = false;
     };
 
     const onContextLost = (event: Event) => {
@@ -935,7 +985,13 @@ export function SphereGallery({
         idleRenderFrame = 0;
       }
 
-      if (interactive && ready && !pointerDown && !activeSlugRef.current && !focused) {
+      if (
+        interactive &&
+        ready &&
+        !pointerDown &&
+        !activeSlugRef.current &&
+        !isFocusTimelineActive()
+      ) {
         targetPanX += velocityPanX;
         targetPanY += velocityPanY;
         velocityPanX *= 0.9;
@@ -968,7 +1024,7 @@ export function SphereGallery({
         currentViewZoom
       );
 
-      if (interactive && ready && !activeSlugRef.current && !focused) {
+      if (interactive && ready && !activeSlugRef.current && !isFocusTimelineActive()) {
         updateWallLayout();
       }
 
@@ -1078,6 +1134,7 @@ export function SphereGallery({
       mount.addEventListener("pointerup", onPointerUp);
       mount.addEventListener("pointercancel", onPointerUp);
       mount.addEventListener("pointerleave", onPointerLeave);
+      mount.addEventListener("lostpointercapture", onLostPointerCapture);
       window.addEventListener("resize", resize);
       renderer.domElement.addEventListener("webglcontextlost", onContextLost);
       startTextureLoading();
@@ -1201,9 +1258,10 @@ export function SphereGallery({
       mount.removeEventListener("pointerup", onPointerUp);
       mount.removeEventListener("pointercancel", onPointerUp);
       mount.removeEventListener("pointerleave", onPointerLeave);
+      mount.removeEventListener("lostpointercapture", onLostPointerCapture);
       window.removeEventListener("resize", resize);
       renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
-      resetFocus();
+      resetFocus(true);
       resetFocusRef.current = null;
 
       cardGeometry.dispose();
