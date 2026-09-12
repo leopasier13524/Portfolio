@@ -1,7 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { gsap } from "gsap";
 import { projects } from "@/content/portfolio";
 import { BottomNav, type AppView } from "./BottomNav";
@@ -10,6 +17,19 @@ import { HomeView } from "./HomeView";
 import { ProjectDetailOverlay, type CardScreenRect } from "./ProjectDetailOverlay";
 import { SpaceField } from "./SpaceField";
 import { SplashIntro } from "./SplashIntro";
+
+/** Hard cap so a hung splash / missing WebGL cannot block the site. */
+const INTRO_MAX_MS = 9000;
+
+function subscribeReducedMotion(onChange: () => void) {
+  const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
 const SphereGallery = dynamic(
   () => import("./SphereGallery").then((mod) => mod.SphereGallery),
@@ -29,14 +49,24 @@ function projectsLayerClass(isActive: boolean) {
 }
 
 export function PortfolioExperience() {
-  const [introDone, setIntroDone] = useState(false);
-  const [splashMounted, setSplashMounted] = useState(true);
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    () => false
+  );
+  const [introDoneState, setIntroDone] = useState(false);
+  const [splashMountedState, setSplashMounted] = useState(true);
+  const introDone = introDoneState || prefersReducedMotion;
+  const splashMounted = splashMountedState && !prefersReducedMotion;
   const [navView, setNavView] = useState<AppView>("home");
   const [contentView, setContentView] = useState<AppView>("home");
   const [galleryMounted, setGalleryMounted] = useState(false);
   const splashRootRef = useRef<HTMLDivElement | null>(null);
   const homeRootRef = useRef<HTMLDivElement | null>(null);
+  const skipIntroRef = useRef<(() => void) | null>(null);
+  const skipRequestedRef = useRef(false);
   const contentFrameRef = useRef<number | null>(null);
+  const [forceComplete, setForceComplete] = useState(false);
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   const [projectFromRect, setProjectFromRect] = useState<CardScreenRect | null>(
     null
@@ -153,6 +183,48 @@ export function PortfolioExperience() {
     setSplashMounted(false);
   }, []);
 
+  const requestSkipIntro = useCallback(() => {
+    if (skipRequestedRef.current) {
+      return;
+    }
+    skipRequestedRef.current = true;
+    // Keep splashMounted true this commit so SpaceField.skipIntroRef can run.
+    setForceComplete(true);
+  }, []);
+
+  useEffect(() => {
+    if (introDone || !splashMounted || prefersReducedMotion) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        requestSkipIntro();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    const timeout = window.setTimeout(requestSkipIntro, INTRO_MAX_MS);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.clearTimeout(timeout);
+    };
+  }, [introDone, splashMounted, prefersReducedMotion, requestSkipIntro]);
+
+  useEffect(() => {
+    if (!forceComplete) {
+      return;
+    }
+
+    skipIntroRef.current?.();
+
+    const frame = window.requestAnimationFrame(() => {
+      setIntroDone(true);
+      setSplashMounted(false);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [forceComplete]);
+
   const spaceActive = !introDone || contentView === "home";
 
   return (
@@ -168,13 +240,17 @@ export function PortfolioExperience() {
           splashRootRef={splashRootRef}
           homeRootRef={homeRootRef}
           playIntro={splashMounted}
+          forceComplete={forceComplete}
+          skipIntroRef={skipIntroRef}
           active={spaceActive}
           onHandoff={handleIntroHandoff}
           onIntroComplete={handleIntroComplete}
         />
       </div>
 
-      {splashMounted ? <SplashIntro ref={splashRootRef} /> : null}
+      {splashMounted ? (
+        <SplashIntro ref={splashRootRef} onSkip={requestSkipIntro} />
+      ) : null}
 
       <div
         className={`absolute inset-0 z-10 overflow-hidden transition-opacity duration-700 ease-in-out ${

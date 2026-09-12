@@ -1,6 +1,6 @@
 "use client";
 
-import type { RefObject } from "react";
+import type { MutableRefObject, RefObject } from "react";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { gsap } from "gsap";
@@ -11,6 +11,10 @@ type SpaceFieldProps = {
   homeRootRef: RefObject<HTMLElement | null>;
   playIntro: boolean;
   active: boolean;
+  /** Parent skip / INTRO_MAX — do not unmount splash in the same commit. */
+  forceComplete?: boolean;
+  /** Imperative skip; assigned before WebGL setup so a throw cannot leave this unset. */
+  skipIntroRef?: MutableRefObject<(() => void) | null>;
   /** Home content + nav can appear while particles finish assembling. */
   onHandoff: () => void;
   /** Splash UI can unmount; particle field is now in home drift mode. */
@@ -533,6 +537,8 @@ export function SpaceField({
   homeRootRef,
   playIntro,
   active,
+  forceComplete = false,
+  skipIntroRef,
   onHandoff,
   onIntroComplete,
 }: SpaceFieldProps) {
@@ -540,6 +546,7 @@ export function SpaceField({
   const vignetteRef = useRef<HTMLCanvasElement | null>(null);
   const activeRef = useRef(active);
   const playIntroRef = useRef(playIntro);
+  const forceCompleteRef = useRef(forceComplete);
   const onHandoffRef = useRef(onHandoff);
   const onIntroCompleteRef = useRef(onIntroComplete);
   const phaseRef = useRef<"splash" | "home">(playIntro ? "splash" : "home");
@@ -553,6 +560,10 @@ export function SpaceField({
   }, [playIntro]);
 
   useEffect(() => {
+    forceCompleteRef.current = forceComplete;
+  }, [forceComplete]);
+
+  useEffect(() => {
     onHandoffRef.current = onHandoff;
   }, [onHandoff]);
 
@@ -561,12 +572,6 @@ export function SpaceField({
   }, [onIntroComplete]);
 
   useEffect(() => {
-    const mount = mountRef.current;
-    const vignetteCanvas = vignetteRef.current;
-    if (!mount || !vignetteCanvas) {
-      return;
-    }
-
     let disposed = false;
     let frame = 0;
     let splashWaitFrame = 0;
@@ -576,8 +581,77 @@ export function SpaceField({
     let introFinished = !playIntroRef.current;
 
     const isMobile = window.innerWidth < 768;
+    const rootWaitMs = isMobile ? 7500 : 8500;
+    const timelineFailSafeMs = isMobile ? 13000 : 14500;
     const count = getCount();
     const speed = isMobile ? 0.88 : 1;
+
+    const sceneCtl: {
+      settleHome: (() => void) | null;
+    } = { settleHome: null };
+
+    const finishIntro = () => {
+      if (introFinished) {
+        return;
+      }
+      introFinished = true;
+      window.clearTimeout(failSafe);
+      failSafe = 0;
+      window.cancelAnimationFrame(splashWaitFrame);
+      splashWaitFrame = 0;
+      timeline?.kill();
+      timeline = null;
+      phaseRef.current = "home";
+      try {
+        sceneCtl.settleHome?.();
+      } catch {
+        // Scene never initialized — still yield the splash.
+      }
+      if (!handedOff) {
+        handedOff = true;
+        onHandoffRef.current();
+      }
+      onIntroCompleteRef.current();
+    };
+
+    const skipIntroNow = () => {
+      if (introFinished) {
+        return;
+      }
+      finishIntro();
+    };
+
+    if (skipIntroRef) {
+      skipIntroRef.current = skipIntroNow;
+    }
+
+    const armFailSafe = (ms: number) => {
+      if (introFinished || disposed) {
+        return;
+      }
+      window.clearTimeout(failSafe);
+      failSafe = window.setTimeout(skipIntroNow, ms);
+    };
+
+    if (forceCompleteRef.current && playIntroRef.current) {
+      skipIntroNow();
+    }
+
+    const mount = mountRef.current;
+    const vignetteCanvas = vignetteRef.current;
+    if (!mount || !vignetteCanvas) {
+      if (playIntroRef.current && !introFinished) {
+        armFailSafe(rootWaitMs);
+      }
+      return () => {
+        disposed = true;
+        window.clearTimeout(failSafe);
+        window.cancelAnimationFrame(splashWaitFrame);
+        if (skipIntroRef && skipIntroRef.current === skipIntroNow) {
+          skipIntroRef.current = null;
+        }
+      };
+    }
 
     const scene = new THREE.Scene();
     scene.fog = null;
@@ -591,12 +665,27 @@ export function SpaceField({
     );
     camera.position.set(0, 0, isMobile ? 10.5 : 9.5);
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: !isMobile,
-      alpha: true,
-      premultipliedAlpha: false,
-      powerPreference: "high-performance",
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: !isMobile,
+        alpha: true,
+        premultipliedAlpha: false,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      if (playIntroRef.current && !introFinished) {
+        skipIntroNow();
+      }
+      return () => {
+        disposed = true;
+        window.clearTimeout(failSafe);
+        window.cancelAnimationFrame(splashWaitFrame);
+        if (skipIntroRef && skipIntroRef.current === skipIntroNow) {
+          skipIntroRef.current = null;
+        }
+      };
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(
       Math.max(mount.clientWidth, 1),
@@ -699,6 +788,7 @@ export function SpaceField({
       colors.set(homeColors);
       geometry.attributes.position.needsUpdate = true;
       geometry.attributes.color.needsUpdate = true;
+      points.rotation.set(0, 0, 0);
       camera.position.z = 0;
       state.cameraZ = 0;
       state.particleSize = isMobile ? 0.19 : 0.15;
@@ -712,7 +802,9 @@ export function SpaceField({
       gsap.set(vignetteCanvas, { autoAlpha: 0 });
     };
 
-    if (!playIntroRef.current) {
+    sceneCtl.settleHome = jumpToHomeField;
+
+    if (!playIntroRef.current || introFinished) {
       jumpToHomeField();
     }
 
@@ -884,20 +976,6 @@ export function SpaceField({
       onHandoffRef.current();
     };
 
-    const finishIntro = () => {
-      if (introFinished) {
-        return;
-      }
-      introFinished = true;
-      window.clearTimeout(failSafe);
-      phaseRef.current = "home";
-      points.rotation.set(0, 0, 0);
-      camera.position.z = 0;
-      state.spin = 0;
-      state.spinAngle = 0;
-      onIntroCompleteRef.current();
-    };
-
     let portraitSamplesCache: PortraitSampleSet = {
       samples: [],
       aspect: 0.75,
@@ -955,6 +1033,8 @@ export function SpaceField({
 
       const root = splashRootRef.current;
       if (!root) {
+        // Never rAF-wait forever — skip even if the splash root never appears.
+        armFailSafe(rootWaitMs);
         splashWaitFrame = window.requestAnimationFrame(startSplash);
         return;
       }
@@ -978,7 +1058,7 @@ export function SpaceField({
       gsap.set(material, { opacity: 0 });
       gsap.set(root, { autoAlpha: 1 });
 
-      failSafe = window.setTimeout(finishIntro, isMobile ? 13000 : 14500);
+      armFailSafe(timelineFailSafeMs);
 
       // Warm portrait + layout targets early
       void prepareReverseSnap();
@@ -1136,10 +1216,14 @@ export function SpaceField({
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (reduceMotion && playIntroRef.current) {
+    if (introFinished) {
+      gsap.set(vignetteCanvas, { autoAlpha: 0 });
+    } else if (reduceMotion && playIntroRef.current) {
       jumpToHomeField();
       finishIntro();
     } else if (playIntroRef.current) {
+      // Arm before the first rAF so a missing root cannot spin forever.
+      armFailSafe(rootWaitMs);
       splashWaitFrame = window.requestAnimationFrame(() => {
         splashWaitFrame = window.requestAnimationFrame(startSplash);
       });
@@ -1154,6 +1238,9 @@ export function SpaceField({
       window.cancelAnimationFrame(frame);
       window.cancelAnimationFrame(splashWaitFrame);
       window.removeEventListener("resize", resize);
+      if (skipIntroRef && skipIntroRef.current === skipIntroNow) {
+        skipIntroRef.current = null;
+      }
       geometry.dispose();
       material.map?.dispose();
       material.dispose();
@@ -1162,7 +1249,14 @@ export function SpaceField({
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [splashRootRef, homeRootRef]);
+  }, [splashRootRef, homeRootRef, skipIntroRef]);
+
+  useEffect(() => {
+    if (!forceComplete) {
+      return;
+    }
+    skipIntroRef?.current?.();
+  }, [forceComplete, skipIntroRef]);
 
   return (
     <div className="pointer-events-none absolute inset-0 h-full w-full">
