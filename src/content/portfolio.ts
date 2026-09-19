@@ -1,3 +1,10 @@
+export type ProjectImage = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+};
+
 export type PortfolioProject = {
   slug: string;
   title: string;
@@ -9,7 +16,10 @@ export type PortfolioProject = {
   details: string[];
   accent: string;
   heroImage: string;
-  pageUrl?: string;
+  /** Transparent brand illustration shown beside the intro copy */
+  mark?: ProjectImage;
+  /** Design boards shown on the project page */
+  gallery: ProjectImage[];
   externalUrl?: string;
   ctaLabel?: string;
 };
@@ -104,8 +114,15 @@ export const projects: PortfolioProject[] = [
       "Focused on interaction clarity and stronger hierarchy so core tasks are easier to complete.",
       "Live app preview is optimized for mobile viewing, matching the intended product experience.",
     ],
-    heroImage: "/projects/mealli-2-0.png",
-    pageUrl: "https://mateomiloloza.framer.website/work/mealli-2-0",
+    heroImage: "/projects/mealli-2-0.webp",
+    gallery: [
+      {
+        src: "/projects/mealli-2-0/board-1.webp",
+        width: 1800,
+        height: 1163,
+        alt: "MealLi 2.0 onboarding, sign in and home screens in dark theme",
+      },
+    ],
     externalUrl: "https://mealli-dev-preview.figma.site/",
     ctaLabel: "Open live preview",
     accent: "#df5f38",
@@ -124,8 +141,27 @@ export const projects: PortfolioProject[] = [
       "The interface emphasizes clean navigation, clear pricing, and preference-based customization.",
       "Notification states are integrated for pickup readiness and delivery progress updates.",
     ],
-    heroImage: "/projects/mealli.png",
-    pageUrl: "https://mateomiloloza.framer.website/work/mealli",
+    heroImage: "/projects/mealli.webp",
+    mark: {
+      src: "/projects/mealli/mark.webp",
+      width: 1000,
+      height: 901,
+      alt: "MealLi shopping cart brand illustration",
+    },
+    gallery: [
+      {
+        src: "/projects/mealli/board-1.webp",
+        width: 1800,
+        height: 1163,
+        alt: "MealLi log in, home and dish detail screens",
+      },
+      {
+        src: "/projects/mealli/board-2.webp",
+        width: 1800,
+        height: 1163,
+        alt: "MealLi cart, payment and transaction history screens",
+      },
+    ],
     externalUrl:
       "https://www.figma.com/design/E9sFTEAovjTRmWiDNtGVv7/Mealli?node-id=0-1&t=QDwfXXtIuRg01azq-1",
     ctaLabel: "Open Figma project",
@@ -145,8 +181,27 @@ export const projects: PortfolioProject[] = [
       "Includes promotional and event-oriented states such as weekly offers and seasonal campaigns.",
       "Interaction and structure were aligned to stay clear across both mobile and web form factors.",
     ],
-    heroImage: "/projects/hbmp.png",
-    pageUrl: "https://mateomiloloza.framer.website/work/hbmp",
+    heroImage: "/projects/hbmp.webp",
+    mark: {
+      src: "/projects/hbmp/mark.webp",
+      width: 1000,
+      height: 760,
+      alt: "HBMP delivery boxes and laptop brand illustration",
+    },
+    gallery: [
+      {
+        src: "/projects/hbmp/board-1.webp",
+        width: 1800,
+        height: 1163,
+        alt: "HBMP web checkout and account screens",
+      },
+      {
+        src: "/projects/hbmp/board-2.webp",
+        width: 1800,
+        height: 1163,
+        alt: "HBMP mobile log in, home and product listing screens",
+      },
+    ],
     externalUrl:
       "https://www.figma.com/design/yIdJ5u7S4hlguohd4UzTNU/EcommerceShop---M?node-id=0-1&t=AvFSHk1zTDmP8R99-1",
     ctaLabel: "Open Figma project",
@@ -166,8 +221,21 @@ export const projects: PortfolioProject[] = [
       "Hotel cards and detail views surface ratings, facilities, and booking-relevant information clearly.",
       "Trip history and departure-date tracking help users stay organized after booking.",
     ],
-    heroImage: "/projects/travelli.png",
-    pageUrl: "https://mateomiloloza.framer.website/work/travelli",
+    heroImage: "/projects/travelli.webp",
+    mark: {
+      src: "/projects/travelli/mark.webp",
+      width: 1000,
+      height: 979,
+      alt: "Travelli low-poly globe with airplane brand illustration",
+    },
+    gallery: [
+      {
+        src: "/projects/travelli/board-1.webp",
+        width: 1800,
+        height: 1208,
+        alt: "Travelli destination, hotel detail and settings screens",
+      },
+    ],
     externalUrl:
       "https://www.figma.com/design/yLC0ie6l6KTu7KMz9tZ2dz/Travelli?node-id=0-1&t=4KfhkF28J2nQnuI5-1",
     ctaLabel: "Open Figma project",
@@ -187,8 +255,21 @@ export const projects: PortfolioProject[] = [
       "The concept is structured to reduce friction between browsing, choosing, and resuming content.",
       "It explores integration-ready patterns compatible with services like Netflix, Prime, Hulu, and HBO.",
     ],
-    heroImage: "/projects/stremio.png",
-    pageUrl: "https://mateomiloloza.framer.website/work/stremio",
+    heroImage: "/projects/stremio.webp",
+    mark: {
+      src: "/projects/stremio/mark.webp",
+      width: 1000,
+      height: 871,
+      alt: "Stremio cat and mouse mascot illustration",
+    },
+    gallery: [
+      {
+        src: "/projects/stremio/board-1.webp",
+        width: 1800,
+        height: 1208,
+        alt: "Stremio desktop browse, library and detail screens",
+      },
+    ],
     externalUrl:
       "https://www.figma.com/design/zGLuiAdConsTJ6ymcLpPQn/Stremio?node-id=0-1&t=sH5NRzC2HxEMPxyV-1",
     ctaLabel: "Open Figma project",
@@ -207,3 +288,75 @@ export const portfolioOwner = {
   email: "hello@mateomiloloza.com",
   location: "Split, Croatia",
 };
+
+export type MyRoadStop = {
+  id: string;
+  title: string;
+  role: string;
+  dates: string;
+  outcome: string;
+  /**
+   * Tools and stack picked up at this stop. The flight renders one logo per
+   * entry, so every name must exist in `skillIcons`.
+   */
+  skills: string[];
+};
+
+/** Locked journey stops — copy exact; date overlaps are intentional. */
+export const myRoadStops: MyRoadStop[] = [
+  {
+    id: "graduation",
+    title: "Graduation — SSK Livno",
+    role: "Web Designer specialty",
+    dates: "2023",
+    outcome: "Completed Web Designer studies at SSK Livno.",
+    skills: [
+      "HTML",
+      "CSS3",
+      "JavaScript",
+      "PHP",
+      "MySQL",
+      "Photoshop",
+      "Premiere Pro",
+      "After Effects",
+    ],
+  },
+  {
+    id: "zero-to-master",
+    title: "Zero to Master",
+    role: "UI/UX training",
+    dates: "2023",
+    outcome: "Built UI/UX craft through focused training.",
+    skills: ["Figma", "Adobe XD", "Illustrator", "Bootstrap"],
+  },
+  {
+    id: "upwork",
+    title: "Upwork",
+    role: "UI/UX Designer",
+    dates: "Sep 2022–Nov 2024",
+    outcome: "Delivered client UI/UX end-to-end as an independent designer.",
+    skills: ["Figma", "Photoshop", "WordPress", "Blender"],
+  },
+  {
+    id: "tiskara-perisa",
+    title: "Tiskara Perisa",
+    role: "Graphic Designer",
+    dates: "Jan 2023–Apr 2024",
+    outcome: "Shipped graphic design in a production team setting.",
+    skills: ["CorelDraw", "InDesign", "Illustrator", "Microsoft Office"],
+  },
+  {
+    id: "tahoma",
+    title: "Tahoma d.o.o",
+    role: "UI/UX Designer",
+    dates: "Dec 2024–Present",
+    outcome: "Designing UI/UX in product today.",
+    skills: ["Figma", "Jira", "Postman", "VSC"],
+  },
+];
+
+/** Skills along the path — only from tools/stack lists (no invented names). */
+export const myRoadPathSkills: string[] = [
+  ...softwareExperience.slice(0, 8),
+  ...languagesAndFrameworks.slice(0, 6),
+];

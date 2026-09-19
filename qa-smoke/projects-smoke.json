@@ -1,0 +1,35 @@
+{
+  "title": "Projects live smoke — Windows WIP localhost:3000",
+  "timestamp_utc": "2026-09-12T00:37:03.024Z",
+  "target": "http://127.0.0.1:3000",
+  "pass": 0,
+  "fail": 2,
+  "consoleErrors": [
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fCZpjAq8BAVojnurbEpi-' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fCZpjAq8BAVojnurbEpi-' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fCZpjAq8BAVojnurbEpi-' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fCZpjAq8BAVojnurbEpi-' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fCZpjAq8BAVojnurbEpi-' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fCZpjAq8BAVojnurbEpi-' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fCZpjAq8BAVojnurbEpi-' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/webpack-hmr?id=fCZpjAq8BAVojnurbEpi-' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE"
+  ],
+  "results": [
+    {
+      "id": "P0",
+      "severity": "blocker",
+      "title": "Default-motion Projects smoke crashed",
+      "status": "FAIL",
+      "notes": "TimeoutError: locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for getByRole('navigation', { name: 'Primary' }) to be visible\n",
+      "evidence": null
+    },
+    {
+      "id": "P6",
+      "severity": "blocker",
+      "title": "PRM never Explore (no wall control, stays Grid)",
+      "status": "FAIL",
+      "notes": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.\nCall log:\n  - waiting for getByRole('navigation', { name: 'Primary' }) to be visible\n",
+      "evidence": null
+    }
+  ]
+}

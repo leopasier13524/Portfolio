@@ -1,15 +1,22 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { gsap } from "gsap";
 import type { PortfolioProject } from "@/content/portfolio";
-import { FISHEYE_STRENGTH, FISHEYE_ZOOM, ndcToDisplayScreen } from "@/lib/fisheye";
+import {
+  FISHEYE_STRENGTH,
+  FISHEYE_ZOOM,
+  displayPointerToLinearNdc,
+  ndcToDisplayScreen,
+} from "@/lib/fisheye";
 
 type SphereGalleryProps = {
   projects: PortfolioProject[];
   activeProjectSlug: string | null;
   active?: boolean;
+  /** Force accessible list instead of WebGL wall. */
+  forceList?: boolean;
   onSelectProject: (
     project: PortfolioProject,
     rect: { left: number; top: number; width: number; height: number },
@@ -63,10 +70,10 @@ const PAN_SCALE = 0.0095;
 const SMOOTH = 0.085;
 const VIEW_ZOOM_OUT_SMOOTH = 0.08;
 const VIEW_ZOOM_IN_SMOOTH = 0.14;
-const IDLE_FISHEYE_STRENGTH = 0.32;
-const DRAG_FISHEYE_STRENGTH = 0.28;
-const IDLE_FISHEYE_ZOOM = 0.96;
-const DRAG_FISHEYE_ZOOM = 0.96;
+const IDLE_FISHEYE_STRENGTH = 0.18;
+const DRAG_FISHEYE_STRENGTH = 0.16;
+const IDLE_FISHEYE_ZOOM = 0.98;
+const DRAG_FISHEYE_ZOOM = 0.98;
 const IDLE_CAMERA_Z = 10.2;
 const IDLE_CAMERA_Z_MOBILE = 13.8;
 const DRAG_CAMERA_Z = 13.2;
@@ -76,6 +83,25 @@ const CARD_BORDER_HOVER_OPACITY = 0.72;
 const ORB_CANVAS_SIZE = 512;
 const ORB_OVERLAY_OPACITY = 0.52;
 const HOVER_BACKGROUND_OPACITY = 0.24;
+const TAP_SLOP_MOUSE = 8;
+const TAP_SLOP_TOUCH = 12;
+
+function getTapSlop(event: PointerEvent) {
+  return event.pointerType === "mouse" ? TAP_SLOP_MOUSE : TAP_SLOP_TOUCH;
+}
+
+function isWebGLAvailable() {
+  try {
+    const canvas = document.createElement("canvas");
+    return Boolean(
+      canvas.getContext("webgl2") ||
+        canvas.getContext("webgl") ||
+        canvas.getContext("experimental-webgl")
+    );
+  } catch {
+    return false;
+  }
+}
 
 function createOrbHighlightState(): OrbHighlightState {
   const canvas = document.createElement("canvas");
@@ -322,12 +348,12 @@ function createCardTexture(
   const paddingX = Math.round(28 * layoutScale);
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = `600 ${Math.round(36 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
+  ctx.font = `600 ${Math.round(42 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
   ctx.textBaseline = "middle";
   ctx.fillText(project.title, paddingX, titleY);
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
-  ctx.font = `600 ${Math.round(24 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
+  ctx.font = `600 ${Math.round(28 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
   const yearWidth = ctx.measureText(project.year).width;
   ctx.fillText(
     project.year,
@@ -336,7 +362,7 @@ function createCardTexture(
   );
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
-  ctx.font = `500 ${Math.round(20 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
+  ctx.font = `500 ${Math.round(22 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
   ctx.fillText(project.cardLabel, paddingX, labelY);
 
   const borderWidth = Math.max(2, Math.round(2 * layoutScale));
@@ -374,9 +400,11 @@ export function SphereGallery({
   projects,
   activeProjectSlug,
   active = true,
+  forceList = false,
   onSelectProject,
 }: SphereGalleryProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
+  const [webglFailed, setWebglFailed] = useState(() => !isWebGLAvailable() || forceList);
   const projectSelectRef = useRef(onSelectProject);
   const activeSlugRef = useRef(activeProjectSlug);
   const galleryActiveRef = useRef(active);
@@ -391,16 +419,33 @@ export function SphereGallery({
   }, [onSelectProject]);
 
   useEffect(() => {
+    if (forceList) {
+      setWebglFailed(true);
+    }
+  }, [forceList]);
+
+  useEffect(() => {
     activeSlugRef.current = activeProjectSlug;
   }, [activeProjectSlug]);
 
   useEffect(() => {
     galleryActiveRef.current = active;
+    if (!active) {
+      if (animationFrameRef.current !== 0) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = 0;
+      }
+      return;
+    }
+    // Resume render loop when Projects wall becomes active again.
+    if (tickRef.current && animationFrameRef.current === 0) {
+      animationFrameRef.current = window.requestAnimationFrame(tickRef.current);
+    }
   }, [active]);
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount || projects.length === 0) {
+    if (webglFailed || !mount || projects.length === 0) {
       return;
     }
 
@@ -425,11 +470,17 @@ export function SphereGallery({
     camera.position.set(0, 0, getIdleCameraZ());
     camera.lookAt(0, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: false,
-      powerPreference: "high-performance",
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      queueMicrotask(() => setWebglFailed(true));
+      return;
+    }
     const pixelRatio = getRendererPixelRatio();
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(mount.clientWidth, mount.clientHeight);
@@ -462,7 +513,8 @@ export function SphereGallery({
 
     const postScene = new THREE.Scene();
     const postCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    const postQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fisheyeMaterial);
+    const postGeometry = new THREE.PlaneGeometry(2, 2);
+    const postQuad = new THREE.Mesh(postGeometry, fisheyeMaterial);
     postScene.add(postQuad);
 
     const cardGeometry = new THREE.PlaneGeometry(CARD_WIDTH, CARD_HEIGHT);
@@ -478,6 +530,9 @@ export function SphereGallery({
     let moved = false;
     let pressX = 0;
     let pressY = 0;
+    let lastX = 0;
+    let lastY = 0;
+    let tapSlop = TAP_SLOP_MOUSE;
     let targetPanX = 0;
     let targetPanY = 0;
     let currentPanX = 0;
@@ -488,6 +543,14 @@ export function SphereGallery({
     let currentViewZoom = 0;
     let hovered: CardMesh | null = null;
     let focused: CardMesh | null = null;
+    let focusTimeline: gsap.core.Timeline | null = null;
+
+    const isFocusTimelineActive = () => focusTimeline?.isActive() === true;
+
+    const stopFocusTimeline = () => {
+      focusTimeline?.kill();
+      focusTimeline = null;
+    };
 
     const cardMeshes: CardMesh[] = [];
     const cardCount = RENDER_COLS * RENDER_ROWS;
@@ -524,7 +587,11 @@ export function SphereGallery({
 
         const globalCol = stepX + colOffset;
         const globalRow = stepY + rowOffset;
-        const projIdx = mod(globalCol + globalRow * 7, projects.length);
+        // Center row shows each project once; other cells tile for infinite explore.
+        const projIdx =
+          globalRow === 0 && Math.abs(globalCol) < projects.length
+            ? mod(globalCol + Math.floor(projects.length / 2), projects.length)
+            : mod(globalCol + globalRow * 7, projects.length);
         const project = projects[projIdx];
 
         if (mesh.userData.project.slug !== project.slug) {
@@ -573,28 +640,28 @@ export function SphereGallery({
 
       gsap.to(orbMaterial, {
         opacity: 0,
-        duration: 0.35,
-        ease: "power2.inOut",
+        duration: 0.25,
+        ease: "power3.out",
         onComplete: () => {
           clearOrbHighlight(orbHighlight);
         },
       });
       gsap.to(backgroundMaterial, {
         opacity: 0,
-        duration: 0.35,
-        ease: "power2.inOut",
+        duration: 0.25,
+        ease: "power3.out",
       });
       gsap.to(highlightEdgeMaterial, {
         opacity: CARD_BORDER_OPACITY,
-        duration: 0.35,
-        ease: "power2.inOut",
+        duration: 0.25,
+        ease: "power3.out",
       });
       gsap.to(highlightEdgeMaterial.color, {
         r: 1,
         g: 1,
         b: 1,
-        duration: 0.35,
-        ease: "power2.inOut",
+        duration: 0.25,
+        ease: "power3.out",
       });
     };
 
@@ -622,19 +689,19 @@ export function SphereGallery({
 
       gsap.to(backgroundMaterial, {
         opacity: HOVER_BACKGROUND_OPACITY,
-        duration: 0.45,
-        ease: "power2.out",
+        duration: 0.25,
+        ease: "power3.out",
       });
       gsap.to(orbMaterial, {
         opacity: ORB_OVERLAY_OPACITY,
-        duration: 0.45,
-        ease: "power2.out",
+        duration: 0.25,
+        ease: "power3.out",
       });
 
       gsap.to(highlightEdgeMaterial, {
         opacity: CARD_BORDER_HOVER_OPACITY,
-        duration: 0.55,
-        ease: "power2.out",
+        duration: 0.25,
+        ease: "power3.out",
         onComplete: () => {
           if (hovered !== card) {
             return;
@@ -653,13 +720,13 @@ export function SphereGallery({
         r: softAccent.r,
         g: softAccent.g,
         b: softAccent.b,
-        duration: 0.55,
-        ease: "power2.out",
+        duration: 0.25,
+        ease: "power3.out",
       });
     };
 
     const highlight = (card: CardMesh | null) => {
-      if (focused && card) {
+      if ((isFocusTimelineActive() || activeSlugRef.current) && card) {
         return;
       }
 
@@ -691,7 +758,13 @@ export function SphereGallery({
         const world = corner.clone();
         card.localToWorld(world);
         world.project(camera);
-        return ndcToDisplayScreen(world.x, world.y, canvasRect);
+        return ndcToDisplayScreen(
+          world.x,
+          world.y,
+          canvasRect,
+          fisheyeMaterial.uniforms.strength.value,
+          fisheyeMaterial.uniforms.zoom.value
+        );
       });
 
       const xs = corners.map((c) => c.x);
@@ -709,20 +782,13 @@ export function SphereGallery({
       };
     };
 
-    const getCardPreview = (card: CardMesh) => {
-      const map = card.material.map;
-      if (map instanceof THREE.CanvasTexture && map.image instanceof HTMLCanvasElement) {
-        return map.image.toDataURL("image/png");
-      }
-      return card.userData.project.heroImage;
-    };
-
     const focusCard = (card: CardMesh) => {
-      if (focused || activeSlugRef.current) {
+      if (activeSlugRef.current || isFocusTimelineActive()) {
         return;
       }
 
       focused = card;
+      stopFocusTimeline();
 
       if (hovered) {
         snapCardHighlightOff(hovered);
@@ -730,18 +796,39 @@ export function SphereGallery({
       }
 
       const rect = getCardScreenRect(card);
-      const previewSrc = getCardPreview(card);
-
-      projectSelectRef.current(card.userData.project, rect, previewSrc);
+      // Reuse the already-decoded hero asset — never encode the 2400px card
+      // canvas on the main thread during tap.
+      projectSelectRef.current(
+        card.userData.project,
+        rect,
+        card.userData.project.heroImage
+      );
     };
 
-    const resetFocus = () => {
+    const resetFocus = (immediate = false) => {
+      // Clear the gate immediately so the wall is interactive as soon as
+      // the overlay closes — do not keep isFocusTimelineActive() true
+      // for the ~0.35s opacity restore.
+      stopFocusTimeline();
       focused = null;
+      pointerDown = false;
+      moved = false;
+
       for (const mesh of cardMeshes) {
         gsap.killTweensOf(mesh.position);
         gsap.killTweensOf(mesh.material);
         snapCardHighlightOff(mesh);
         mesh.position.z = 0;
+      }
+
+      if (immediate || cardMeshes.length === 0) {
+        for (const mesh of cardMeshes) {
+          mesh.material.opacity = 1;
+        }
+        return;
+      }
+
+      for (const mesh of cardMeshes) {
         gsap.to(mesh.material, { opacity: 1, duration: 0.35 });
       }
     };
@@ -749,23 +836,35 @@ export function SphereGallery({
 
     const updatePointer = (clientX: number, clientY: number) => {
       const rect = renderer.domElement.getBoundingClientRect();
-      pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      const ndc = displayPointerToLinearNdc(
+        clientX,
+        clientY,
+        rect,
+        fisheyeMaterial.uniforms.strength.value,
+        fisheyeMaterial.uniforms.zoom.value
+      );
+      pointer.x = ndc.x;
+      pointer.y = ndc.y;
     };
 
     const onPointerDown = (event: PointerEvent) => {
-      if (!ready || !galleryActiveRef.current || activeSlugRef.current) {
+      if (
+        !ready ||
+        !galleryActiveRef.current ||
+        activeSlugRef.current ||
+        isFocusTimelineActive()
+      ) {
         return;
       }
       pointerDown = true;
       moved = false;
       pressX = event.clientX;
       pressY = event.clientY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      tapSlop = getTapSlop(event);
       velocityPanX = 0;
       velocityPanY = 0;
-      targetViewZoom = 1;
-      highlight(null);
-      mount.setPointerCapture(event.pointerId);
     };
 
     const onPointerMove = (event: PointerEvent) => {
@@ -780,25 +879,38 @@ export function SphereGallery({
           return;
         }
 
-        const dx = event.clientX - pressX;
-        const dy = event.clientY - pressY;
-
-        if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+        if (!moved) {
+          const dist = Math.hypot(event.clientX - pressX, event.clientY - pressY);
+          if (dist <= tapSlop) {
+            return;
+          }
           moved = true;
           highlight(null);
+          targetViewZoom = 1;
+          lastX = event.clientX;
+          lastY = event.clientY;
+          try {
+            mount.setPointerCapture(event.pointerId);
+          } catch {
+            // Synthetic or already-captured pointers can throw; drag still works.
+          }
+          return;
         }
+
+        const dx = event.clientX - lastX;
+        const dy = event.clientY - lastY;
 
         targetPanX -= dx * PAN_SCALE;
         targetPanY -= dy * PAN_SCALE;
         velocityPanX = -dx * PAN_SCALE;
         velocityPanY = -dy * PAN_SCALE;
 
-        pressX = event.clientX;
-        pressY = event.clientY;
+        lastX = event.clientX;
+        lastY = event.clientY;
         return;
       }
 
-      if (!focused) {
+      if (!isFocusTimelineActive() && !activeSlugRef.current) {
         raycaster.setFromCamera(pointer, camera);
         const [hit] = raycaster.intersectObjects(pickTargets, false);
         highlight(findCardMesh(hit?.object ?? null));
@@ -807,13 +919,22 @@ export function SphereGallery({
 
     const onPointerUp = (event: PointerEvent) => {
       if (pointerDown) {
-        mount.releasePointerCapture(event.pointerId);
+        try {
+          mount.releasePointerCapture(event.pointerId);
+        } catch {
+          // Ignore if capture was never set.
+        }
       }
 
       const wasMoved = moved;
       pointerDown = false;
 
-      if (!ready || !galleryActiveRef.current || activeSlugRef.current) {
+      if (
+        !ready ||
+        !galleryActiveRef.current ||
+        activeSlugRef.current ||
+        isFocusTimelineActive()
+      ) {
         return;
       }
 
@@ -837,6 +958,15 @@ export function SphereGallery({
       }
     };
 
+    const onLostPointerCapture = () => {
+      pointerDown = false;
+    };
+
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+      setWebglFailed(true);
+    };
+
     const resize = () => {
       const width = Math.max(mount.clientWidth, 1);
       const height = Math.max(mount.clientHeight, 1);
@@ -856,21 +986,22 @@ export function SphereGallery({
         return;
       }
 
+      // Fully pause when Projects wall is inactive (no throttled idle renders).
+      if (!galleryActiveRef.current) {
+        animationFrame = 0;
+        animationFrameRef.current = 0;
+        return;
+      }
+
       animationFrame = window.requestAnimationFrame(tick);
       animationFrameRef.current = animationFrame;
 
-      const interactive = galleryActiveRef.current;
-
-      if (!interactive) {
-        idleRenderFrame += 1;
-        if (idleRenderFrame % 3 !== 0) {
-          return;
-        }
-      } else {
-        idleRenderFrame = 0;
-      }
-
-      if (interactive && ready && !pointerDown && !activeSlugRef.current && !focused) {
+      if (
+        ready &&
+        !pointerDown &&
+        !activeSlugRef.current &&
+        !isFocusTimelineActive()
+      ) {
         targetPanX += velocityPanX;
         targetPanY += velocityPanY;
         velocityPanX *= 0.9;
@@ -880,7 +1011,7 @@ export function SphereGallery({
       currentPanX = THREE.MathUtils.lerp(currentPanX, targetPanX, SMOOTH);
       currentPanY = THREE.MathUtils.lerp(currentPanY, targetPanY, SMOOTH);
 
-      targetViewZoom = interactive && pointerDown ? 1 : 0;
+      targetViewZoom = pointerDown ? 1 : 0;
       currentViewZoom = THREE.MathUtils.lerp(
         currentViewZoom,
         targetViewZoom,
@@ -903,11 +1034,11 @@ export function SphereGallery({
         currentViewZoom
       );
 
-      if (interactive && ready && !activeSlugRef.current && !focused) {
+      if (ready && !activeSlugRef.current && !isFocusTimelineActive()) {
         updateWallLayout();
       }
 
-      if (interactive && hovered?.userData.orbHighlight.active) {
+      if (hovered?.userData.orbHighlight.active) {
         drawOrbHighlight(
           hovered.userData.orbHighlight,
           new THREE.Color(hovered.userData.project.accent)
@@ -932,7 +1063,6 @@ export function SphereGallery({
     const pendingTextureJobs: PendingTextureJob[] = [];
     let textureBuildFrame = 0;
     let meshBuildFrame = 0;
-    let idleRenderFrame = 0;
 
     const applyCardTexture = (index: number, cardTexture: THREE.CanvasTexture) => {
       cardTextures[index] = cardTexture;
@@ -1013,7 +1143,9 @@ export function SphereGallery({
       mount.addEventListener("pointerup", onPointerUp);
       mount.addEventListener("pointercancel", onPointerUp);
       mount.addEventListener("pointerleave", onPointerLeave);
+      mount.addEventListener("lostpointercapture", onLostPointerCapture);
       window.addEventListener("resize", resize);
+      renderer.domElement.addEventListener("webglcontextlost", onContextLost);
       startTextureLoading();
       tick();
     };
@@ -1129,18 +1261,24 @@ export function SphereGallery({
       ready = false;
       tickRef.current = null;
       window.cancelAnimationFrame(animationFrame);
+      if (animationFrameRef.current !== 0) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
       animationFrameRef.current = 0;
       mount.removeEventListener("pointerdown", onPointerDown);
       mount.removeEventListener("pointermove", onPointerMove);
       mount.removeEventListener("pointerup", onPointerUp);
       mount.removeEventListener("pointercancel", onPointerUp);
       mount.removeEventListener("pointerleave", onPointerLeave);
+      mount.removeEventListener("lostpointercapture", onLostPointerCapture);
       window.removeEventListener("resize", resize);
-      resetFocus();
+      renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
+      resetFocus(true);
       resetFocusRef.current = null;
 
       cardGeometry.dispose();
       highlightGeometry.dispose();
+      postGeometry.dispose();
       renderTarget.dispose();
       placeholderTexture.dispose();
 
@@ -1160,7 +1298,7 @@ export function SphereGallery({
       scene.clear();
       clearMount(mount);
     };
-  }, [projects]);
+  }, [projects, webglFailed]);
 
   useEffect(() => {
     if (activeProjectSlug === null) {
@@ -1168,18 +1306,102 @@ export function SphereGallery({
     }
   }, [activeProjectSlug]);
 
+  const openProjectFromList = (
+    project: PortfolioProject,
+    rect: { left: number; top: number; width: number; height: number }
+  ) => {
+    onSelectProject(project, rect, project.heroImage);
+  };
+
   return (
     <div
       className={`relative z-0 h-[100dvh] w-full overflow-hidden bg-black ${
         activeProjectSlug ? "pointer-events-none" : ""
       }`}
     >
+      <ProjectAccessList
+        projects={projects}
+        visible={webglFailed}
+        available={active && !activeProjectSlug}
+        onSelect={openProjectFromList}
+      />
       <div
         ref={mountRef}
-        className="absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing"
+        className={`absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing ${
+          webglFailed ? "hidden" : ""
+        }`}
         style={{ touchAction: "none" }}
-        aria-label="Interactive project wall gallery"
+        aria-hidden={!webglFailed}
       />
     </div>
+  );
+}
+
+function ProjectAccessList({
+  projects,
+  visible,
+  available,
+  onSelect,
+}: {
+  projects: PortfolioProject[];
+  visible: boolean;
+  available: boolean;
+  onSelect: (
+    project: PortfolioProject,
+    rect: { left: number; top: number; width: number; height: number }
+  ) => void;
+}) {
+  return (
+    <nav
+      aria-label="Projects"
+      aria-hidden={!available || undefined}
+      {...(!available ? { inert: true } : {})}
+      className={
+        visible
+          ? "absolute inset-0 z-10 overflow-y-auto overscroll-y-contain px-4 pb-[calc(8.5rem+env(safe-area-inset-bottom))] pt-[max(3.5rem,calc(2rem+env(safe-area-inset-top)))] md:px-8 md:pb-40"
+          : "sr-only"
+      }
+    >
+      {visible ? (
+        <p className="mb-6 text-[10px] uppercase tracking-[0.42em] text-white/65">
+          Projects
+        </p>
+      ) : null}
+      <ul className={visible ? "mx-auto flex max-w-3xl flex-col gap-3" : undefined}>
+        {projects.map((project) => (
+          <li key={project.slug}>
+            <button
+              type="button"
+              disabled={!available}
+              onClick={(event) => {
+                const rect = event.currentTarget.getBoundingClientRect();
+                onSelect(project, {
+                  left: rect.left,
+                  top: rect.top,
+                  width: Math.max(rect.width, 1),
+                  height: Math.max(rect.height, 1),
+                });
+              }}
+              className={
+                visible
+                  ? "w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left transition hover:border-white/22 hover:bg-white/[0.05] disabled:opacity-50"
+                  : undefined
+              }
+            >
+              <span className={visible ? "block font-medium" : undefined}>
+                {project.title}
+              </span>
+              {visible ? (
+                <span className="mt-1 block text-sm text-white/62">
+                  {project.year} / {project.cardLabel}
+                </span>
+              ) : (
+                <span>{` — ${project.year}, ${project.cardLabel}`}</span>
+              )}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }

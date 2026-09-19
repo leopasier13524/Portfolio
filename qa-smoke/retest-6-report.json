@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "id": 1,
+      "title": "No SpaceField overlay after nav",
+      "status": "PASS",
+      "notes": "navAt=5504ms; no space wraps; splashNames=0"
+    },
+    {
+      "id": 2,
+      "title": "No dual WebGL on early Projects",
+      "status": "PASS",
+      "notes": "visibleCanvases=1"
+    },
+    {
+      "id": 3,
+      "title": "Splash does not block nav after intro",
+      "status": "PASS",
+      "notes": "Projects click at handoff worked; splash=null names=0"
+    },
+    {
+      "id": 4,
+      "title": "ProjectsViewToggle not tabbable when hidden",
+      "status": "PASS",
+      "notes": "{\"opacity\":\"0\",\"inert\":true,\"ariaHidden\":true,\"btns\":[{\"label\":\"Wall view\",\"tabIndex\":-1},{\"label\":\"List view\",\"tabIndex\":-1}]}"
+    },
+    {
+      "id": 5,
+      "title": "Overlay Close focus waits until visible",
+      "status": "PASS",
+      "notes": "no focus while invisible; laterFocused=false; first={\"found\":true,\"closeOpacity\":0,\"rootOpacity\":1,\"focused\":false}"
+    },
+    {
+      "id": 6,
+      "title": "Wall interactive right after overlay close",
+      "status": "PASS",
+      "notes": "{\"ms\":2465,\"dragDiffImmediate\":63361,\"reopenImmediate\":false,\"reopenAfter250\":false}"
+    }
+  ],
+  "atNavElapsed": 5504,
+  "r6": {
+    "ms": 2465,
+    "dragDiffImmediate": 63361,
+    "reopenImmediate": false,
+    "reopenAfter250": false
+  },
+  "consoleErrors": []
+}

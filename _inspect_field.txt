@@ -1,0 +1,177 @@
+"use client";
+
+/**
+ * AC Home Field SoT v1 — SVG only, no WebGL.
+ * Visible on first paint (no opacity-0). Motion is additive.
+ * Nodes stay out of portrait + primary-copy safe zones.
+ */
+const NODES: { x: number; y: number; glyph?: "frame" | "pen" | "tag" | "brace" | "diamond" }[] = [
+  { x: 6, y: 5, glyph: "diamond" },
+  { x: 22, y: 3.5 },
+  { x: 48, y: 4.5, glyph: "tag" },
+  { x: 72, y: 5 },
+  { x: 94, y: 7, glyph: "frame" },
+  { x: 97, y: 18 },
+  { x: 98, y: 66, glyph: "brace" },
+  { x: 93, y: 78 },
+  { x: 78, y: 88, glyph: "pen" },
+  { x: 54, y: 93 },
+  { x: 32, y: 91 },
+  { x: 10, y: 86, glyph: "diamond" },
+  { x: 3, y: 68 },
+  { x: 2.5, y: 42 },
+  { x: 3.5, y: 18, glyph: "tag" },
+  { x: 41, y: 80 },
+  { x: 44, y: 90 },
+  { x: 86, y: 70 },
+  { x: 16, y: 78 },
+  { x: 64, y: 84, glyph: "frame" },
+];
+
+const EDGES: [number, number][] = [
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [4, 5],
+  [5, 6],
+  [6, 7],
+  [7, 8],
+  [8, 9],
+  [9, 10],
+  [10, 11],
+  [11, 12],
+  [12, 13],
+  [13, 14],
+  [14, 0],
+  [1, 14],
+  [11, 18],
+  [18, 15],
+  [15, 16],
+  [16, 9],
+  [7, 17],
+  [17, 19],
+  [19, 8],
+  [6, 17],
+  [12, 18],
+];
+
+function Glyph({
+  type,
+  x,
+  y,
+}: {
+  type: NonNullable<(typeof NODES)[number]["glyph"]>;
+  x: number;
+  y: number;
+}) {
+  const s = 1.6;
+  switch (type) {
+    case "frame":
+      return (
+        <rect
+          x={x - s}
+          y={y - s * 0.7}
+          width={s * 2}
+          height={s * 1.4}
+          rx={0.15}
+          fill="none"
+          stroke="rgba(255,255,255,0.28)"
+          strokeWidth={0.12}
+        />
+      );
+    case "pen":
+      return (
+        <path
+          d={`M ${x - s} ${y + s * 0.6} L ${x - 0.2} ${y - s} L ${x + 0.35} ${y - s * 0.65} L ${x - s + 0.55} ${y + s * 0.85} Z`}
+          fill="none"
+          stroke="rgba(255,255,255,0.28)"
+          strokeWidth={0.12}
+        />
+      );
+    case "tag":
+      return (
+        <text
+          x={x}
+          y={y}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fill="rgba(255,255,255,0.28)"
+          fontSize="1.35"
+          fontFamily="ui-monospace, monospace"
+        >
+          {"</>"}
+        </text>
+      );
+    case "brace":
+      return (
+        <text
+          x={x}
+          y={y}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fill="rgba(255,255,255,0.28)"
+          fontSize="1.5"
+          fontFamily="ui-monospace, monospace"
+        >
+          {"{}"}
+        </text>
+      );
+    case "diamond":
+      return (
+        <path
+          d={`M ${x} ${y - s} L ${x + s * 0.7} ${y} L ${x} ${y + s} L ${x - s * 0.7} ${y} Z`}
+          fill="none"
+          stroke="rgba(255,255,255,0.28)"
+          strokeWidth={0.12}
+        />
+      );
+    default:
+      return null;
+  }
+}
+
+export function AcHomeField() {
+  return (
+    <div
+      className="ac-home-field pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      aria-hidden
+    >
+      <div className="ac-home-field__glow absolute inset-0" />
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+      >
+        {EDGES.map(([a, b], i) => (
+          <line
+            key={`e-${i}`}
+            className="ac-home-field__edge"
+            x1={NODES[a].x}
+            y1={NODES[a].y}
+            x2={NODES[b].x}
+            y2={NODES[b].y}
+            stroke="rgba(255,255,255,0.16)"
+            strokeWidth={0.08}
+            style={{ animationDelay: `${i * 28}ms` }}
+          />
+        ))}
+        {NODES.map((node, i) => (
+          <g
+            key={`n-${i}`}
+            className="ac-home-field__node"
+            style={{ animationDelay: `${80 + i * 36}ms` }}
+          >
+            <circle
+              cx={node.x}
+              cy={node.y}
+              r={0.38}
+              fill="rgba(255,255,255,0.34)"
+            />
+            {node.glyph ? <Glyph type={node.glyph} x={node.x} y={node.y} /> : null}
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}

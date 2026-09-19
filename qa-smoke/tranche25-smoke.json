@@ -1,0 +1,58 @@
+{
+  "title": "Tranche 2–5 smoke — Windows WIP",
+  "timestamp_utc": "2026-09-12T02:14:37.821Z",
+  "target": "http://127.0.0.1:3000",
+  "overall": "FAIL (blockers)",
+  "pass": 4,
+  "fail": 1,
+  "blockerFails": [
+    "T5 Overlay gallery is smaller 2-col side-by-side"
+  ],
+  "results": [
+    {
+      "id": "T3",
+      "gate": "About",
+      "severity": "blocker",
+      "title": "About below portrait; Split, Croatia under UI/UX headline",
+      "status": "PASS",
+      "detail": "{\"aboutText\":\"About\",\"locText\":\"Split, Croatia\",\"headlineText\":\"UI/UX Designer\",\"aboutBelowPortrait\":true,\"locBelowHeadline\":true,\"locNotUnderPortrait\":true,\"gaps\":{\"aboutTop\":794,\"portraitBottom\":746,\"locTop\":464,\"headlineBottom\":456}}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\t25-03-home.png"
+    },
+    {
+      "id": "T2",
+      "gate": "Stutter",
+      "severity": "blocker",
+      "title": "Home text does not stutter from Projects/Contact",
+      "status": "PASS",
+      "detail": "minOpacity=1",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\t25-02-home-return.png"
+    },
+    {
+      "id": "T4",
+      "gate": "Explore",
+      "severity": "blocker",
+      "title": "Explore first+default; Grid last; active-only labels",
+      "status": "PASS",
+      "detail": "{\"order\":[\"Explore\",\"List\",\"Grid\"],\"toggle\":[{\"label\":\"Explore view\",\"pressed\":true,\"text\":\"Explore\",\"hasText\":true},{\"label\":\"List view\",\"pressed\":false,\"text\":\"\",\"hasText\":false},{\"label\":\"Grid view\",\"pressed\":false,\"text\":\"\",\"hasText\":false}]}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\t25-04-projects.png"
+    },
+    {
+      "id": "T4b",
+      "gate": "Explore",
+      "severity": "major",
+      "title": "Only Grid label shows when Grid is active",
+      "status": "PASS",
+      "detail": "[{\"label\":\"Explore view\",\"pressed\":false,\"hasText\":false},{\"label\":\"List view\",\"pressed\":false,\"hasText\":false},{\"label\":\"Grid view\",\"pressed\":true,\"hasText\":true}]",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\t25-04b-grid-label.png"
+    },
+    {
+      "id": "T5",
+      "gate": "Overlay",
+      "severity": "blocker",
+      "title": "Overlay gallery is smaller 2-col side-by-side",
+      "status": "FAIL",
+      "detail": "{\"count\":1,\"boxes\":[{\"w\":654,\"h\":424,\"x\":58,\"y\":1521}],\"sideBySide\":false,\"maxW\":654,\"vw\":1440,\"small\":true}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\t25-05-overlay-gallery.png"
+    }
+  ]
+}

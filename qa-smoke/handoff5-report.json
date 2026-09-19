@@ -1,0 +1,83 @@
+{
+  "dumpSample": [
+    {
+      "tag": "BUTTON",
+      "text": "MealLi 2.0 — 2025, Food ordering app",
+      "disabled": true,
+      "pe": "none",
+      "opacity": "1",
+      "w": 279,
+      "h": 24,
+      "inert": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "MealLi — 2024, Food ordering app",
+      "disabled": true,
+      "pe": "none",
+      "opacity": "1",
+      "w": 251,
+      "h": 24,
+      "inert": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "MealLi 2.0Food ordering appFood ordering app",
+      "disabled": false,
+      "pe": "auto",
+      "opacity": "1",
+      "w": 1072,
+      "h": 132,
+      "inert": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "MealLiFood ordering appFood ordering app",
+      "disabled": false,
+      "pe": "auto",
+      "opacity": "1",
+      "w": 1072,
+      "h": 132,
+      "inert": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Wall",
+      "disabled": false,
+      "pe": "auto",
+      "opacity": "1",
+      "w": 106,
+      "h": 40,
+      "inert": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "List",
+      "disabled": false,
+      "pe": "auto",
+      "opacity": "1",
+      "w": 95,
+      "h": 40,
+      "inert": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Projects",
+      "disabled": false,
+      "pe": "auto",
+      "opacity": "1",
+      "w": 181,
+      "h": 48,
+      "inert": false
+    }
+  ],
+  "clicked": {
+    "ok": true,
+    "tag": "BUTTON",
+    "disabled": true,
+    "text": "MealLi 2.0 — 2025, Food ordering app"
+  },
+  "focusedWhileInvisible": false,
+  "samples": [],
+  "m6": null
+}

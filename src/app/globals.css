@@ -68,6 +68,19 @@ button {
   color: #fff;
 }
 
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 @keyframes portrait-drift {
   from {
     transform: scale(1) translate3d(0, 0, 0);
@@ -94,5 +107,70 @@ button {
   .portrait-mark__image--motion {
     animation: none;
     transform: none;
+  }
+
+  /* Grid/Home stay static — cinematic motion is Explore-only. */
+  [data-grid-thumb] img,
+  [data-grid-thumb] span {
+    transform: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.ac-home-field__glow {
+  background: radial-gradient(80% 70% at 88% 18%, rgba(255,255,255,0.07), transparent 55%),
+    radial-gradient(70% 60% at 8% 88%, rgba(255,255,255,0.05), transparent 50%);
+}
+
+/* Keep the lattice strong at the edges and quiet behind the copy column so the
+   animated field never competes with type. */
+.ac-home-field {
+  -webkit-mask-image: radial-gradient(
+    118% 88% at 50% 44%,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.42) 34%,
+    rgba(0, 0, 0, 0.76) 62%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    118% 88% at 50% 44%,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.42) 34%,
+    rgba(0, 0, 0, 0.76) 62%,
+    #000 100%
+  );
+}
+
+@media (max-width: 767px) {
+  /* Narrow screens are nearly all "centre", so keep more of the lattice alive
+     than the desktop mask allows. */
+  .ac-home-field {
+    -webkit-mask-image: radial-gradient(
+      100% 62% at 50% 34%,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.5) 42%,
+      rgba(0, 0, 0, 0.82) 72%,
+      #000 100%
+    );
+    mask-image: radial-gradient(
+      100% 62% at 50% 34%,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.5) 42%,
+      rgba(0, 0, 0, 0.82) 72%,
+      #000 100%
+    );
+  }
+
+  .ac-home-field__glow {
+    background: radial-gradient(55% 40% at 8% 8%, rgba(255,255,255,0.05), transparent 55%),
+      radial-gradient(50% 35% at 92% 90%, rgba(255,255,255,0.04), transparent 50%);
   }
 }

@@ -1,0 +1,122 @@
+{
+  "title": "My Road smoke — Windows WIP localhost:3000",
+  "timestamp_utc": "2026-09-19T22:53:08.306Z",
+  "overall": "CLEAR",
+  "pass": 14,
+  "fail": 0,
+  "blockerFails": [],
+  "results": [
+    {
+      "id": "R1",
+      "severity": "blocker",
+      "title": "Home CTA My Road → journey (not Projects)",
+      "status": "PASS",
+      "detail": "{\"beforeNav\":null,\"afterOpen\":{\"dialog\":true,\"dialogVisible\":true,\"projectsCurrent\":null,\"projectsToggleVisible\":false}}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-01-open.png"
+    },
+    {
+      "id": "R2",
+      "severity": "blocker",
+      "title": "Cards-first; five locked stops with exact meta",
+      "status": "PASS",
+      "detail": "5 cards, meta match, readable op>=0.5",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-02-cards.png"
+    },
+    {
+      "id": "R2b",
+      "severity": "major",
+      "title": "Cards readable without waiting for plane flight",
+      "status": "PASS",
+      "detail": "after 2s stillReadable=true",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-02b-still.png"
+    },
+    {
+      "id": "R6",
+      "severity": "major",
+      "title": "Path skills only from softwareExperience + languagesAndFrameworks",
+      "status": "PASS",
+      "detail": "{\"pathSkills\":[\"Figma\",\"Photoshop\",\"After Effects\",\"CorelDraw\",\"Blender\",\"Postman\",\"Jira\"],\"allFromAllowlist\":true}",
+      "evidence": null
+    },
+    {
+      "id": "R5",
+      "severity": "major",
+      "title": "Plane/path column PE none (does not steal clicks)",
+      "status": "PASS",
+      "detail": "[{\"pe\":\"none\",\"className\":\"absolute inset-0 h-full w-full opacity-[0.35]\"},{\"pe\":\"none\",\"className\":\"pointer-events-none absolute inset-0 h-full w-full overflow-visible text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]\"},{\"pe\":\"none\",\"className\":\"h-full w-full\"},{\"pe\":\"none\",\"className\":\"h-full w-full\"},{\"pe\":\"none\",\"className\":\"h-full w-full\"},{\"pe\":\"none\",\"className\":\"h-full w-full\"},{\"pe\":\"none\",\"className\":\"h-full w-full\"},{\"pe\":\"none\",\"className\":\"h-full w-full\"},{\"pe\":\"none\",\"className\":\"h-full w-full\"}]",
+      "evidence": null
+    },
+    {
+      "id": "R3a",
+      "severity": "blocker",
+      "title": "Skip always available on My Road",
+      "status": "PASS",
+      "detail": "visible=true",
+      "evidence": null
+    },
+    {
+      "id": "R3b",
+      "severity": "blocker",
+      "title": "Skip jumps to end + shows scrub controls",
+      "status": "PASS",
+      "detail": "{\"scrub\":true,\"lastActive\":false,\"contact\":true,\"activeCount\":1}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-03-skip.png"
+    },
+    {
+      "id": "R3c",
+      "severity": "blocker",
+      "title": "Final Contact CTA exits to Contact",
+      "status": "PASS",
+      "detail": "landedContact=true",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-03c-contact.png"
+    },
+    {
+      "id": "R3d",
+      "severity": "blocker",
+      "title": "Back to Home exits journey",
+      "status": "PASS",
+      "detail": "closed=true",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-04-back.png"
+    },
+    {
+      "id": "R3e",
+      "severity": "blocker",
+      "title": "Escape exits journey",
+      "status": "PASS",
+      "detail": "closed=true",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-05-esc.png"
+    },
+    {
+      "id": "R3f",
+      "severity": "blocker",
+      "title": "Bottom nav exits journey",
+      "status": "PASS",
+      "detail": "{\"navExit\":{\"coveredBy\":\"DIV.mt-5\",\"covered\":true},\"afterNav\":{\"roadGone\":true,\"projectsCurrent\":\"page\"}}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-06-nav.png"
+    },
+    {
+      "id": "R4",
+      "severity": "blocker",
+      "title": "PRM: scrub/jump present, no auto-flight dependency",
+      "status": "PASS",
+      "detail": "{\"scrub\":true,\"jumpCount\":5,\"cards\":5}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-07-prm.png"
+    },
+    {
+      "id": "R4b",
+      "severity": "major",
+      "title": "PRM jump button moves to stop 3 (Upwork)",
+      "status": "PASS",
+      "detail": "{\"activeIndex\":2,\"title\":\"Upwork\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-07b-jump.png"
+    },
+    {
+      "id": "R4c",
+      "severity": "major",
+      "title": "PRM scrub jumps to last stop",
+      "status": "PASS",
+      "detail": "{\"activeIndex\":4,\"title\":\"Tahoma d.o.o\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-07c-scrub.png"
+    }
+  ]
+}

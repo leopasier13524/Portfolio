@@ -1,0 +1,25 @@
+{
+  "m4": {
+    "found": true,
+    "opacity": "0",
+    "pe": "none",
+    "inert": true,
+    "ariaHidden": true,
+    "btns": [
+      {
+        "label": "Wall view",
+        "tabIndex": -1
+      },
+      {
+        "label": "List view",
+        "tabIndex": -1
+      }
+    ]
+  },
+  "opened": "Emailhello@mateomiloloza.com",
+  "closeImmediate": {
+    "found": false
+  },
+  "closeLater": null,
+  "m6": null
+}

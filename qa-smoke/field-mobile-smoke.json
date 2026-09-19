@@ -1,0 +1,66 @@
+{
+  "title": "Field mobile mask smoke",
+  "timestamp_utc": "2026-09-19T22:57:54.832Z",
+  "overall": "CLEAR",
+  "pass": 7,
+  "fail": 0,
+  "blockerFails": [],
+  "results": [
+    {
+      "id": "M1",
+      "severity": "blocker",
+      "title": "Mobile uses gutter graph + content mask",
+      "status": "PASS",
+      "detail": "{\"graphOk\":true,\"maskOk\":true,\"desktopDisplay\":\"none\",\"mobileDisplay\":\"inline\",\"maskImage\":\"linear-gradient(to right, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 10%, rgba(0, 0, 0, 0) 18\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\field-mobile-home.png"
+    },
+    {
+      "id": "M2",
+      "severity": "blocker",
+      "title": "Mobile: no dense nodes behind portrait/copy",
+      "status": "PASS",
+      "detail": "{\"visibleNodes\":12,\"inPortrait\":0,\"inCopy\":0}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\field-mobile-home.png"
+    },
+    {
+      "id": "M3",
+      "severity": "blocker",
+      "title": "Type never opacity-gated (mobile)",
+      "status": "PASS",
+      "detail": "{\"h1\":\"Hi! I'm Mateo Miloloza\",\"h1Op\":\"1\",\"homeItemMinOp\":1}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\field-mobile-home.png"
+    },
+    {
+      "id": "D1",
+      "severity": "blocker",
+      "title": "Desktop Field still present (perimeter graph)",
+      "status": "PASS",
+      "detail": "{\"visibleNodes\":20,\"desktopDisplay\":\"inline\",\"mobileDisplay\":\"none\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\field-desktop-home.png"
+    },
+    {
+      "id": "D2",
+      "severity": "blocker",
+      "title": "Desktop nodes clear of portrait/copy",
+      "status": "PASS",
+      "detail": "{\"inPortrait\":0,\"inCopy\":0}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\field-desktop-home.png"
+    },
+    {
+      "id": "D3",
+      "severity": "blocker",
+      "title": "Desktop type solid / contrast held",
+      "status": "PASS",
+      "detail": "{\"h1\":\"Hi! I'm Mateo Miloloza\",\"h1Op\":\"1\",\"h1Color\":\"rgb(255, 255, 255)\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\field-desktop-home.png"
+    },
+    {
+      "id": "D4",
+      "severity": "major",
+      "title": "PRM Field still static graph",
+      "status": "PASS",
+      "detail": "{\"field\":true,\"lines\":37,\"staticGraph\":true}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\field-desktop-prm.png"
+    }
+  ]
+}

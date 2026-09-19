@@ -50,7 +50,7 @@ export function ContactView({ active = true }: { active?: boolean }) {
       >
         <p
           data-contact-item
-          className="text-[10px] uppercase tracking-[0.42em] text-white/45 opacity-0"
+          className="text-[10px] uppercase tracking-[0.42em] text-white/65 opacity-0"
         >
           Contact
         </p>
@@ -62,7 +62,7 @@ export function ContactView({ active = true }: { active?: boolean }) {
         </h1>
         <p
           data-contact-item
-          className="mt-5 max-w-2xl text-base leading-8 text-white/68 opacity-0 md:text-lg"
+          className="mt-5 max-w-2xl text-base leading-8 text-white/75 opacity-0 md:text-lg"
         >
           Available for UI/UX design collaborations, product work, and visually
           distinctive digital experiences.
@@ -73,7 +73,7 @@ export function ContactView({ active = true }: { active?: boolean }) {
             href={`mailto:${portfolioOwner.email}`}
             className="group rounded-3xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-white/22 hover:bg-white/[0.05]"
           >
-            <p className="text-[10px] uppercase tracking-[0.32em] text-white/42">
+            <p className="text-[10px] uppercase tracking-[0.32em] text-white/65">
               Email
             </p>
             <p className="mt-3 text-lg text-white transition group-hover:text-white/82">
@@ -82,7 +82,7 @@ export function ContactView({ active = true }: { active?: boolean }) {
           </a>
 
           <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-            <p className="text-[10px] uppercase tracking-[0.32em] text-white/42">
+            <p className="text-[10px] uppercase tracking-[0.32em] text-white/65">
               Location
             </p>
             <p className="mt-3 text-lg text-white/82">{portfolioOwner.location}</p>
@@ -90,7 +90,7 @@ export function ContactView({ active = true }: { active?: boolean }) {
         </div>
 
         <div data-contact-item className="mt-10 opacity-0">
-          <p className="mb-4 text-[10px] uppercase tracking-[0.32em] text-white/42">
+          <p className="mb-4 text-[10px] uppercase tracking-[0.32em] text-white/65">
             Social
           </p>
           <div className="flex flex-wrap gap-3">

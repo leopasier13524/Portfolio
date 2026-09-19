@@ -1,0 +1,52 @@
+{
+  "title": "My Road re-smoke — Skip/skills/Upwork/nav",
+  "timestamp_utc": "2026-09-19T22:54:56.038Z",
+  "overall": "FAIL (blockers)",
+  "pass": 4,
+  "fail": 1,
+  "blockerFails": [
+    "S1 Skip stays at top; Graduation ATF"
+  ],
+  "results": [
+    {
+      "id": "U1",
+      "severity": "major",
+      "title": "Upwork role is UI/UX Designer",
+      "status": "PASS",
+      "detail": "{\"title\":\"Upwork\",\"role\":\"UI/UX Designer\",\"dates\":\"Sep 2022–Nov 2024\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-re-01-upwork.png"
+    },
+    {
+      "id": "S1",
+      "severity": "blocker",
+      "title": "Skip stays at top; Graduation ATF",
+      "status": "FAIL",
+      "detail": "{\"title\":\"Graduation — SSK Livno\",\"activeIdx\":1,\"scrub\":true,\"scrollTop\":0,\"firstTop\":134,\"firstBottom\":262,\"vh\":900,\"atf\":true}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-re-02-skip.png"
+    },
+    {
+      "id": "K1",
+      "severity": "major",
+      "title": "Skill rail visible on desktop (md+)",
+      "status": "PASS",
+      "detail": "{\"found\":true,\"display\":\"flex\",\"visibility\":\"visible\",\"chips\":7}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-re-03-rail-desktop.png"
+    },
+    {
+      "id": "N1",
+      "severity": "blocker",
+      "title": "Bottom nav real click exits My Road (R3f)",
+      "status": "PASS",
+      "detail": "{\"navClick\":\"ok\",\"afterNav\":{\"road\":false,\"navZ\":\"40\",\"roadZ\":null}}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-re-04-nav.png"
+    },
+    {
+      "id": "K2",
+      "severity": "blocker",
+      "title": "Skill rail hidden under md (mobile)",
+      "status": "PASS",
+      "detail": "{\"found\":true,\"display\":\"none\",\"visibility\":\"visible\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-re-05-rail-mobile.png"
+    }
+  ]
+}

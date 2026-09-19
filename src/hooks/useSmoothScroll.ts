@@ -1,7 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Lenis from "lenis";
 
 type UseSmoothScrollOptions = {
@@ -34,11 +34,20 @@ export function useSmoothScroll(
       typeof window !== "undefined" &&
       ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
+    // Skip Lenis when content already fits the viewport (no overflow to smooth).
+    const fitsViewport =
+      content.scrollHeight <= wrapper.clientHeight + 1;
+
+    if (fitsViewport) {
+      return;
+    }
+
     const lenis = new Lenis({
       wrapper,
       content,
       autoRaf,
-      lerp: isTouch ? 0.14 : 0.085,
+      // P1: slightly snappier feel (~0.1–0.12)
+      lerp: isTouch ? 0.12 : 0.1,
       smoothWheel: true,
       syncTouch: false,
       touchMultiplier: 1.2,

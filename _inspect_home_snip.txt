@@ -1,0 +1,80 @@
+"use client";
+
+import Image from "next/image";
+import { useLayoutEffect, useRef, type RefObject } from "react";
+import { gsap } from "gsap";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import {
+  about,
+  experience,
+  languagesAndFrameworks,
+  portfolioOwner,
+  softwareExperience,
+} from "@/content/portfolio";
+import { SkillIcon } from "./SkillIcon";
+import { AcHomeField } from "./AcHomeField";
+
+export function HomeView({
+  active = true,
+  rootRef: externalRootRef,
+  portraitMotion = true,
+  onOpenMyRoad,
+}: {
+  active?: boolean;
+  rootRef?: RefObject<HTMLDivElement | null>;
+  /** Ken Burns only after intro so assemble dust can lock to the still crop */
+  portraitMotion?: boolean;
+  onOpenMyRoad?: () => void;
+}) {
+  const localRootRef = useRef<HTMLDivElement | null>(null);
+  const rootRef = externalRootRef ?? localRootRef;
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const hasAnimatedRef = useRef(false);
+
+  useSmoothScroll(rootRef, contentRef, { enabled: active });
+
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root) {
+      return;
+    }
+
+    const items = root.querySelectorAll("[data-home-item]");
+    gsap.killTweensOf(items);
+
+    if (!active) {
+      if (!hasAnimatedRef.current) {
+        // Pre-arm solid white copy under the invisible home layer so handoff
+        // (introDone / nav) is never a mid-fade dark.
+        gsap.set(items, { autoAlpha: 1, y: 0, clearProps: "visibility" });
+      } else {
+        // Stay painted so a return visit never flashes blank.
+        gsap.set(items, { autoAlpha: 1, y: 0, clearProps: "visibility" });
+      }
+      return;
+    }
+
+    const forceVisible = window.setTimeout(() => {
+      gsap.set(items, { autoAlpha: 1, y: 0, clearProps: "visibility" });
+    }, 200);
+
+    if (!hasAnimatedRef.current) {
+      gsap.set(items, { autoAlpha: 1, y: 0, clearProps: "visibility" });
+      hasAnimatedRef.current = true;
+      return () => window.clearTimeout(forceVisible);
+    }
+
+    // Return visits: stay put. A y tween here is the Projects/Contact stutter.
+    gsap.set(items, { autoAlpha: 1, y: 0, clearProps: "visibility,transform" });
+    return () => window.clearTimeout(forceVisible);
+  }, [active, rootRef]);
+
+  return (
+    <div
+      ref={rootRef}
+      className="relative h-full min-h-0 overflow-x-hidden overflow-y-auto overscroll-y-contain bg-black text-white"
+    >
+      <AcHomeField />
+      <div
+        ref={contentRef}
+        className="relative z-10 mx-auto max-w-

@@ -1,0 +1,30 @@
+{
+  "results": [
+    {
+      "ok": true,
+      "title": "Skip visible and reaches nav",
+      "detail": "1530ms"
+    },
+    {
+      "ok": true,
+      "title": "Home DOM text readable after Skip",
+      "detail": "visibleBlocks=12; sample=[{\"text\":\"Split, Croatia\",\"opacity\":\"1\",\"visibility\":\"visible\",\"color\":\"oklab(0.999994 0.0000455678 0.0000200868 / 0.65)\",\"w\":121,\"h\":15},{\"text\":\"Available\",\"opacity\":\"1\",\"visibility\":\"visible\",\"color\":\"oklab(0.999994 0.0000455678 0.0000200868 / 0.65)\",\"w\":79,\"h\":15},{\"text\":\"Portfolio\",\"opacity\":\"1\",\"visibility\":\"visible\",\"color\":\"oklab(0.999994 0.0000455678 0.0000200868 / 0.65)\",\"w\":494,\"h\":15}]"
+    },
+    {
+      "ok": false,
+      "title": "CTA link not found",
+      "detail": ""
+    },
+    {
+      "ok": true,
+      "title": "Reduced-motion reaches nav quickly",
+      "detail": "873ms"
+    },
+    {
+      "ok": true,
+      "title": "Reduced-motion projects list-first",
+      "detail": "allProjectsLabel=1"
+    }
+  ],
+  "failed": 1
+}

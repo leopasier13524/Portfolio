@@ -1,0 +1,139 @@
+{
+  "title": "Full ship-gate smoke — Windows WIP localhost:3000",
+  "timestamp_utc": "2026-09-12T00:49:11.661Z",
+  "target": "http://127.0.0.1:3000",
+  "overall": "FAIL (non-blocking)",
+  "pass": 13,
+  "fail": 1,
+  "blockerFails": [],
+  "consoleErrors": [],
+  "notes": [],
+  "results": [
+    {
+      "id": "H1",
+      "gate": "Home",
+      "severity": "blocker",
+      "title": "Home type visible without JS",
+      "status": "PASS",
+      "detail": "status=200 name=true hi=true about=true chars=2158",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-01-nojs.png"
+    },
+    {
+      "id": "S1",
+      "gate": "Skip/CTA",
+      "severity": "major",
+      "title": "Skip control is visible and focused on load",
+      "status": "PASS",
+      "detail": "Skip has focus",
+      "evidence": null
+    },
+    {
+      "id": "S2",
+      "gate": "Skip/CTA",
+      "severity": "blocker",
+      "title": "Escape skips splash / nav appears",
+      "status": "PASS",
+      "detail": "Esc dismissed splash",
+      "evidence": null
+    },
+    {
+      "id": "H2",
+      "gate": "Home",
+      "severity": "blocker",
+      "title": "Home readable after splash (no blank flash)",
+      "status": "PASS",
+      "detail": "10/10 items visible; h1=\"Hi! I'm Mateo\\nMiloloza\"",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-03-home.png"
+    },
+    {
+      "id": "H3",
+      "gate": "Home",
+      "severity": "major",
+      "title": "Home label/body contrast lifts vs black",
+      "status": "FAIL",
+      "detail": "ratios={\"h1\":21} colors label=oklab(0.999994 0.0000455678 0.0000200868 / 0.75) body=oklab(0.999994 0.0000455677 0.0000200868 / 0.86)",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-03-home.png"
+    },
+    {
+      "id": "H4",
+      "gate": "Home",
+      "severity": "major",
+      "title": "No blank fade on return to Home",
+      "status": "PASS",
+      "detail": "mid hidden=0; after vis=10/10",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-04-home-return.png"
+    },
+    {
+      "id": "P1",
+      "gate": "Grid",
+      "severity": "blocker",
+      "title": "Default Projects is Grid (not full-bleed wall)",
+      "status": "PASS",
+      "detail": "thumbs=5 maxVw=0.239",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-05-grid.png"
+    },
+    {
+      "id": "P2",
+      "gate": "Grid",
+      "severity": "major",
+      "title": "List toggle works",
+      "status": "PASS",
+      "detail": "pressed=true",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-06-list.png"
+    },
+    {
+      "id": "P3",
+      "gate": "Grid",
+      "severity": "major",
+      "title": "Explore toggle works",
+      "status": "PASS",
+      "detail": "pressed=true",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-07-explore.png"
+    },
+    {
+      "id": "O1",
+      "gate": "Skip/CTA",
+      "severity": "blocker",
+      "title": "Overlay opens; Close never hidden; hero painted",
+      "status": "PASS",
+      "detail": "{\"dialogOp\":\"1\",\"close\":true,\"closeOp\":\"1\",\"closeVis\":\"visible\",\"closeOff\":false,\"hero\":true,\"heroOp\":\"1\",\"heroH\":828,\"cta\":true,\"ctaColor\":\"oklab(0.999994 0.0000455678 0.0000200868 / 0.85)\",\"ctaBg\":\"oklab(0 0 0 / 0.55)\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-08-overlay.png"
+    },
+    {
+      "id": "O2",
+      "gate": "Skip/CTA",
+      "severity": "major",
+      "title": "Overlay CTA contrast",
+      "status": "PASS",
+      "detail": "CTA present (Close/data-cta); parsed colors incomplete {\"dialogOp\":\"1\",\"close\":true,\"closeOp\":\"1\",\"closeVis\":\"visible\",\"closeOff\":false,\"hero\":true,\"heroOp\":\"1\",\"heroH\":828,\"cta\":true,\"ctaColor\":\"oklab(0.999994 0.0000455678 0.0000200868 / 0.85)\",\"ctaBg\":\"oklab(0 0 0 / 0.55)\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-08-overlay.png"
+    },
+    {
+      "id": "O3",
+      "gate": "Skip/CTA",
+      "severity": "major",
+      "title": "Overlay closes on Escape",
+      "status": "PASS",
+      "detail": "closed",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-09-overlay-esc.png"
+    },
+    {
+      "id": "M1",
+      "gate": "Motion",
+      "severity": "blocker",
+      "title": "PRM never Explore; splash does not trap",
+      "status": "PASS",
+      "detail": "{\"labels\":[{\"label\":\"Grid view\",\"pressed\":\"true\"},{\"label\":\"List view\",\"pressed\":\"false\"}],\"explore\":false,\"gridOn\":true,\"splash\":false,\"splashSkip\":false,\"motionReduceEls\":5}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-10-prm.png"
+    },
+    {
+      "id": "M2",
+      "gate": "Motion",
+      "severity": "major",
+      "title": "Reduced-motion tokens present in tree",
+      "status": "PASS",
+      "detail": "motionReduceEls=5 exploreHidden=true",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\full-10-prm.png"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "ok": true,
+  "steps": [
+    "intro+nav ok",
+    "on projects wall",
+    "baseline drag movedLabels=0",
+    "opened MealLi 2.0 FOOD ORDERING APP",
+    "closed overlay (closeVisible=false)",
+    "PASS: drag works after close"
+  ],
+  "dragBeforeClose": {
+    "drag": {
+      "start": {
+        "x": 640,
+        "y": 400
+      },
+      "end": {
+        "x": 920,
+        "y": 440
+      },
+      "canvas": {
+        "x": 640,
+        "y": 400,
+        "w": 1280,
+        "h": 800,
+        "count": 3
+      }
+    },
+    "labelsMoved": [],
+    "movedCount": 0
+  },
+  "dragAfterClose": {
+    "drag": {
+      "start": {
+        "x": 640,
+        "y": 400
+      },
+      "end": {
+        "x": 920,
+        "y": 440
+      },
+      "canvas": {
+        "x": 640,
+        "y": 400,
+        "w": 1280,
+        "h": 800,
+        "count": 3
+      }
+    },
+    "labelsMoved": [],
+    "movedCount": 0,
+    "screenshotDiffBytes": 554293,
+    "closeStillVisible": false,
+    "canvas": {
+      "cw": 1280,
+      "ch": 800,
+      "cssW": 1280,
+      "cssH": 800
+    }
+  },
+  "overlays": {
+    "projectsWall": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\drag-01-projects-wall.png",
+    "open": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\drag-03-project-open.png",
+    "afterClose": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\drag-04-after-close.png"
+  },
+  "consoleErrors": [],
+  "verdict": "PASS: drag works after close"
+}

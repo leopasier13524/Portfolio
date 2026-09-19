@@ -1,0 +1,93 @@
+{
+  "clicked": {
+    "ok": true,
+    "text": "MealLi 2.0Food ordering appFood ordering app"
+  },
+  "focusedWhileInvisible": false,
+  "anyFound": true,
+  "firstFound": {
+    "found": true,
+    "closeOpacity": "0",
+    "rootOpacity": "1",
+    "focused": false,
+    "active": "Close2025 / UI/UX Design, MobileFood ord"
+  },
+  "samples": [
+    {
+      "found": true,
+      "closeOpacity": "0",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0.0213925",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0.0608499",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0.0939918",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    },
+    {
+      "found": true,
+      "closeOpacity": "0.150548",
+      "rootOpacity": "1",
+      "focused": false,
+      "active": "Close2025 / UI/UX Design, MobileFood ord"
+    }
+  ],
+  "m6": {
+    "ms": 3929,
+    "early": false,
+    "late": false,
+    "dragDiff": 66421
+  }
+}

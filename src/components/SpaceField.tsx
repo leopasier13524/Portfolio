@@ -11,6 +11,8 @@ type SpaceFieldProps = {
   homeRootRef: RefObject<HTMLElement | null>;
   playIntro: boolean;
   active: boolean;
+  /** Skip/timeout: force handoff + intro complete immediately. */
+  forceComplete?: boolean;
   /** Home content + nav can appear while particles finish assembling. */
   onHandoff: () => void;
   /** Splash UI can unmount; particle field is now in home drift mode. */
@@ -471,14 +473,6 @@ function easeInOutSine(t: number) {
   return -(Math.cos(Math.PI * t) - 1) / 2;
 }
 
-function easeOutQuart(t: number) {
-  return 1 - Math.pow(1 - t, 4);
-}
-
-function easeInOutQuart(t: number) {
-  return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
-}
-
 function rotateX(x: number, y: number, z: number, angle: number) {
   const c = Math.cos(angle);
   const s = Math.sin(angle);
@@ -533,6 +527,7 @@ export function SpaceField({
   homeRootRef,
   playIntro,
   active,
+  forceComplete = false,
   onHandoff,
   onIntroComplete,
 }: SpaceFieldProps) {
@@ -540,8 +535,10 @@ export function SpaceField({
   const vignetteRef = useRef<HTMLCanvasElement | null>(null);
   const activeRef = useRef(active);
   const playIntroRef = useRef(playIntro);
+  const forceCompleteRef = useRef(forceComplete);
   const onHandoffRef = useRef(onHandoff);
   const onIntroCompleteRef = useRef(onIntroComplete);
+  const skipIntroRef = useRef<(() => void) | null>(null);
   const phaseRef = useRef<"splash" | "home">(playIntro ? "splash" : "home");
 
   useEffect(() => {
@@ -551,6 +548,13 @@ export function SpaceField({
   useEffect(() => {
     playIntroRef.current = playIntro;
   }, [playIntro]);
+
+  useEffect(() => {
+    forceCompleteRef.current = forceComplete;
+    if (forceComplete) {
+      skipIntroRef.current?.();
+    }
+  }, [forceComplete]);
 
   useEffect(() => {
     onHandoffRef.current = onHandoff;
@@ -569,10 +573,22 @@ export function SpaceField({
 
     let disposed = false;
     let frame = 0;
+    let splashWaitFrame = 0;
     let timeline: gsap.core.Timeline | null = null;
     let failSafe = 0;
     let handedOff = !playIntroRef.current;
     let introFinished = !playIntroRef.current;
+
+    // BS1: early skip stub so PE forceComplete/Skip works even if WebGL setup throws.
+    skipIntroRef.current = () => {
+      if (introFinished) {
+        return;
+      }
+      introFinished = true;
+      handedOff = true;
+      onHandoffRef.current();
+      onIntroCompleteRef.current();
+    };
 
     const isMobile = window.innerWidth < 768;
     const count = getCount();
@@ -693,7 +709,7 @@ export function SpaceField({
       colorMix: 0,
     };
 
-    if (!playIntroRef.current) {
+    const jumpToHomeField = () => {
       current.set(home);
       colors.set(homeColors);
       geometry.attributes.position.needsUpdate = true;
@@ -703,7 +719,16 @@ export function SpaceField({
       state.particleSize = isMobile ? 0.19 : 0.15;
       state.colorMix = 1;
       state.dissolve = 1;
+      state.spin = 0;
+      state.spinAngle = 0;
+      material.opacity = 1;
+      material.size = state.particleSize;
       phaseRef.current = "home";
+      gsap.set(vignetteCanvas, { autoAlpha: 0 });
+    };
+
+    if (!playIntroRef.current) {
+      jumpToHomeField();
     }
 
     const mixSplash = () => {
@@ -830,11 +855,15 @@ export function SpaceField({
       if (disposed) {
         return;
       }
-      frame = window.requestAnimationFrame(tick);
 
-      if (!activeRef.current && phaseRef.current === "home") {
+      // Pause render loop when inactive (splash unmounted / reduced motion).
+      // PE prefers unmounting SpaceField entirely; this is belt-and-suspenders.
+      if (!activeRef.current) {
+        frame = 0;
         return;
       }
+
+      frame = window.requestAnimationFrame(tick);
 
       if (phaseRef.current === "splash") {
         if (state.spin > 0.001) {
@@ -885,8 +914,22 @@ export function SpaceField({
       camera.position.z = 0;
       state.spin = 0;
       state.spinAngle = 0;
+      // Dim field so DOM home always wins over any residual assemble dust.
+      material.opacity = Math.min(material.opacity, 0.22);
       onIntroCompleteRef.current();
     };
+
+    const skipIntroNow = () => {
+      timeline?.kill();
+      jumpToHomeField();
+      handoff();
+      finishIntro();
+      gsap.set(vignetteCanvas, { autoAlpha: 0 });
+      if (splashRootRef.current) {
+        gsap.set(splashRootRef.current, { autoAlpha: 0 });
+      }
+    };
+    skipIntroRef.current = skipIntroNow;
 
     let portraitSamplesCache: PortraitSampleSet = {
       samples: [],
@@ -938,9 +981,18 @@ export function SpaceField({
     };
 
     const startSplash = () => {
+      splashWaitFrame = 0;
+      if (disposed || introFinished) {
+        return;
+      }
+
       const root = splashRootRef.current;
       if (!root) {
-        requestAnimationFrame(startSplash);
+        // BS1: arm failsafe even when splash root is not attached yet.
+        if (!failSafe) {
+          failSafe = window.setTimeout(skipIntroNow, isMobile ? 7500 : 8500);
+        }
+        splashWaitFrame = window.requestAnimationFrame(startSplash);
         return;
       }
 
@@ -963,7 +1015,9 @@ export function SpaceField({
       gsap.set(material, { opacity: 0 });
       gsap.set(root, { autoAlpha: 1 });
 
-      failSafe = window.setTimeout(finishIntro, isMobile ? 13000 : 14500);
+      if (!failSafe) {
+        failSafe = window.setTimeout(skipIntroNow, isMobile ? 7500 : 8500);
+      }
 
       // Warm portrait + layout targets early
       void prepareReverseSnap();
@@ -972,33 +1026,34 @@ export function SpaceField({
         defaults: { ease: "power3.out" },
       });
 
+      // ANIM-P0: compressed intro — handoff ~5s, finish ~7s (was ~7s / ~10s+).
+      // WIP had longer orb hold + dissolve; Design wants DOM home to win sooner.
       timeline
-        .to(vignette, { autoAlpha: 1, duration: 0.55 * speed }, 0)
-        .to(material, { opacity: 1, duration: 0.85 * speed }, 0.05)
-        // Form the orb a bit more slowly…
+        .to(vignette, { autoAlpha: 1, duration: 0.45 * speed }, 0)
+        .to(material, { opacity: 1, duration: 0.65 * speed }, 0.04)
         .to(
           state,
-          { morph: 1, duration: 1.85 * speed, ease: "power2.inOut" },
-          0.15
+          { morph: 1, duration: 1.35 * speed, ease: "power2.inOut" },
+          0.12
         )
         .to(
           nameLines,
           {
             yPercent: 0,
-            duration: 1.05 * speed,
-            stagger: 0.12,
-            ease: "power4.out",
+            duration: 0.85 * speed,
+            stagger: 0.1,
+            ease: "power3.out",
           },
-          0.9 * speed
+          0.65 * speed
         )
-        .to(role, { autoAlpha: 1, y: 0, duration: 0.6 * speed }, 1.3 * speed)
-        .to(meter, { autoAlpha: 1, y: 0, duration: 0.55 * speed }, 1.5 * speed)
+        .to(role, { autoAlpha: 1, y: 0, duration: 0.5 * speed }, 0.95 * speed)
+        .to(meter, { autoAlpha: 1, y: 0, duration: 0.45 * speed }, 1.1 * speed)
         .to(
           counterState,
           {
             value: 100,
-            duration: 2.0 * speed,
-            ease: "power2.inOut",
+            duration: 1.35 * speed,
+            ease: "expo.inOut",
             onUpdate: () => {
               if (counter) {
                 counter.textContent = String(
@@ -1007,54 +1062,52 @@ export function SpaceField({
               }
             },
           },
-          1.55 * speed
+          1.15 * speed
         );
 
       if (progress) {
         timeline.to(
           progress,
-          { scaleX: 1, duration: 2.0 * speed, ease: "power2.inOut" },
-          1.55 * speed
+          { scaleX: 1, duration: 1.35 * speed, ease: "expo.inOut" },
+          1.15 * speed
         );
       }
 
-      // …and hold the orb before collapsing into the ring
       timeline
         .to(
           state,
-          { morph: 2, duration: 1.15 * speed, ease: "power2.inOut" },
-          3.15 * speed
+          { morph: 2, duration: 0.85 * speed, ease: "power2.inOut" },
+          2.25 * speed
         )
         .to(
           state,
           {
             spin: 0.85,
             particleSize: isMobile ? 0.07 : 0.055,
-            duration: 1.15 * speed,
+            duration: 0.85 * speed,
             ease: "power2.inOut",
           },
-          3.15 * speed
+          2.25 * speed
         )
         .to(
           center,
           {
             autoAlpha: 0,
             y: -8,
-            duration: 0.65 * speed,
+            duration: 0.5 * speed,
             ease: "sine.inOut",
           },
-          5.65 * speed
+          3.85 * speed
         )
         .to(
           state,
           {
             cameraZ: isMobile ? 8.4 : 7.5,
-            duration: 1.35 * speed,
+            duration: 1.0 * speed,
             ease: "sine.inOut",
           },
-          5.55 * speed
+          3.75 * speed
         )
-        // Ring keeps spinning right while particles build the homepage
         .to(
           state,
           {
@@ -1062,51 +1115,51 @@ export function SpaceField({
             spin: 0.7,
             particleSize: isMobile ? 0.08 : 0.065,
             cameraZ: isMobile ? 7.0 : 6.2,
-            duration: 1.6 * speed,
+            duration: 1.2 * speed,
             ease: "power1.inOut",
           },
-          5.85 * speed
+          4.0 * speed
         )
         .add(() => {
           handoff();
-        }, 6.95 * speed)
+        }, 5.05 * speed)
         .to(
           vignette,
-          { autoAlpha: 0, duration: 0.55 * speed, ease: "sine.inOut" },
-          7.35 * speed
+          { autoAlpha: 0, duration: 0.4 * speed, ease: "sine.inOut" },
+          5.2 * speed
         )
         .to(
           root,
-          { autoAlpha: 0, duration: 0.5 * speed, ease: "sine.inOut" },
-          7.4 * speed
+          { autoAlpha: 0, duration: 0.4 * speed, ease: "sine.inOut" },
+          5.25 * speed
         )
         .to(
           state,
           {
             dissolve: 1,
             spin: 0,
-            duration: 2.2 * speed,
+            duration: 1.4 * speed,
             ease: "sine.inOut",
           },
-          7.5 * speed
+          5.35 * speed
         )
         .to(
           state,
           {
             particleSize: isMobile ? 0.19 : 0.15,
-            duration: 2.2 * speed,
+            duration: 1.4 * speed,
             ease: "sine.inOut",
           },
-          7.65 * speed
+          5.45 * speed
         )
         .to(
           state,
           {
             cameraZ: 0,
-            duration: 2.45 * speed,
+            duration: 1.5 * speed,
             ease: "sine.inOut",
           },
-          7.7 * speed
+          5.5 * speed
         )
         .add(() => {
           finishIntro();
@@ -1117,24 +1170,31 @@ export function SpaceField({
     frame = window.requestAnimationFrame(tick);
     window.addEventListener("resize", resize);
 
-    if (playIntroRef.current) {
-      requestAnimationFrame(() => requestAnimationFrame(startSplash));
-    } else {
-      gsap.set(vignetteCanvas, { autoAlpha: 0 });
-    }
-
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
-    if (reduceMotion && playIntroRef.current) {
+
+    if (forceCompleteRef.current) {
+      skipIntroNow();
+    } else if (reduceMotion && playIntroRef.current) {
+      skipIntroNow();
+    } else if (playIntroRef.current) {
+      splashWaitFrame = window.requestAnimationFrame(() => {
+        splashWaitFrame = window.requestAnimationFrame(startSplash);
+      });
+    } else {
+      gsap.set(vignetteCanvas, { autoAlpha: 0 });
+      handoff();
       finishIntro();
     }
 
     return () => {
       disposed = true;
+      skipIntroRef.current = null;
       window.clearTimeout(failSafe);
       timeline?.kill();
       window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(splashWaitFrame);
       window.removeEventListener("resize", resize);
       geometry.dispose();
       material.map?.dispose();

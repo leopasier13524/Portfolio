@@ -1,0 +1,11 @@
+{
+  "opened": true,
+  "dragDiffBytes": 560475,
+  "dragSeemedToMove": true,
+  "reopenWorked": true,
+  "cursor": {
+    "cursor": "grab",
+    "className": "absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing "
+  },
+  "verdict": "PASS"
+}

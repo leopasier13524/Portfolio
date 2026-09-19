@@ -1,0 +1,52 @@
+{
+  "title": "My Road re-smoke 2 — Skip + nav z-50",
+  "timestamp_utc": "2026-09-19T22:56:02.912Z",
+  "overall": "FAIL",
+  "pass": 4,
+  "fail": 1,
+  "blockerFails": [
+    "Z1 BottomNav elevated to z-50 while My Road open"
+  ],
+  "results": [
+    {
+      "id": "Z1",
+      "severity": "blocker",
+      "title": "BottomNav elevated to z-50 while My Road open",
+      "status": "FAIL",
+      "detail": "{\"navZ\":\"49\",\"roadZ\":\"45\"}",
+      "evidence": null
+    },
+    {
+      "id": "U1",
+      "severity": "major",
+      "title": "Upwork role is UI/UX Designer",
+      "status": "PASS",
+      "detail": "{\"role\":\"UI/UX Designer\"}",
+      "evidence": null
+    },
+    {
+      "id": "S1",
+      "severity": "blocker",
+      "title": "Skip stay/top; Graduation ATF",
+      "status": "PASS",
+      "detail": "{\"title\":\"Graduation — SSK Livno\",\"scrollTop\":0,\"atf\":true,\"firstTop\":134}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-re2-skip.png"
+    },
+    {
+      "id": "N1",
+      "severity": "blocker",
+      "title": "R3f real pointer nav click exits My Road",
+      "status": "PASS",
+      "detail": "{\"navClick\":\"ok\",\"afterNav\":true,\"z\":{\"navZ\":\"49\",\"roadZ\":\"45\"}}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-re2-nav.png"
+    },
+    {
+      "id": "K2",
+      "severity": "blocker",
+      "title": "Skill rail hidden under md",
+      "status": "PASS",
+      "detail": "display=none",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\myroad-re2-mobile.png"
+    }
+  ]
+}

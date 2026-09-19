@@ -1,0 +1,152 @@
+[
+  {
+    "tag": "BUTTON",
+    "text": "MealLi 2.0 — 2025, Food ordering app",
+    "disabled": true,
+    "pe": "none",
+    "opacity": "1",
+    "w": 279,
+    "h": 24,
+    "inert": true
+  },
+  {
+    "tag": "BUTTON",
+    "text": "MealLi — 2024, Food ordering app",
+    "disabled": true,
+    "pe": "none",
+    "opacity": "1",
+    "w": 251,
+    "h": 24,
+    "inert": true
+  },
+  {
+    "tag": "BUTTON",
+    "text": "HBMP — 2024, Ecommerce app",
+    "disabled": true,
+    "pe": "none",
+    "opacity": "1",
+    "w": 233,
+    "h": 24,
+    "inert": true
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Travelli — 2023, Travel booking app",
+    "disabled": true,
+    "pe": "none",
+    "opacity": "1",
+    "w": 258,
+    "h": 24,
+    "inert": true
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Stremio — 2022, Streaming app",
+    "disabled": true,
+    "pe": "none",
+    "opacity": "1",
+    "w": 235,
+    "h": 24,
+    "inert": true
+  },
+  {
+    "tag": "BUTTON",
+    "text": "MealLi 2.0Food ordering appFood ordering app",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 1072,
+    "h": 132,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "MealLiFood ordering appFood ordering app",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 1072,
+    "h": 132,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "HBMPEcommerce appEcommerce app",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 1072,
+    "h": 132,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "TravelliTravel booking appTravel booking app",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 1072,
+    "h": 132,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "StremioStreaming appStreaming app",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 1072,
+    "h": 132,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Wall",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 106,
+    "h": 40,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "List",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 95,
+    "h": 40,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Home",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 124,
+    "h": 48,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Projects",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 181,
+    "h": 48,
+    "inert": false
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Contact",
+    "disabled": false,
+    "pe": "auto",
+    "opacity": "1",
+    "w": 166,
+    "h": 48,
+    "inert": false
+  }
+]

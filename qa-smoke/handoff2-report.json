@@ -1,0 +1,52 @@
+{
+  "navAt": 5727,
+  "high1": {
+    "spaceStillAfterNav": false,
+    "firstAfterNav": null,
+    "durationSpaceAfterNavMs": 0,
+    "atNav": {
+      "elapsed": 5727,
+      "navInteractive": true,
+      "splashNames": 0,
+      "skipVisible": false,
+      "spaceWraps": [],
+      "canvases": [],
+      "homeLayer": {
+        "opacity": "1",
+        "pe": "auto",
+        "z": "10"
+      },
+      "visibleCanvasCount": 0
+    }
+  },
+  "high2": {
+    "dualWebglJustAfterNav": false,
+    "sample": {
+      "elapsed": 7149,
+      "phase": "projects-just-after-nav",
+      "navInteractive": true,
+      "splashNames": 0,
+      "skipVisible": false,
+      "spaceWraps": [],
+      "canvases": [
+        {
+          "cssW": 1280,
+          "cssH": 800,
+          "opacity": "1",
+          "visible": true
+        }
+      ],
+      "homeLayer": {
+        "opacity": "0",
+        "pe": "none",
+        "z": "10"
+      },
+      "visibleCanvasCount": 1
+    }
+  },
+  "medium5": {
+    "found": false,
+    "after": null
+  },
+  "medium6": null
+}

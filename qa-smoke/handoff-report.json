@@ -1,0 +1,153 @@
+{
+  "generatedAt": "2026-09-11T23:38:10.499Z",
+  "navAppearedAt": 5653,
+  "introDoneAt": 5653,
+  "midWindowProjectsOpened": true,
+  "dualWebglObserved": true,
+  "splashBlockingNav": false,
+  "results": [
+    {
+      "id": 1,
+      "severity": "HIGH",
+      "title": "SpaceField overlays home after BottomNav appears until finishIntro",
+      "status": "PASS",
+      "notes": "navAt=5653ms introDoneAt=5653ms; no strong space-opaque-after-nav gap observed (gap=0ms)",
+      "evidence": null
+    },
+    {
+      "id": 2,
+      "severity": "HIGH",
+      "title": "Dual WebGL if Projects opened before finishIntro",
+      "status": "FAIL",
+      "notes": "Opened Projects in intro window; visible webgl-like canvases >= 2. midWindowProjectsOpened=true",
+      "evidence": "handoff-02b-dual-webgl-check.png"
+    },
+    {
+      "id": 3,
+      "severity": "MEDIUM",
+      "title": "Splash z-100 briefly blocks nav clicks at handoff",
+      "status": "PASS",
+      "notes": "Nav click succeeded (or splash already pointer-events-none) at handoff",
+      "evidence": null
+    },
+    {
+      "id": 4,
+      "severity": "MEDIUM",
+      "title": "ProjectsViewToggle tabbable when visually hidden",
+      "status": "FAIL",
+      "notes": "[{\"label\":\"Wall\",\"tabIndex\":0,\"inert\":false,\"ariaHidden\":false,\"disabled\":false},{\"label\":\"List\",\"tabIndex\":0,\"inert\":false,\"ariaHidden\":false,\"disabled\":false}]",
+      "evidence": "handoff-04-home-toggle-hidden.png"
+    },
+    {
+      "id": 5,
+      "severity": "MEDIUM",
+      "title": "Overlay Close focused while still opacity-0",
+      "status": "INCONCLUSIVE",
+      "notes": "Could not open project overlay",
+      "evidence": null
+    },
+    {
+      "id": 6,
+      "severity": "MEDIUM",
+      "title": "After wall open→close, focusTimeline gates pointer briefly",
+      "status": "INCONCLUSIVE",
+      "notes": "No overlay close performed",
+      "evidence": null
+    }
+  ],
+  "consoleErrors": [],
+  "timelineSummary": {
+    "samples": 27,
+    "first": {
+      "elapsed": 159,
+      "t": 152,
+      "nav": {
+        "opacity": "0",
+        "pe": "none",
+        "z": "40"
+      },
+      "splash": {
+        "opacity": "1",
+        "pe": "auto",
+        "z": "100",
+        "display": "block",
+        "className": "fixed inset-0 z-[100] overflow-hidden text-white",
+        "inDom": true
+      },
+      "canvases": [
+        {
+          "w": 300,
+          "h": 150,
+          "cssW": 1280,
+          "cssH": 800,
+          "visible": false,
+          "opacity": "0",
+          "pe": "none"
+        }
+      ],
+      "webglLikeVisible": 0,
+      "homeSolidish": {
+        "homeItemVisible": 0,
+        "homeItemTotal": 10
+      },
+      "spaceWrap": [
+        {
+          "opacity": "1",
+          "pe": "none",
+          "z": "30",
+          "className": "pointer-events-none fixed inset-0 z-30 opacity-100"
+        }
+      ]
+    },
+    "atNav": {
+      "elapsed": 5424,
+      "t": 5420.29999999702,
+      "nav": {
+        "opacity": "0",
+        "pe": "none",
+        "z": "40"
+      },
+      "splash": {
+        "opacity": "1",
+        "pe": "auto",
+        "z": "100",
+        "display": "block",
+        "className": "fixed inset-0 z-[100] overflow-hidden text-white",
+        "inDom": true
+      },
+      "canvases": [
+        {
+          "w": 1280,
+          "h": 800,
+          "cssW": 1280,
+          "cssH": 800,
+          "visible": true,
+          "opacity": "1",
+          "pe": "none"
+        },
+        {
+          "w": 1280,
+          "h": 800,
+          "cssW": 1280,
+          "cssH": 800,
+          "visible": true,
+          "opacity": "1",
+          "pe": "none"
+        }
+      ],
+      "webglLikeVisible": 2,
+      "homeSolidish": {
+        "homeItemVisible": 10,
+        "homeItemTotal": 10
+      },
+      "spaceWrap": [
+        {
+          "opacity": "1",
+          "pe": "none",
+          "z": "30",
+          "className": "pointer-events-none fixed inset-0 z-30 opacity-100"
+        }
+      ]
+    }
+  }
+}

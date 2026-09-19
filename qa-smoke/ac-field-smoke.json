@@ -1,0 +1,41 @@
+{
+  "title": "AC Field smoke — Windows WIP",
+  "timestamp_utc": "2026-09-12T02:16:47.236Z",
+  "overall": "CLEAR",
+  "pass": 4,
+  "fail": 0,
+  "results": [
+    {
+      "id": "AC1",
+      "severity": "blocker",
+      "title": "AC Field present without JS / no fade-to-gone",
+      "status": "PASS",
+      "detail": "{\"field\":true,\"svg\":true,\"lines\":25,\"nodes\":20,\"fieldOp\":\"1\",\"fieldVis\":\"visible\",\"fieldZ\":\"0\",\"edgeAnim\":[\"ac-field-deploy\",\"ac-field-deploy\",\"ac-field-deploy\"],\"h1\":\"Mateo Miloloza\",\"h1Color\":\"rgb(255, 255, 255)\",\"h1Op\":\"1\",\"bodyColor\":\"oklab(0.999994 0.0000455677 0.0000200868 / 0.86)\",\"bodyOp\":\"1\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\ac-01-nojs.png"
+    },
+    {
+      "id": "AC2",
+      "severity": "blocker",
+      "title": "AC Field present behind Home after splash",
+      "status": "PASS",
+      "detail": "{\"field\":true,\"svg\":true,\"lines\":25,\"nodes\":20,\"fieldOp\":\"1\",\"fieldVis\":\"visible\",\"fieldZ\":\"0\",\"edgeAnim\":[\"ac-field-deploy\",\"ac-field-deploy\",\"ac-field-deploy\"],\"h1\":\"Hi! I'm Mateo Miloloza\",\"h1Color\":\"rgb(255, 255, 255)\",\"h1Op\":\"1\",\"bodyColor\":\"oklab(0.999994 0.0000455677 0.0000200868 / 0.86)\",\"bodyOp\":\"1\"}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\ac-02-home.png"
+    },
+    {
+      "id": "AC3",
+      "severity": "blocker",
+      "title": "Home contrast does not drop with field (type stays solid)",
+      "status": "PASS",
+      "detail": "h1=Hi! I'm Mateo Miloloza color=rgb(255, 255, 255) op=1 body=oklab(0.999994 0.0000455677 0.0000200868 / 0.86)",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\ac-02-home.png"
+    },
+    {
+      "id": "AC4",
+      "severity": "blocker",
+      "title": "PRM shows static AC graph (no deploy/drift)",
+      "status": "PASS",
+      "detail": "{\"field\":true,\"lines\":25,\"edgeAnims\":[\"none\",\"none\",\"none\",\"none\"],\"nodeAnims\":[\"none\",\"none\",\"none\",\"none\"],\"staticGraph\":true}",
+      "evidence": "C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\ac-03-prm.png"
+    }
+  ]
+}
