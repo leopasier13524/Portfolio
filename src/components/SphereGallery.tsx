@@ -404,7 +404,8 @@ export function SphereGallery({
   onSelectProject,
 }: SphereGalleryProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
-  const [webglFailed, setWebglFailed] = useState(() => !isWebGLAvailable() || forceList);
+  const [webglFailed, setWebglFailed] = useState(() => !isWebGLAvailable());
+  const listFallback = webglFailed || forceList;
   const projectSelectRef = useRef(onSelectProject);
   const activeSlugRef = useRef(activeProjectSlug);
   const galleryActiveRef = useRef(active);
@@ -417,12 +418,6 @@ export function SphereGallery({
   useEffect(() => {
     projectSelectRef.current = onSelectProject;
   }, [onSelectProject]);
-
-  useEffect(() => {
-    if (forceList) {
-      setWebglFailed(true);
-    }
-  }, [forceList]);
 
   useEffect(() => {
     activeSlugRef.current = activeProjectSlug;
@@ -445,7 +440,7 @@ export function SphereGallery({
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (webglFailed || !mount || projects.length === 0) {
+    if (listFallback || !mount || projects.length === 0) {
       return;
     }
 
@@ -542,7 +537,6 @@ export function SphereGallery({
     let targetViewZoom = 0;
     let currentViewZoom = 0;
     let hovered: CardMesh | null = null;
-    let focused: CardMesh | null = null;
     let focusTimeline: gsap.core.Timeline | null = null;
 
     const isFocusTimelineActive = () => focusTimeline?.isActive() === true;
@@ -787,7 +781,6 @@ export function SphereGallery({
         return;
       }
 
-      focused = card;
       stopFocusTimeline();
 
       if (hovered) {
@@ -810,7 +803,6 @@ export function SphereGallery({
       // the overlay closes — do not keep isFocusTimelineActive() true
       // for the ~0.35s opacity restore.
       stopFocusTimeline();
-      focused = null;
       pointerDown = false;
       moved = false;
 
@@ -1298,7 +1290,7 @@ export function SphereGallery({
       scene.clear();
       clearMount(mount);
     };
-  }, [projects, webglFailed]);
+  }, [projects, listFallback]);
 
   useEffect(() => {
     if (activeProjectSlug === null) {
@@ -1321,17 +1313,17 @@ export function SphereGallery({
     >
       <ProjectAccessList
         projects={projects}
-        visible={webglFailed}
+        visible={listFallback}
         available={active && !activeProjectSlug}
         onSelect={openProjectFromList}
       />
       <div
         ref={mountRef}
         className={`absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing ${
-          webglFailed ? "hidden" : ""
+          listFallback ? "hidden" : ""
         }`}
         style={{ touchAction: "none" }}
-        aria-hidden={!webglFailed}
+        aria-hidden={!listFallback}
       />
     </div>
   );
