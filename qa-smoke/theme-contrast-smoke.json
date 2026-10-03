@@ -1,0 +1,877 @@
+{
+  "overall": "FAIL",
+  "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('ul button, ul li button').first()\n    - locator resolved to <button disabled type=\"button\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n      - waiting 100ms\n    56 × waiting for element to be visible, enabled and stable\n       - element is not enabled\n     - retrying click action\n       - waiting 500ms\n",
+  "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('ul button, ul li button').first()\n    - locator resolved to <button disabled type=\"button\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n      - waiting 100ms\n    56 × waiting for element to be visible, enabled and stable\n       - element is not enabled\n     - retrying click action\n       - waiting 500ms\n\n    at main (C:\\Users\\DT User\\Desktop\\Portfolio\\site\\qa-smoke\\theme-contrast-smoke.mjs:961:22)",
+  "gates": {
+    "DEFAULT": {
+      "id": "DEFAULT",
+      "status": "PASS",
+      "detail": "data-theme=night"
+    },
+    "C7_NIGHT_HOME": {
+      "id": "C7_NIGHT_HOME",
+      "status": "FAIL",
+      "detail": "Night Home: backdrop=true field=true fieldDisplay=block fieldOp=1",
+      "measured": {
+        "theme": "night",
+        "backdrop": true,
+        "backdropScene": "night",
+        "backdropSurface": "contact",
+        "field": true,
+        "fieldDisplay": "block",
+        "fieldVisibility": "visible",
+        "fieldOpacity": "1",
+        "horizonExists": false,
+        "hazeRect": {
+          "top": 0,
+          "left": 0,
+          "width": 0,
+          "height": 0,
+          "bottom": 0,
+          "right": 0
+        },
+        "hazeDisplay": "block",
+        "hazeOpacity": "1",
+        "lightRect": {
+          "top": 0,
+          "left": 0,
+          "width": 0,
+          "height": 0,
+          "bottom": 0,
+          "right": 0
+        },
+        "lightDisplay": "block",
+        "lightOpacity": "0.8",
+        "lightWidth": "200px",
+        "massL": {
+          "top": 0,
+          "left": 0,
+          "width": 0,
+          "height": 0,
+          "bottom": 0,
+          "right": 0
+        },
+        "massR": {
+          "top": 0,
+          "left": 0,
+          "width": 0,
+          "height": 0,
+          "bottom": 0,
+          "right": 0
+        },
+        "portrait": {
+          "top": 80,
+          "left": 176,
+          "width": 499.5,
+          "height": 666,
+          "bottom": 746,
+          "right": 675.5
+        },
+        "h1Opacity": "1",
+        "h1Color": "rgb(245, 245, 245)",
+        "h1Text": "Hi! I'm Mateo Miloloza",
+        "h1Rect": {
+          "top": 290,
+          "left": 770,
+          "width": 345.703125,
+          "height": 126,
+          "bottom": 416,
+          "right": 1115.703125
+        },
+        "scrim": {
+          "top": 0,
+          "left": 0,
+          "width": 0,
+          "height": 0,
+          "bottom": 0,
+          "right": 0
+        },
+        "scrimBg": "radial-gradient(color(srgb 0.0196078 0.0196078 0.0196078 / 0.92) 0%, color(srgb 0.0196078 0.0196078 0.0196078 / 0.82) 58%, rgba(0, 0, 0, 0) 100%)",
+        "scrimBgColor": "rgba(0, 0, 0, 0)",
+        "scrimRuleText": ".theme-sky__scrim { background: radial-gradient(ellipse at center,\n    var(--background) 0%,\n    var(--background) 58%,\n    transparent 100%); width: min(720px, 78vw); height: 72vh; top: 10vh; left: 50%; transform: translateX(-50%); }",
+        "grainOpacityComputed": 0.06,
+        "grainRuleOpacity": 0.06,
+        "grainZ": "auto",
+        "scrimZ": "auto",
+        "grainBehindScrim": true,
+        "photoUrl": false,
+        "snowSamples": null,
+        "pickerPlate": {
+          "bg": "oklab(0.114918 0.00000522286 0.00000230223 / 0.88)",
+          "a": null
+        },
+        "navPlate": {
+          "bg": "oklab(0.114918 0.00000522286 0.00000230223 / 0.88)",
+          "a": null
+        },
+        "experienceCardPlate": {
+          "bg": "oklab(0.114918 0.00000522286 0.00000230223 / 0.88)",
+          "a": null
+        },
+        "closePlate": null,
+        "faintLabels": [
+          {
+            "text": "Portfolio",
+            "cls": "text-[11px] uppercase tracking-[0.42em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "UI/UX Designer",
+            "cls": "mt-4 text-sm uppercase tracking-[0.28em] text-foreground/75 md:text-base",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Split, Croatia",
+            "cls": "mt-2 text-[11px] uppercase tracking-[0.36em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "About",
+            "cls": "text-[11px] uppercase tracking-[0.34em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Tools",
+            "cls": "mb-4 text-[11px] uppercase tracking-[0.34em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Stack",
+            "cls": "mb-4 text-[11px] uppercase tracking-[0.34em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Experience",
+            "cls": "text-[11px] uppercase tracking-[0.34em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "UI/UX Designer",
+            "cls": "mt-1 text-sm text-foreground/68",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": false,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "December 2024 - Present",
+            "cls": "mt-2 text-[11px] uppercase tracking-[0.28em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "UI/UX Designer",
+            "cls": "mt-1 text-sm text-foreground/68",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": false,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "September 2022 - November 2024",
+            "cls": "mt-2 text-[11px] uppercase tracking-[0.28em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Graphic Designer",
+            "cls": "mt-1 text-sm text-foreground/68",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": false,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "January 2023 - April 2024",
+            "cls": "mt-2 text-[11px] uppercase tracking-[0.28em] text-foreground/75",
+            "onPlate": true,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Available for UI/UX design collaborations, produ",
+            "cls": "mt-5 max-w-2xl text-base leading-8 text-foreground/75 md:text-lg",
+            "onPlate": true,
+            "onScrim": true,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Email",
+            "cls": "text-[10px] uppercase tracking-[0.32em] text-foreground/65",
+            "onPlate": true,
+            "onScrim": true,
+            "faint75": false,
+            "faint65": true,
+            "faint45": false
+          },
+          {
+            "text": "Location",
+            "cls": "text-[10px] uppercase tracking-[0.32em] text-foreground/65",
+            "onPlate": true,
+            "onScrim": true,
+            "faint75": false,
+            "faint65": true,
+            "faint45": false
+          },
+          {
+            "text": "Social",
+            "cls": "mb-4 text-[10px] uppercase tracking-[0.32em] text-foreground/65",
+            "onPlate": true,
+            "onScrim": true,
+            "faint75": false,
+            "faint65": true,
+            "faint45": false
+          },
+          {
+            "text": "Food ordering app",
+            "cls": "block text-[10px] uppercase tracking-[0.28em] text-foreground/75",
+            "onPlate": false,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Food ordering app",
+            "cls": "block text-[10px] uppercase tracking-[0.28em] text-foreground/75",
+            "onPlate": false,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Ecommerce app",
+            "cls": "block text-[10px] uppercase tracking-[0.28em] text-foreground/75",
+            "onPlate": false,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Travel booking app",
+            "cls": "block text-[10px] uppercase tracking-[0.28em] text-foreground/75",
+            "onPlate": false,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          },
+          {
+            "text": "Streaming app",
+            "cls": "block text-[10px] uppercase tracking-[0.28em] text-foreground/75",
+            "onPlate": false,
+            "onScrim": false,
+            "faint75": true,
+            "faint65": false,
+            "faint45": false
+          }
+        ],
+        "vh": 900,
+        "vw": 1440,
+        "bdBackground": "linear-gradient(rgb(5, 5, 5) 0%, rgb(12, 16, 24) 46%, rgb(18, 22, 31) 78%, rgb(26, 36, 51) 100%)"
+      }
+    },
+    "C1": {
+      "id": "C1",
+      "status": "FAIL",
+      "detail": "Christmas type on #6d1024 scrim=false bgVar=#6d1024 whiteUnder=false snowInType=0 snowPicker=0 snowNav=0 estParticles=7 sourceCount=36 scrim92=true scrim82=true",
+      "underType": {
+        "x": 810,
+        "y": 353,
+        "stack": [
+          {
+            "tag": "SPAN",
+            "cls": "block text-foreground",
+            "bg": "rgba(0, 0, 0, 0)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "H1",
+            "cls": "text-[2rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-",
+            "bg": "rgba(0, 0, 0, 0)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "DIV",
+            "cls": "mt-4 flex max-w-xl flex-wrap items-end gap-x-3 gap-y-2",
+            "bg": "rgba(0, 0, 0, 0)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "DIV",
+            "cls": "flex flex-col justify-center",
+            "bg": "rgba(0, 0, 0, 0)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "DIV",
+            "cls": "grid items-center gap-8 md:grid-cols-[1.05fr_0.95fr] md:gap-10 lg:gap-12",
+            "bg": "rgba(0, 0, 0, 0)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "DIV",
+            "cls": "relative z-10 mx-auto max-w-6xl px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "DIV",
+            "cls": "relative h-full min-h-0 overflow-x-hidden overflow-y-auto overscroll-y-contain b",
+            "bg": "rgb(109, 16, 36)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "DIV",
+            "cls": "absolute inset-0 z-10 overflow-hidden visible opacity-100 pointer-events-auto",
+            "bg": "rgba(0, 0, 0, 0)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "DIV",
+            "cls": "relative h-[100dvh] overflow-hidden bg-background text-foreground",
+            "bg": "rgb(109, 16, 36)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "BODY",
+            "cls": "min-h-full overflow-x-hidden bg-background text-foreground",
+            "bg": "rgb(109, 16, 36)",
+            "bgImg": "none"
+          },
+          {
+            "tag": "HTML",
+            "cls": "geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__vari",
+            "bg": "rgb(109, 16, 36)",
+            "bgImg": "none"
+          }
+        ],
+        "bgVar": "#6d1024",
+        "scrimBg": "radial-gradient(color(srgb 0.427451 0.0627451 0.141176 / 0.92) 0%, color(srgb 0.427451 0.0627451 0.141176 / 0.82) 58%, rgba(0, 0, 0, 0) 100%)",
+        "scrimColor": "rgba(0, 0, 0, 0)"
+      },
+      "snowMetric": {
+        "bright": 43,
+        "inType": 0,
+        "inBottom": 2,
+        "inPickerZone": 0,
+        "inNavZone": 0,
+        "estParticles": 7,
+        "cssW": 1440,
+        "cssH": 900,
+        "dpr": 1
+      },
+      "scrim": {
+        "top": 90,
+        "left": 360,
+        "width": 720,
+        "height": 648,
+        "bottom": 738,
+        "right": 1080
+      }
+    },
+    "C3": {
+      "id": "C3",
+      "status": "PASS",
+      "detail": "scrim w=720.0 expected~720.0 top=90.0 (0.1vh=90.0) bottom=738.0 (0.82vh=738.0) feather=true core92=true edge82=true",
+      "scrimRuleText": ".theme-sky__scrim { background: radial-gradient(ellipse at center,\n    var(--background) 0%,\n    var(--background) 58%,\n    transparent 100%); width: min(720px, 78vw); height: 72vh; top: 10vh; left: 50%; transform: translateX(-50%); }",
+      "scrim": {
+        "top": 90,
+        "left": 360,
+        "width": 720,
+        "height": 648,
+        "bottom": 738,
+        "right": 1080
+      }
+    },
+    "C4": {
+      "id": "C4",
+      "status": "PASS",
+      "detail": "grainOpacity=0.06 rule=0.06 behindScrim=true (range 0.04–0.08)",
+      "grainOpacityComputed": 0.06,
+      "grainBehindScrim": true
+    },
+    "C6_HORIZON": {
+      "id": "C6_HORIZON",
+      "status": "FAIL",
+      "detail": "horizonEl=false glowW=200px glowRect={\"top\":522,\"left\":1240,\"width\":200,\"height\":198,\"bottom\":720,\"right\":1440} hazeCrossesPortraitGeom=false band={\"maxY\":550,\"maxFrac\":0.6111111111111112,\"maxB\":89.93103448275863,\"upper\":45.024853128991055,\"spike\":44.90618135376758}",
+      "horizonExists": false,
+      "glowEdgeOk": true,
+      "horizonBand": {
+        "maxY": 550,
+        "maxFrac": 0.6111111111111112,
+        "maxB": 89.93103448275863,
+        "upper": 45.024853128991055,
+        "spike": 44.90618135376758
+      },
+      "hazeCrossesPortrait": false
+    },
+    "C5": {
+      "id": "C5",
+      "status": "FAIL",
+      "detail": "picker.a=null nav.a=null cards=[null,null,null,null,null] bgBackgroundPlates=[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null] chipAlphas=[1,null,null,null,null,null,null,null]",
+      "platesHome": {
+        "cards": [
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          }
+        ],
+        "chips": [
+          {
+            "bg": "rgb(255, 248, 242)",
+            "a": 1,
+            "cls": "mb-1 inline-flex items-center rounded-full border border-accent bg-accent px-3 py-1 text-[10px] font"
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          },
+          {
+            "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+            "a": null
+          }
+        ],
+        "picker": {
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+          "a": null
+        },
+        "nav": {
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)",
+          "a": null
+        }
+      },
+      "bgBackgroundPlates": [
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-ba",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "rounded-2xl border border-foreground/10 bg-background/[0.88] px-4 py-4",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "rounded-2xl border border-foreground/10 bg-background/[0.88] px-4 py-4",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "rounded-2xl border border-foreground/10 bg-background/[0.88] px-4 py-4",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "group rounded-3xl border border-foreground/10 bg-background/[0.88] p-6 transition hover:bo",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "rounded-3xl border border-foreground/10 bg-background/[0.88] p-6",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        },
+        {
+          "cls": "rounded-full border border-foreground/12 bg-background/[0.88] px-5 py-3 text-[10px] upperc",
+          "a": null,
+          "bg": "oklab(0.350565 0.12066 0.0334749 / 0.88)"
+        }
+      ]
+    },
+    "C8": {
+      "id": "C8",
+      "status": "PASS",
+      "detail": "christmas replaces field: backdrop=true scene=christmas field=false fieldDisplay=undefined"
+    },
+    "C11": {
+      "id": "C11",
+      "status": "PASS",
+      "detail": "photoUrl=false"
+    },
+    "C12_HOME_FAINT": {
+      "id": "C12_HOME_FAINT",
+      "status": "PASS",
+      "detail": "faintOffPlateOrScrim=[{\"text\":\"Food ordering app\",\"cls\":\"block text-[10px] uppercase tracking-[0.28em] text-foreground/75\",\"onPlate\":false,\"onScrim\":false,\"faint75\":true,\"faint65\":false,\"faint45\":false},{\"text\":\"Ecommerce app\",\"cls\":\"block text-[10px] uppercase tracking-[0.28em] text-foreground/75\",\"onPlate\":false,\"onScrim\":false,\"faint75\":true,\"faint65\":false,\"faint45\":false},{\"text\":\"Travel booking app\",\"cls\":\"block text-[10px] uppercase tracking-[0.28em] text-foreground/75\",\"onPlate\":false,\"onScrim\":false,\"faint75\":true,\"faint65\":false,\"faint45\":false}] boardHintHome={\"found\":true,\"cls\":\"relative h-[100dvh] overflow-hidden bg-background text-foreground\",\"color\":\"rgb(255, 246, 239)\",\"onPlate\":true,\"text\":\"PortfolioHi! I'm MateoMilolozaAvailableUI/UX DesignerSplit, CroatiaDesign that b\"}",
+      "faintOff": [
+        {
+          "text": "Food ordering app",
+          "cls": "block text-[10px] uppercase tracking-[0.28em] text-foreground/75",
+          "onPlate": false,
+          "onScrim": false,
+          "faint75": true,
+          "faint65": false,
+          "faint45": false
+        },
+        {
+          "text": "Ecommerce app",
+          "cls": "block text-[10px] uppercase tracking-[0.28em] text-foreground/75",
+          "onPlate": false,
+          "onScrim": false,
+          "faint75": true,
+          "faint65": false,
+          "faint45": false
+        },
+        {
+          "text": "Travel booking app",
+          "cls": "block text-[10px] uppercase tracking-[0.28em] text-foreground/75",
+          "onPlate": false,
+          "onScrim": false,
+          "faint75": true,
+          "faint65": false,
+          "faint45": false
+        }
+      ],
+      "boardHint": {
+        "found": true,
+        "cls": "relative h-[100dvh] overflow-hidden bg-background text-foreground",
+        "color": "rgb(255, 246, 239)",
+        "onPlate": true,
+        "text": "PortfolioHi! I'm MateoMilolozaAvailableUI/UX DesignerSplit, CroatiaDesign that b"
+      }
+    },
+    "C2": {
+      "id": "C2",
+      "status": "PASS",
+      "detail": "Contact first-paint opacities=[1,1,1,1,1] soon=[1,1,1,1,1]",
+      "contactImmediate": [
+        {
+          "tag": "P",
+          "text": "Contact",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "H1",
+          "text": "Let's build something memorable.",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "P",
+          "text": "Available for UI/UX design collaborations, product work, and",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "oklab(0.978212 0.00664535 0.0117221 / 0.75)"
+        },
+        {
+          "tag": "DIV",
+          "text": "Emailhello@mateomiloloza.comLocationSplit, Croatia",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "DIV",
+          "text": "SocialLinkedInUpworkDribbble",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        }
+      ],
+      "contactSoon": [
+        {
+          "tag": "P",
+          "text": "Contact",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "H1",
+          "text": "Let's build something memorable.",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "P",
+          "text": "Available for UI/UX design collaborations, product work, and",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "oklab(0.978212 0.00664535 0.0117221 / 0.75)"
+        },
+        {
+          "tag": "DIV",
+          "text": "Emailhello@mateomiloloza.comLocationSplit, Croatia",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "DIV",
+          "text": "SocialLinkedInUpworkDribbble",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        }
+      ]
+    },
+    "C7_CONTACT": {
+      "id": "C7_CONTACT",
+      "status": "PASS",
+      "detail": "ThemeBackdrop on Contact: true scene=christmas"
+    },
+    "C2_PRM": {
+      "id": "C2_PRM",
+      "status": "PASS",
+      "detail": "reduced-motion Contact opacities=[1,1,1,1,1]",
+      "prmContact": [
+        {
+          "tag": "P",
+          "text": "Contact",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "H1",
+          "text": "Let's build something memorable.",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "P",
+          "text": "Available for UI/UX design collaborations, product work, and",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "oklab(0.978212 0.00664535 0.0117221 / 0.75)"
+        },
+        {
+          "tag": "DIV",
+          "text": "Emailhello@mateomiloloza.comLocationSplit, Croatia",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        },
+        {
+          "tag": "DIV",
+          "text": "SocialLinkedInUpworkDribbble",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(255, 246, 239)"
+        }
+      ]
+    },
+    "C7_PROJECTS_GRID": {
+      "id": "C7_PROJECTS_GRID",
+      "status": "PASS",
+      "detail": "ThemeBackdrop on Projects grid: true scene=christmas surface=home"
+    },
+    "C12_BOARD_HINT": {
+      "id": "C12_BOARD_HINT",
+      "status": "PASS",
+      "detail": "boardHint={\"found\":true,\"cls\":\"relative h-[100dvh] overflow-hidden bg-background text-foreground\",\"opacity\":1,\"onPlate\":true,\"isFaint\":false,\"color\":\"rgb(255, 246, 239)\",\"display\":\"block\"} (must not be faint label off plate)"
+    },
+    "C7_PROJECTS_LIST": {
+      "id": "C7_PROJECTS_LIST",
+      "status": "PASS",
+      "detail": "ThemeBackdrop on Projects list: true"
+    },
+    "C5_LIST_CARDS": {
+      "id": "C5_LIST_CARDS",
+      "status": "FAIL",
+      "detail": "list card alphas=[0,0,0,0,0]"
+    }
+  },
+  "blockers": [
+    "SCRIPT_ERROR"
+  ]
+}

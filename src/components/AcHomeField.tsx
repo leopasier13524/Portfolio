@@ -1,6 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { parseColor, readThemeColors, subscribeTheme } from "@/lib/themes";
+
+let inkRgb = { r: 255, g: 255, b: 255 };
+
+function ink(alpha: number) {
+  return `rgba(${inkRgb.r},${inkRgb.g},${inkRgb.b},${alpha})`;
+}
+
+function syncInk() {
+  inkRgb = parseColor(readThemeColors().foreground);
+}
 
 /**
  * AC Home Field v2 — animated canvas constellation.
@@ -139,7 +150,7 @@ function drawVectorGlyph(
   ctx.save();
   ctx.translate(node.x, node.y);
   ctx.rotate(node.rot);
-  ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+  ctx.strokeStyle = ink(alpha);
   ctx.lineWidth = 0.9;
   ctx.beginPath();
 
@@ -163,7 +174,7 @@ function drawVectorGlyph(
       ctx.beginPath();
       ctx.arc(-s, s * 0.6, 1.2, 0, Math.PI * 2);
       ctx.arc(s, -s * 0.6, 1.2, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fillStyle = ink(alpha);
       ctx.fill();
       break;
     }
@@ -237,6 +248,7 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
     }
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    syncInk();
 
     let width = 0;
     let height = 0;
@@ -334,7 +346,7 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
             continue;
           }
 
-          ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+          ctx.strokeStyle = ink(alpha);
           ctx.lineWidth = 0.7;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -354,7 +366,7 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
             if (j < i || k < i || !linked[j].includes(k)) {
               continue;
             }
-            ctx.fillStyle = `rgba(255,255,255,${0.014 * reveal})`;
+            ctx.fillStyle = ink(0.014 * reveal);
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -378,7 +390,7 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
         }
         const base = (0.16 + node.depth * 0.26) * nodeReveal * reveal;
 
-        ctx.fillStyle = `rgba(255,255,255,${base + 0.06})`;
+        ctx.fillStyle = ink(base + 0.06);
         ctx.beginPath();
         ctx.arc(node.x, node.y, 1.05 + node.depth * 0.55, 0, Math.PI * 2);
         ctx.fill();
@@ -391,7 +403,7 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
           ctx.save();
           ctx.translate(node.x, node.y - 13 * node.scale);
           ctx.rotate(node.rot * 0.4);
-          ctx.fillStyle = `rgba(255,255,255,${base * 0.92})`;
+          ctx.fillStyle = ink(base * 0.92);
           ctx.font = `${Math.round(11 * node.scale)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
           ctx.fillText(node.text, 0, 0);
           ctx.restore();
@@ -429,11 +441,11 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
           const x = a.x + (b.x - a.x) * pulse.t;
           const y = a.y + (b.y - a.y) * pulse.t;
           const fade = Math.sin(pulse.t * Math.PI);
-          ctx.fillStyle = `rgba(255,255,255,${0.42 * fade * reveal})`;
+          ctx.fillStyle = ink(0.42 * fade * reveal);
           ctx.beginPath();
           ctx.arc(x, y, 1.35, 0, Math.PI * 2);
           ctx.fill();
-          ctx.strokeStyle = `rgba(255,255,255,${0.12 * fade * reveal})`;
+          ctx.strokeStyle = ink(0.12 * fade * reveal);
           ctx.lineWidth = 0.6;
           ctx.beginPath();
           ctx.arc(x, y, 3.6, 0, Math.PI * 2);
@@ -461,7 +473,7 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
           }
           const radius = 4 + scan.t * 26;
           const fade = (1 - scan.t) * 0.28 * reveal;
-          ctx.strokeStyle = `rgba(255,255,255,${fade})`;
+          ctx.strokeStyle = ink(fade);
           ctx.lineWidth = 0.7;
           ctx.beginPath();
           ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
@@ -502,6 +514,13 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
       pausedAt = performance.now();
     };
 
+    const unsubscribeTheme = subscribeTheme(() => {
+      syncInk();
+      if (reduced) {
+        render(performance.now());
+      }
+    });
+
     controlsRef.current = { start, stop };
 
     build();
@@ -541,6 +560,7 @@ export function AcHomeField({ active = true }: { active?: boolean }) {
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
+      unsubscribeTheme();
       stop();
       controlsRef.current = null;
       observer.disconnect();

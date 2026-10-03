@@ -1,0 +1,2221 @@
+{
+  "overall": "CLEAR",
+  "url": "http://127.0.0.1:3000",
+  "viewportDesktop": "1440x900",
+  "viewportMobile": "390x844",
+  "colorScheme": "dark",
+  "notClearedFromNotes": true,
+  "myRoad": "not tested",
+  "source": {
+    "scrim": "globals.css:432-444 .theme-sky__scrim { left:50%; top:10vh; width:min(720px,78vw); height:72vh; translateX(-50%); color-mix background 92% core, 82% at 58%, transparent 100% }",
+    "springGlow": "globals.css:260-266 width min(200px,16vw); 274-277 christmas/spring left:0; 296-299 spring radial; 301-304 home left auto/right 0; 352-355 home shore AND light display:none",
+    "shoreMask": "globals.css:340-349 summer shore display:block; mask linear-gradient 90deg #000 0-12%, transparent 24-76%, #000 88-100%",
+    "mobileMask": "globals.css:450-454 @media max-width 767px .theme-backdrop[data-surface=home] mask transparent 0 to 64svh, #000 72svh",
+    "grain": "globals.css:422-429 .theme-sky__grain opacity 0.06; DOM order Sky grain then canvas then scrim (ThemeBackdrop.tsx:187,297-298)",
+    "onlyLeft50": "globals.css:433 is the only literal left:50% (scrim). BottomNav.tsx:100 also has Tailwind left-1/2 (not a horizon rule).",
+    "snowBlock": "ThemeBackdrop.tsx:38-56 christmas snow 36; blocked() skips type column min(720,78vw) x 10-82vh, y>height-120, and y<76&&x<240. Draw skips blocked particles (line 259).",
+    "contactGsap": "ContactView.tsx:24 gsap.set autoAlpha 1 before any tween; 26-28 reduced motion returns; 30-39 fromTo y only. Items have no opacity-0 class (lines 53-67).",
+    "nightReplace": "HomeView.tsx:92 night only mounts AcHomeField; ThemeBackdrop.tsx:208-287 showScene false and return null when surface home and theme night.",
+    "mounts": "HomeView.tsx:93 surface home; PortfolioExperience.tsx:336 surface projects (grid and list share this mount); ContactView.tsx:48 surface contact; ProjectDetailOverlay.tsx:456 surface overlay.",
+    "plates": {
+      "wall": "SphereGallery.tsx:344-350 card texture fillStyle paint.background (opaque theme color), not a CSS alpha wash. Hover overlay opacity 0.24 is accent, separate. Fallback list cards line 1414 bg-background/[0.88].",
+      "chips": "HomeView.tsx:238 bg-background/[0.88]",
+      "social": "ContactView.tsx:105 bg-background/[0.88]",
+      "toggle": "ProjectsViewToggle.tsx:34 bg-background/[0.88]",
+      "zoomClose": "ProjectDetailOverlay.tsx:742 bg-background/[0.88]",
+      "cards": "HomeView.tsx:216 experience bg-background/[0.88]; ContactView.tsx:76 and 86 bg-background/[0.88]; ProjectsGridView.tsx:106 bg-background/[0.88]; ProjectsListView.tsx:107 bg-background/[0.88]",
+      "picker": "ThemePicker.tsx:109 bg-background/[0.88] (menu is /90 when open)",
+      "nav": "BottomNav.tsx:108 bg-background/[0.88]"
+    },
+    "photos": "Theme backdrop grain is an inline SVG turbulence data URL (globals.css:426), not a photo file. Project webp/png assets are portfolio content, not the sky.",
+    "leftoverNote": "ProjectsListView.tsx:124 thumb uses ring-foreground/25 and bg-foreground/5. Not one of the five named controls. Note, not a plate fail, unless live shows it on a named control."
+  },
+  "gates": {
+    "1_christmas_scrim_snow": {
+      "status": "PASS",
+      "detail": "h1-behind median rgb(104,16,35) distance to #6d1024=5.1 whiteRatio=0.000; canvas white counts column/picker/nav=0/0/0",
+      "median": {
+        "r": 104,
+        "g": 16,
+        "b": 35,
+        "a": 255,
+        "n": 4520
+      },
+      "snow": {
+        "typeColumn": {
+          "white": 0,
+          "ink": 0,
+          "n": 107712
+        },
+        "picker": {
+          "white": 0,
+          "ink": 0,
+          "n": 4560
+        },
+        "nav": {
+          "white": 0,
+          "ink": 0,
+          "n": 20880
+        }
+      }
+    },
+    "2_contact_before_gsap": {
+      "status": "PASS",
+      "detail": "first-frame min opacity 1; reduced-motion min 1 (matchMedia true); settled visible items min 1. Motion is y-only in source; scene does not fade the copy."
+    },
+    "3_scrim": {
+      "status": "PASS",
+      "detail": "computed width 720px top 90px height 648px left 720px; backgroundImage radial-gradient(color(srgb 0.427451 0.0627451 0.141176 / 0.92) 0%, color(srgb 0.427451 0.0627451 0.141176 / 0.82) 58%, rgba(0, 0, 0, 0) 100%)",
+      "width": 720,
+      "top": 90,
+      "height": 648
+    },
+    "4_plates": {
+      "status": "PASS",
+      "detail": "skillChips:PASS oklab(0.953536 0.00177947 0.013031 / 0.88) a=0.88 | socialPills:PASS oklab(0.953536 0.00177947 0.013031 / 0.88) a=0.88 | projectsToggle:PASS oklab(0.969477 -0.00489077 0.00542092 / 0.88) a=0.88 | zoomClose:PASS oklab(0.969477 -0.00489077 0.00542092 / 0.88) a=0.88 | experienceCard:PASS oklab(0.953536 0.00177947 0.013031 / 0.88) a=0.88 | contactCard:PASS oklab(0.953536 0.00177947 0.013031 / 0.88) a=0.88 | gridCard:PASS oklab(0.969477 -0.00489077 0.00542092 / 0.88) a=0.88 | listRow:PASS oklab(0.969477 -0.00489077 0.00542092 / 0.88) a=0.88 | themePicker:PASS oklab(0.953536 0.00177947 0.013031 / 0.88) a=0.88 | bottomNav:PASS oklab(0.953536 0.00177947 0.013031 / 0.88) a=0.88 | wallTiles:PASS WebGL canvas present. No CSS background on the mesh. Source footer fill is opaque theme background (SphereGallery.tsx:344-350), which is alpha 1 >= 0.88. Screenshot projects-wall.png. a=?",
+      "controls": {
+        "skillChips": {
+          "name": "skill chips",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-background/[0.88] py-2 pl-3 pr-3.5 text-[10px] uppercase tracking-[0.08em] text-foreground/78 sm:gap-3 sm:py-2.5 sm:pl-3.5 sm:pr-4 sm:text-[11px] sm:tra",
+          "text": "FIGMA",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.953536,
+            "aCh": 0.00177947,
+            "bCh": 0.013031,
+            "a": 0.88,
+            "raw": "oklab(0.953536 0.00177947 0.013031 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "socialPills": {
+          "name": "social pills",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "rounded-full border border-foreground/12 bg-background/[0.88] px-5 py-3 text-[10px] uppercase tracking-[0.28em] text-foreground/72 transition hover:border-foreground/30 hover:text-foreground",
+          "text": "LINKEDIN",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.953536,
+            "aCh": 0.00177947,
+            "bCh": 0.013031,
+            "a": 0.88,
+            "raw": "oklab(0.953536 0.00177947 0.013031 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "projectsToggle": {
+          "name": "Projects toggle",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "flex items-center gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md",
+          "text": "GRID",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.969477,
+            "aCh": -0.00489077,
+            "bCh": 0.00542092,
+            "a": 0.88,
+            "raw": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "zoomClose": {
+          "name": "overlay zoom Close",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "absolute right-4 top-[max(1rem,env(safe-area-inset-top))] flex min-h-11 items-center gap-2.5 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-foreground/85 backdrop-blur-md",
+          "text": "CLOSE",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.969477,
+            "aCh": -0.00489077,
+            "bCh": 0.00542092,
+            "a": 0.88,
+            "raw": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "experienceCard": {
+          "name": "experience card",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "rounded-2xl border border-foreground/10 bg-background/[0.88] px-4 py-4",
+          "text": "Tahoma d.o.o UI/UX Designer DECEMBER 2024 - PRESENT",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.953536,
+            "aCh": 0.00177947,
+            "bCh": 0.013031,
+            "a": 0.88,
+            "raw": "oklab(0.953536 0.00177947 0.013031 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "contactCard": {
+          "name": "contact card",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "group rounded-3xl border border-foreground/10 bg-background/[0.88] p-6 transition hover:border-foreground/22 hover:bg-foreground/[0.05]",
+          "text": "EMAIL hello@mateomiloloza.com",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.953536,
+            "aCh": 0.00177947,
+            "bCh": 0.013031,
+            "a": 0.88,
+            "raw": "oklab(0.953536 0.00177947 0.013031 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "gridCard": {
+          "name": "grid card",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "group relative w-full cursor-pointer rounded-sm bg-background/[0.88] text-left outline-none transition-opacity duration-200 active:opacity-80 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-",
+          "text": "MealLi 2.0 FOOD ORDERING APP Complete redesign of the MealLi",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.969477,
+            "aCh": -0.00489077,
+            "bCh": 0.00542092,
+            "a": 0.88,
+            "raw": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "listRow": {
+          "name": "list row",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "group relative flex w-full cursor-pointer items-center gap-4 bg-background/[0.88] px-2 py-5 text-left transition-colors duration-300 md:gap-8 md:px-3 md:py-7",
+          "text": "MealLi 2.0 FOOD ORDERING APP",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.969477,
+            "aCh": -0.00489077,
+            "bCh": 0.00542092,
+            "a": 0.88,
+            "raw": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "themePicker": {
+          "name": "theme picker",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "flex min-h-11 items-center gap-3 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-foreground/85 backdrop-blur-md transition-colors hover:border-foreground/45 hover:text-for",
+          "text": "THEME SUMMER",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.953536,
+            "aCh": 0.00177947,
+            "bCh": 0.013031,
+            "a": 0.88,
+            "raw": "oklab(0.953536 0.00177947 0.013031 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "bottomNav": {
+          "name": "bottom nav",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md sm:justify-center sm:gap-1",
+          "text": "HOME PROJECTS CONTACT",
+          "parsed": {
+            "space": "oklab",
+            "L": 0.953536,
+            "aCh": 0.00177947,
+            "bCh": 0.013031,
+            "a": 0.88,
+            "raw": "oklab(0.953536 0.00177947 0.013031 / 0.88)"
+          },
+          "pass": true,
+          "nearBg": true,
+          "alpha": 0.88
+        },
+        "wallTiles": {
+          "found": true,
+          "pass": true,
+          "reason": "WebGL canvas present. No CSS background on the mesh. Source footer fill is opaque theme background (SphereGallery.tsx:344-350), which is alpha 1 >= 0.88. Screenshot projects-wall.png.",
+          "canvases": [
+            {
+              "className": "theme-sky__particles absolute inset-0 h-full w-full",
+              "parent": "theme-backdrop pointer-events-none fixed inset-0 z-0 overflow-hidden",
+              "w": 0,
+              "h": 0,
+              "hidden": true
+            },
+            {
+              "className": "theme-sky__particles absolute inset-0 h-full w-full",
+              "parent": "theme-backdrop pointer-events-none fixed inset-0 z-0 overflow-hidden",
+              "w": 0,
+              "h": 0,
+              "hidden": true
+            },
+            {
+              "className": "theme-sky__particles absolute inset-0 h-full w-full",
+              "parent": "theme-backdrop pointer-events-none fixed inset-0 z-0 overflow-hidden",
+              "w": 1440,
+              "h": 900,
+              "hidden": false
+            },
+            {
+              "className": "",
+              "parent": "absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing ",
+              "w": 1440,
+              "h": 900,
+              "hidden": false
+            }
+          ]
+        }
+      },
+      "leftoverClasses": []
+    },
+    "5_themebackdrop_mounts": {
+      "status": "PASS",
+      "detail": "home non-night true; projects grid true; projects list true; contact true; overlay true; night home backdrop absent true"
+    },
+    "6_constellation_replace": {
+      "status": "PASS",
+      "detail": "night field true visible backdrops 0; christmas/summer/spring/autumn field hidden true/true/true/true"
+    },
+    "7_horizon": {
+      "status": "PASS",
+      "detail": "home light/shore display summer none/none spring none/none; projects spring glow left 0px width 200px display block; summer shore display block mask linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 12%, rgba(0, 0, 0, 0) 24%, rgba(0, 0, 0, 0) 76%, rgb(0, 0, 0) 88%, rgb(0, 0, 0) 100%); mobile mask linear-gradient(rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0) 64svh, rgb(0, 0, 0) 72svh); centered non-scrim [{\"tag\":\"NAV\",\"className\":\"pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transitio\",\"left\":\"720px\",\"width\":\"489px\",\"transform\":\"none\",\"surface\":null}]",
+      "centeredNonScrim": [
+        {
+          "tag": "NAV",
+          "className": "pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transitio",
+          "left": "720px",
+          "width": "489px",
+          "transform": "none",
+          "surface": null
+        }
+      ]
+    },
+    "8_grain_photos": {
+      "status": "PASS",
+      "detail": "grain opacity 0.06 (want 0.04-0.08), z auto vs scrim z auto; photo urls in backdrop []",
+      "grainZ": "auto",
+      "scrimZ": "auto",
+      "grainOpacity": 0.06
+    }
+  },
+  "screenshots": [
+    "theme-recheck-shots/christmas-home-desktop.png",
+    "theme-recheck-shots/summer-home-desktop.png",
+    "theme-recheck-shots/spring-home-desktop.png",
+    "theme-recheck-shots/summer-projects-shore.png",
+    "theme-recheck-shots/projects-wall.png",
+    "theme-recheck-shots/overlay-zoom-close.png",
+    "theme-recheck-shots/mobile-home-summer.png",
+    "theme-recheck-shots/mobile-home-spring.png"
+  ],
+  "errors": [],
+  "raw": {
+    "nightHome": {
+      "theme": "night",
+      "surfaces": {
+        "home": false,
+        "projects": false,
+        "contact": false,
+        "overlay": false
+      },
+      "field": {
+        "display": "block",
+        "opacity": "1",
+        "visibility": "visible",
+        "left": "0px",
+        "right": "0px",
+        "width": "1440px",
+        "height": "900px",
+        "top": "0px",
+        "bottom": "0px",
+        "transform": "none",
+        "position": "fixed",
+        "zIndex": "0",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "none",
+        "maskImage": "radial-gradient(118% 88% at 50% 44%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.42) 34%, rgba(0, 0, 0, 0.76) 62%, rgb(0, 0, 0) 100%)",
+        "className": "ac-home-field pointer-events-none fixed inset-0 z-0 overflow-hidden",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900,
+          "left": 0,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900
+        },
+        "hiddenByAncestor": false,
+        "scene": null,
+        "surface": null,
+        "hidden": false
+      },
+      "backs": [
+        {
+          "scene": "night",
+          "surface": "contact",
+          "hidden": true,
+          "display": "block"
+        },
+        {
+          "scene": "night",
+          "surface": "projects",
+          "hidden": true,
+          "display": "block"
+        }
+      ]
+    },
+    "christmas": {
+      "theme": "christmas",
+      "surfaces": {
+        "home": true,
+        "projects": false,
+        "contact": false,
+        "overlay": false
+      },
+      "fieldHiddenOrAbsent": true,
+      "scrim": {
+        "display": "block",
+        "opacity": "1",
+        "visibility": "visible",
+        "left": "720px",
+        "right": "0px",
+        "width": "720px",
+        "height": "648px",
+        "top": "90px",
+        "bottom": "162px",
+        "transform": "matrix(1, 0, 0, 1, -360, 0)",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "radial-gradient(color(srgb 0.427451 0.0627451 0.141176 / 0.92) 0%, color(srgb 0.427451 0.0627451 0.141176 / 0.82) 58%, rgba(0, 0, 0, 0) 100%)",
+        "maskImage": "none",
+        "className": "theme-sky__scrim",
+        "rect": {
+          "x": 360,
+          "y": 90,
+          "w": 720,
+          "h": 648,
+          "left": 360,
+          "top": 90,
+          "right": 1080,
+          "bottom": 738
+        },
+        "hiddenByAncestor": false,
+        "scene": null,
+        "surface": null
+      },
+      "grain": {
+        "display": "block",
+        "opacity": "0.06",
+        "visibility": "visible",
+        "left": "0px",
+        "right": "0px",
+        "width": "1440px",
+        "height": "900px",
+        "top": "0px",
+        "bottom": "0px",
+        "transform": "none",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        "maskImage": "radial-gradient(42% 46% at 50% 46%, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 78%)",
+        "className": "theme-sky__grain",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900,
+          "left": 0,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900
+        },
+        "hiddenByAncestor": false,
+        "scene": null,
+        "surface": null
+      },
+      "snow": {
+        "typeColumn": {
+          "white": 0,
+          "ink": 0,
+          "n": 107712
+        },
+        "picker": {
+          "white": 0,
+          "ink": 0,
+          "n": 4560
+        },
+        "nav": {
+          "white": 0,
+          "ink": 0,
+          "n": 20880
+        }
+      },
+      "h1": {
+        "text": "Hi! I'm Mateo Miloloza",
+        "color": "rgb(255, 246, 239)",
+        "opacity": "1",
+        "rect": {
+          "x": 770,
+          "y": 290,
+          "w": 345.703125,
+          "h": 126,
+          "left": 770,
+          "top": 290,
+          "right": 1115.703125,
+          "bottom": 416
+        }
+      },
+      "pixels": {
+        "box": {
+          "x": 770,
+          "y": 290,
+          "w": 345.703125,
+          "h": 126,
+          "color": "rgba(0, 0, 0, 0)"
+        },
+        "median": {
+          "r": 104,
+          "g": 16,
+          "b": 35,
+          "a": 255,
+          "n": 4520
+        },
+        "whiteRatio": 0,
+        "samples": 4520,
+        "h1ColorBeforeClear": "rgba(0, 0, 0, 0)"
+      },
+      "photoHits": [],
+      "centered": [
+        {
+          "tag": "DIV",
+          "className": "theme-sky__scrim",
+          "left": "720px",
+          "width": "720px",
+          "transform": "matrix(1, 0, 0, 1, -360, 0)",
+          "surface": "home"
+        },
+        {
+          "tag": "NAV",
+          "className": "pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transitio",
+          "left": "720px",
+          "width": "489px",
+          "transform": "none",
+          "surface": null
+        }
+      ],
+      "light": {
+        "display": "none",
+        "opacity": "0.8",
+        "visibility": "visible",
+        "left": "auto",
+        "right": "0px",
+        "width": "200px",
+        "height": "198px",
+        "top": "auto",
+        "bottom": "180px",
+        "transform": "none",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "radial-gradient(circle, rgba(255, 186, 120, 0.28), rgba(0, 0, 0, 0) 68%)",
+        "maskImage": "none",
+        "className": "theme-sky__light",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "left": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "hiddenByAncestor": true,
+        "scene": null,
+        "surface": null
+      },
+      "shore": {
+        "display": "none",
+        "opacity": "1",
+        "visibility": "visible",
+        "left": "auto",
+        "right": "auto",
+        "width": "auto",
+        "height": "auto",
+        "top": "auto",
+        "bottom": "auto",
+        "transform": "none",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "none",
+        "maskImage": "none",
+        "className": "theme-sky__shore",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "left": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "hiddenByAncestor": true,
+        "scene": null,
+        "surface": null
+      }
+    },
+    "summerHome": {
+      "light": {
+        "display": "none",
+        "opacity": "0.5",
+        "visibility": "visible",
+        "left": "auto",
+        "right": "0px",
+        "width": "200px",
+        "height": "198px",
+        "top": "auto",
+        "bottom": "180px",
+        "transform": "none",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "radial-gradient(circle, rgba(255, 236, 196, 0.5), rgba(255, 210, 140, 0.14) 42%, rgba(0, 0, 0, 0) 70%)",
+        "maskImage": "none",
+        "className": "theme-sky__light",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "left": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "hiddenByAncestor": true,
+        "scene": null,
+        "surface": null
+      },
+      "shore": {
+        "display": "none",
+        "opacity": "1",
+        "visibility": "visible",
+        "left": "0px",
+        "right": "0px",
+        "width": "auto",
+        "height": "144px",
+        "top": "auto",
+        "bottom": "120px",
+        "transform": "none",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "linear-gradient(rgba(0, 0, 0, 0), rgba(126, 184, 204, 0.28) 46%, rgba(236, 214, 180, 0.4))",
+        "maskImage": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 12%, rgba(0, 0, 0, 0) 24%, rgba(0, 0, 0, 0) 76%, rgb(0, 0, 0) 88%, rgb(0, 0, 0) 100%)",
+        "className": "theme-sky__shore",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "left": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "hiddenByAncestor": true,
+        "scene": null,
+        "surface": null
+      },
+      "scrim": {
+        "display": "block",
+        "opacity": "1",
+        "visibility": "visible",
+        "left": "720px",
+        "right": "0px",
+        "width": "720px",
+        "height": "648px",
+        "top": "90px",
+        "bottom": "162px",
+        "transform": "matrix(1, 0, 0, 1, -360, 0)",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "radial-gradient(color(srgb 0.956863 0.937255 0.901961 / 0.92) 0%, color(srgb 0.956863 0.937255 0.901961 / 0.82) 58%, rgba(0, 0, 0, 0) 100%)",
+        "maskImage": "none",
+        "className": "theme-sky__scrim",
+        "rect": {
+          "x": 360,
+          "y": 90,
+          "w": 720,
+          "h": 648,
+          "left": 360,
+          "top": 90,
+          "right": 1080,
+          "bottom": 738
+        },
+        "hiddenByAncestor": false,
+        "scene": null,
+        "surface": null
+      },
+      "grain": {
+        "display": "block",
+        "opacity": "0.06",
+        "visibility": "visible",
+        "left": "0px",
+        "right": "0px",
+        "width": "1440px",
+        "height": "900px",
+        "top": "0px",
+        "bottom": "0px",
+        "transform": "none",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        "maskImage": "radial-gradient(42% 46% at 50% 46%, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 78%)",
+        "className": "theme-sky__grain",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900,
+          "left": 0,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900
+        },
+        "hiddenByAncestor": false,
+        "scene": null,
+        "surface": null
+      },
+      "field": null,
+      "surfaces": {
+        "home": true,
+        "projects": false,
+        "contact": false,
+        "overlay": false
+      },
+      "h1": {
+        "text": "Hi! I'm Mateo Miloloza",
+        "color": "rgb(28, 36, 48)",
+        "opacity": "1",
+        "rect": {
+          "x": 770,
+          "y": 290,
+          "w": 345.703125,
+          "h": 126,
+          "left": 770,
+          "top": 290,
+          "right": 1115.703125,
+          "bottom": 416
+        }
+      },
+      "pixels": {
+        "box": {
+          "x": 770,
+          "y": 290,
+          "w": 345.703125,
+          "h": 126,
+          "color": "rgba(0, 0, 0, 0)"
+        },
+        "median": {
+          "r": 241,
+          "g": 239,
+          "b": 233,
+          "a": 255,
+          "n": 4520
+        },
+        "whiteRatio": 0.9451327433628318,
+        "samples": 4520,
+        "h1ColorBeforeClear": "rgba(0, 0, 0, 0)"
+      },
+      "centered": [
+        {
+          "tag": "DIV",
+          "className": "theme-sky__scrim",
+          "left": "720px",
+          "width": "720px",
+          "transform": "matrix(1, 0, 0, 1, -360, 0)",
+          "surface": "home"
+        },
+        {
+          "tag": "NAV",
+          "className": "pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transitio",
+          "left": "720px",
+          "width": "489px",
+          "transform": "none",
+          "surface": null
+        }
+      ],
+      "photoHits": []
+    },
+    "springHome": {
+      "light": {
+        "display": "none",
+        "opacity": "0.65",
+        "visibility": "visible",
+        "left": "auto",
+        "right": "0px",
+        "width": "200px",
+        "height": "198px",
+        "top": "auto",
+        "bottom": "180px",
+        "transform": "none",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "radial-gradient(circle, rgba(255, 244, 236, 0.4), rgba(0, 0, 0, 0) 70%)",
+        "maskImage": "none",
+        "className": "theme-sky__light",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "left": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "hiddenByAncestor": true,
+        "scene": null,
+        "surface": null
+      },
+      "shore": {
+        "display": "none",
+        "opacity": "1",
+        "visibility": "visible",
+        "left": "auto",
+        "right": "auto",
+        "width": "auto",
+        "height": "auto",
+        "top": "auto",
+        "bottom": "auto",
+        "transform": "none",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "none",
+        "maskImage": "none",
+        "className": "theme-sky__shore",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "left": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "hiddenByAncestor": true,
+        "scene": null,
+        "surface": null
+      },
+      "scrim": {
+        "display": "block",
+        "opacity": "1",
+        "visibility": "visible",
+        "left": "720px",
+        "right": "0px",
+        "width": "720px",
+        "height": "648px",
+        "top": "90px",
+        "bottom": "162px",
+        "transform": "matrix(1, 0, 0, 1, -360, 0)",
+        "position": "absolute",
+        "zIndex": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "radial-gradient(color(srgb 0.952941 0.964706 0.945098 / 0.92) 0%, color(srgb 0.952941 0.964706 0.945098 / 0.82) 58%, rgba(0, 0, 0, 0) 100%)",
+        "maskImage": "none",
+        "className": "theme-sky__scrim",
+        "rect": {
+          "x": 360,
+          "y": 90,
+          "w": 720,
+          "h": 648,
+          "left": 360,
+          "top": 90,
+          "right": 1080,
+          "bottom": 738
+        },
+        "hiddenByAncestor": false,
+        "scene": null,
+        "surface": null
+      },
+      "h1": {
+        "text": "Hi! I'm Mateo Miloloza",
+        "color": "rgb(30, 42, 36)",
+        "opacity": "1",
+        "rect": {
+          "x": 770,
+          "y": 290,
+          "w": 345.703125,
+          "h": 126,
+          "left": 770,
+          "top": 290,
+          "right": 1115.703125,
+          "bottom": 416
+        }
+      },
+      "pixels": {
+        "box": {
+          "x": 770,
+          "y": 290,
+          "w": 345.703125,
+          "h": 126,
+          "color": "rgba(0, 0, 0, 0)"
+        },
+        "median": {
+          "r": 242,
+          "g": 246,
+          "b": 240,
+          "a": 255,
+          "n": 4520
+        },
+        "whiteRatio": 1,
+        "samples": 4520,
+        "h1ColorBeforeClear": "rgba(0, 0, 0, 0)"
+      },
+      "centered": [
+        {
+          "tag": "DIV",
+          "className": "theme-sky__scrim",
+          "left": "720px",
+          "width": "720px",
+          "transform": "matrix(1, 0, 0, 1, -360, 0)",
+          "surface": "home"
+        },
+        {
+          "tag": "NAV",
+          "className": "pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transitio",
+          "left": "720px",
+          "width": "489px",
+          "transform": "none",
+          "surface": null
+        }
+      ],
+      "field": null,
+      "surfaces": {
+        "home": true,
+        "projects": false,
+        "contact": false,
+        "overlay": false
+      }
+    },
+    "projectsHorizon": {
+      "summer": {
+        "shore": {
+          "display": "block",
+          "opacity": "1",
+          "visibility": "visible",
+          "left": "0px",
+          "right": "0px",
+          "width": "1440px",
+          "height": "144px",
+          "top": "636px",
+          "bottom": "120px",
+          "transform": "none",
+          "position": "absolute",
+          "zIndex": "auto",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "linear-gradient(rgba(0, 0, 0, 0), rgba(126, 184, 204, 0.28) 46%, rgba(236, 214, 180, 0.4))",
+          "maskImage": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 12%, rgba(0, 0, 0, 0) 24%, rgba(0, 0, 0, 0) 76%, rgb(0, 0, 0) 88%, rgb(0, 0, 0) 100%)",
+          "className": "theme-sky__shore",
+          "rect": {
+            "x": 0,
+            "y": 636,
+            "w": 1440,
+            "h": 144,
+            "left": 0,
+            "top": 636,
+            "right": 1440,
+            "bottom": 780
+          },
+          "hiddenByAncestor": false,
+          "scene": null,
+          "surface": null
+        },
+        "light": {
+          "display": "block",
+          "opacity": "0.5",
+          "visibility": "visible",
+          "left": "1240px",
+          "right": "0px",
+          "width": "200px",
+          "height": "198px",
+          "top": "522px",
+          "bottom": "180px",
+          "transform": "none",
+          "position": "absolute",
+          "zIndex": "auto",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "radial-gradient(circle, rgba(255, 236, 196, 0.5), rgba(255, 210, 140, 0.14) 42%, rgba(0, 0, 0, 0) 70%)",
+          "maskImage": "none",
+          "className": "theme-sky__light",
+          "rect": {
+            "x": 1240,
+            "y": 522,
+            "w": 200,
+            "h": 198,
+            "left": 1240,
+            "top": 522,
+            "right": 1440,
+            "bottom": 720
+          },
+          "hiddenByAncestor": false,
+          "scene": null,
+          "surface": null
+        },
+        "surfaces": {
+          "home": false,
+          "projects": true,
+          "contact": false,
+          "overlay": false
+        },
+        "scrim": {
+          "display": "block",
+          "opacity": "1",
+          "visibility": "visible",
+          "left": "720px",
+          "right": "0px",
+          "width": "720px",
+          "height": "648px",
+          "top": "90px",
+          "bottom": "162px",
+          "transform": "matrix(1, 0, 0, 1, -360, 0)",
+          "position": "absolute",
+          "zIndex": "auto",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "radial-gradient(color(srgb 0.956863 0.937255 0.901961 / 0.92) 0%, color(srgb 0.956863 0.937255 0.901961 / 0.82) 58%, rgba(0, 0, 0, 0) 100%)",
+          "maskImage": "none",
+          "className": "theme-sky__scrim",
+          "rect": {
+            "x": 360,
+            "y": 90,
+            "w": 720,
+            "h": 648,
+            "left": 360,
+            "top": 90,
+            "right": 1080,
+            "bottom": 738
+          },
+          "hiddenByAncestor": false,
+          "scene": null,
+          "surface": null
+        }
+      },
+      "spring": {
+        "light": {
+          "display": "block",
+          "opacity": "0.65",
+          "visibility": "visible",
+          "left": "0px",
+          "right": "1240px",
+          "width": "200px",
+          "height": "198px",
+          "top": "522px",
+          "bottom": "180px",
+          "transform": "none",
+          "position": "absolute",
+          "zIndex": "auto",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "radial-gradient(circle, rgba(255, 244, 236, 0.4), rgba(0, 0, 0, 0) 70%)",
+          "maskImage": "none",
+          "className": "theme-sky__light",
+          "rect": {
+            "x": 0,
+            "y": 522,
+            "w": 200,
+            "h": 198,
+            "left": 0,
+            "top": 522,
+            "right": 200,
+            "bottom": 720
+          },
+          "hiddenByAncestor": false,
+          "scene": null,
+          "surface": null
+        },
+        "shore": {
+          "display": "none",
+          "opacity": "1",
+          "visibility": "visible",
+          "left": "auto",
+          "right": "auto",
+          "width": "auto",
+          "height": "auto",
+          "top": "auto",
+          "bottom": "auto",
+          "transform": "none",
+          "position": "absolute",
+          "zIndex": "auto",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "maskImage": "none",
+          "className": "theme-sky__shore",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "left": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          "hiddenByAncestor": true,
+          "scene": null,
+          "surface": null
+        },
+        "centered": [
+          {
+            "tag": "DIV",
+            "className": "theme-sky__scrim",
+            "left": "720px",
+            "width": "720px",
+            "transform": "matrix(1, 0, 0, 1, -360, 0)",
+            "surface": "projects"
+          },
+          {
+            "tag": "NAV",
+            "className": "pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transitio",
+            "left": "720px",
+            "width": "489px",
+            "transform": "none",
+            "surface": null
+          }
+        ]
+      }
+    },
+    "wall": {
+      "canvases": [
+        {
+          "className": "theme-sky__particles absolute inset-0 h-full w-full",
+          "parent": "theme-backdrop pointer-events-none fixed inset-0 z-0 overflow-hidden",
+          "w": 0,
+          "h": 0,
+          "hidden": true
+        },
+        {
+          "className": "theme-sky__particles absolute inset-0 h-full w-full",
+          "parent": "theme-backdrop pointer-events-none fixed inset-0 z-0 overflow-hidden",
+          "w": 0,
+          "h": 0,
+          "hidden": true
+        },
+        {
+          "className": "theme-sky__particles absolute inset-0 h-full w-full",
+          "parent": "theme-backdrop pointer-events-none fixed inset-0 z-0 overflow-hidden",
+          "w": 1440,
+          "h": 900,
+          "hidden": false
+        },
+        {
+          "className": "",
+          "parent": "absolute inset-0 z-0 touch-none cursor-grab active:cursor-grabbing ",
+          "w": 1440,
+          "h": 900,
+          "hidden": false
+        }
+      ],
+      "surfaces": {
+        "home": false,
+        "projects": true,
+        "contact": false,
+        "overlay": false
+      },
+      "leftovers": [
+        {
+          "hit": [
+            "foreground/25"
+          ],
+          "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+          "tag": "SPAN",
+          "text": "",
+          "hidden": true
+        },
+        {
+          "hit": [
+            "foreground/25"
+          ],
+          "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+          "tag": "SPAN",
+          "text": "",
+          "hidden": true
+        },
+        {
+          "hit": [
+            "foreground/25"
+          ],
+          "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+          "tag": "SPAN",
+          "text": "",
+          "hidden": true
+        },
+        {
+          "hit": [
+            "foreground/25"
+          ],
+          "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+          "tag": "SPAN",
+          "text": "",
+          "hidden": true
+        },
+        {
+          "hit": [
+            "foreground/25"
+          ],
+          "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+          "tag": "SPAN",
+          "text": "",
+          "hidden": true
+        },
+        {
+          "hit": [
+            "bg-foreground/4"
+          ],
+          "className": "h-1 w-1 rounded-full bg-foreground/40",
+          "tag": "SPAN",
+          "text": "",
+          "hidden": false
+        }
+      ]
+    },
+    "grid": {
+      "surfaces": {
+        "home": false,
+        "projects": true,
+        "contact": false,
+        "overlay": false
+      },
+      "plates": {
+        "skill": {
+          "name": "skill chips",
+          "found": false
+        },
+        "social": {
+          "name": "social pills",
+          "found": false
+        },
+        "toggle": {
+          "name": "Projects toggle",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "flex items-center gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md",
+          "text": "GRID"
+        },
+        "picker": {
+          "name": "theme picker",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "flex min-h-11 items-center gap-3 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-foreground/85 backdrop-blur-md transition-colors hover:border-foreground/45 hover:text-for",
+          "text": "THEME SPRING"
+        },
+        "nav": {
+          "name": "bottom nav",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md sm:justify-center sm:gap-1",
+          "text": "HOME PROJECTS CONTACT"
+        },
+        "expCard": {
+          "name": "experience card",
+          "found": false
+        },
+        "contactCard": {
+          "name": "contact card",
+          "found": false
+        },
+        "gridCard": {
+          "name": "grid card",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "group relative w-full cursor-pointer rounded-sm bg-background/[0.88] text-left outline-none transition-opacity duration-200 active:opacity-80 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-",
+          "text": "MealLi 2.0 FOOD ORDERING APP Complete redesign of the MealLi"
+        },
+        "listRow": {
+          "name": "list row",
+          "found": false
+        },
+        "zoomClose": {
+          "name": "overlay zoom Close",
+          "found": false
+        },
+        "overlayClose": {
+          "name": "overlay Close project",
+          "found": false
+        }
+      },
+      "backs": [
+        "projects"
+      ]
+    },
+    "list": {
+      "surfaces": {
+        "home": false,
+        "projects": true,
+        "contact": false,
+        "overlay": false
+      },
+      "plates": {
+        "skill": {
+          "name": "skill chips",
+          "found": false
+        },
+        "social": {
+          "name": "social pills",
+          "found": false
+        },
+        "toggle": {
+          "name": "Projects toggle",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "flex items-center gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md",
+          "text": "LIST"
+        },
+        "picker": {
+          "name": "theme picker",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "flex min-h-11 items-center gap-3 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-foreground/85 backdrop-blur-md transition-colors hover:border-foreground/45 hover:text-for",
+          "text": "THEME SPRING"
+        },
+        "nav": {
+          "name": "bottom nav",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md sm:justify-center sm:gap-1",
+          "text": "HOME PROJECTS CONTACT"
+        },
+        "expCard": {
+          "name": "experience card",
+          "found": false
+        },
+        "contactCard": {
+          "name": "contact card",
+          "found": false
+        },
+        "gridCard": {
+          "name": "grid card",
+          "found": false
+        },
+        "listRow": {
+          "name": "list row",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "group relative flex w-full cursor-pointer items-center gap-4 bg-background/[0.88] px-2 py-5 text-left transition-colors duration-300 md:gap-8 md:px-3 md:py-7",
+          "text": "MealLi 2.0 FOOD ORDERING APP"
+        },
+        "zoomClose": {
+          "name": "overlay zoom Close",
+          "found": false
+        },
+        "overlayClose": {
+          "name": "overlay Close project",
+          "found": false
+        }
+      }
+    },
+    "overlay": {
+      "surfaces": {
+        "home": false,
+        "projects": true,
+        "contact": false,
+        "overlay": true
+      },
+      "zoomPlates": {
+        "skill": {
+          "name": "skill chips",
+          "found": false
+        },
+        "social": {
+          "name": "social pills",
+          "found": true,
+          "backgroundColor": "rgb(196, 92, 120)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "inline-flex min-h-11 items-center gap-2.5 rounded-full border border-accent bg-accent px-5 py-3 text-accent-foreground transition hover:bg-accent/90",
+          "text": "OPEN LIVE PREVIEW"
+        },
+        "toggle": {
+          "name": "Projects toggle",
+          "found": false
+        },
+        "picker": {
+          "name": "theme picker",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "flex min-h-11 items-center gap-3 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-foreground/85 backdrop-blur-md transition-colors hover:border-foreground/45 hover:text-for",
+          "text": "THEME SPRING"
+        },
+        "nav": {
+          "name": "bottom nav",
+          "found": false
+        },
+        "expCard": {
+          "name": "experience card",
+          "found": false
+        },
+        "contactCard": {
+          "name": "contact card",
+          "found": false
+        },
+        "gridCard": {
+          "name": "grid card",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "group relative w-full cursor-pointer rounded-sm bg-background/[0.88] text-left outline-none transition-opacity duration-200 active:opacity-80 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-",
+          "text": "MealLi 2.0 FOOD ORDERING APP Complete redesign of the MealLi"
+        },
+        "listRow": {
+          "name": "list row",
+          "found": false
+        },
+        "zoomClose": {
+          "name": "overlay zoom Close",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "absolute right-4 top-[max(1rem,env(safe-area-inset-top))] flex min-h-11 items-center gap-2.5 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-foreground/85 backdrop-blur-md",
+          "text": "CLOSE"
+        },
+        "overlayClose": {
+          "name": "overlay Close project",
+          "found": true,
+          "backgroundColor": "oklab(0.969477 -0.00489077 0.00542092 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "group pointer-events-auto absolute right-0 top-[max(1.25rem,env(safe-area-inset-top))] flex min-h-11 shrink-0 items-center gap-2.5 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.32e",
+          "text": "CLOSE"
+        }
+      },
+      "h1": null,
+      "backs": [
+        {
+          "surface": "projects",
+          "scene": "spring"
+        },
+        {
+          "surface": "overlay",
+          "scene": "spring"
+        }
+      ]
+    },
+    "contact": {
+      "surfaces": {
+        "home": false,
+        "projects": false,
+        "contact": true,
+        "overlay": false
+      },
+      "contactItems": [
+        {
+          "text": "CONTACT",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(28, 36, 48)",
+          "hidden": false
+        },
+        {
+          "text": "Let's build something memorable.",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(28, 36, 48)",
+          "hidden": false
+        },
+        {
+          "text": "Available for UI/UX design collaborations, product work, and visually ",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "oklab(0.258193 -0.0051406 -0.0249564 / 0.75)",
+          "hidden": false
+        },
+        {
+          "text": "EMAIL hello@mateomiloloza.com LOCATION Split, Croatia",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(28, 36, 48)",
+          "hidden": false
+        },
+        {
+          "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(28, 36, 48)",
+          "hidden": false
+        }
+      ],
+      "plates": {
+        "skill": {
+          "name": "skill chips",
+          "found": false
+        },
+        "social": {
+          "name": "social pills",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "rounded-full border border-foreground/12 bg-background/[0.88] px-5 py-3 text-[10px] uppercase tracking-[0.28em] text-foreground/72 transition hover:border-foreground/30 hover:text-foreground",
+          "text": "LINKEDIN"
+        },
+        "toggle": {
+          "name": "Projects toggle",
+          "found": false
+        },
+        "picker": {
+          "name": "theme picker",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "flex min-h-11 items-center gap-3 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-foreground/85 backdrop-blur-md transition-colors hover:border-foreground/45 hover:text-for",
+          "text": "THEME SUMMER"
+        },
+        "nav": {
+          "name": "bottom nav",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md sm:justify-center sm:gap-1",
+          "text": "HOME PROJECTS CONTACT"
+        },
+        "expCard": {
+          "name": "experience card",
+          "found": false
+        },
+        "contactCard": {
+          "name": "contact card",
+          "found": true,
+          "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+          "backgroundImage": "none",
+          "opacity": "1",
+          "className": "group rounded-3xl border border-foreground/10 bg-background/[0.88] p-6 transition hover:border-foreground/22 hover:bg-foreground/[0.05]",
+          "text": "EMAIL hello@mateomiloloza.com"
+        },
+        "gridCard": {
+          "name": "grid card",
+          "found": false
+        },
+        "listRow": {
+          "name": "list row",
+          "found": false
+        },
+        "zoomClose": {
+          "name": "overlay zoom Close",
+          "found": false
+        },
+        "overlayClose": {
+          "name": "overlay Close project",
+          "found": false
+        }
+      },
+      "h1": {
+        "text": "Let's build something memorable.",
+        "color": "rgb(28, 36, 48)",
+        "opacity": "1",
+        "rect": {
+          "x": 368,
+          "y": 203,
+          "w": 704,
+          "h": 120,
+          "left": 368,
+          "top": 203,
+          "right": 1072,
+          "bottom": 323
+        }
+      }
+    },
+    "homePlates": {
+      "skill": {
+        "name": "skill chips",
+        "found": true,
+        "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "className": "inline-flex max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-background/[0.88] py-2 pl-3 pr-3.5 text-[10px] uppercase tracking-[0.08em] text-foreground/78 sm:gap-3 sm:py-2.5 sm:pl-3.5 sm:pr-4 sm:text-[11px] sm:tra",
+        "text": "FIGMA"
+      },
+      "social": {
+        "name": "social pills",
+        "found": false
+      },
+      "toggle": {
+        "name": "Projects toggle",
+        "found": false
+      },
+      "picker": {
+        "name": "theme picker",
+        "found": true,
+        "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "className": "flex min-h-11 items-center gap-3 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-foreground/85 backdrop-blur-md transition-colors hover:border-foreground/45 hover:text-for",
+        "text": "THEME SUMMER"
+      },
+      "nav": {
+        "name": "bottom nav",
+        "found": true,
+        "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "className": "relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md sm:justify-center sm:gap-1",
+        "text": "HOME PROJECTS CONTACT"
+      },
+      "expCard": {
+        "name": "experience card",
+        "found": true,
+        "backgroundColor": "oklab(0.953536 0.00177947 0.013031 / 0.88)",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "className": "rounded-2xl border border-foreground/10 bg-background/[0.88] px-4 py-4",
+        "text": "Tahoma d.o.o UI/UX Designer DECEMBER 2024 - PRESENT"
+      },
+      "contactCard": {
+        "name": "contact card",
+        "found": false
+      },
+      "gridCard": {
+        "name": "grid card",
+        "found": false
+      },
+      "listRow": {
+        "name": "list row",
+        "found": false
+      },
+      "zoomClose": {
+        "name": "overlay zoom Close",
+        "found": false
+      },
+      "overlayClose": {
+        "name": "overlay Close project",
+        "found": false
+      }
+    },
+    "leftovers": [
+      {
+        "hit": [
+          "foreground/25"
+        ],
+        "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+        "tag": "SPAN",
+        "text": "",
+        "hidden": true
+      },
+      {
+        "hit": [
+          "foreground/25"
+        ],
+        "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+        "tag": "SPAN",
+        "text": "",
+        "hidden": true
+      },
+      {
+        "hit": [
+          "foreground/25"
+        ],
+        "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+        "tag": "SPAN",
+        "text": "",
+        "hidden": true
+      },
+      {
+        "hit": [
+          "foreground/25"
+        ],
+        "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+        "tag": "SPAN",
+        "text": "",
+        "hidden": true
+      },
+      {
+        "hit": [
+          "foreground/25"
+        ],
+        "className": "relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-sm bg-foreground/5 ring-0 ring-foreground/0 transition duration-300 group-hover:ring-2 group-hover:ring-foreground/25 sm:block md:h-[4.75rem] md:w-32",
+        "tag": "SPAN",
+        "text": "",
+        "hidden": true
+      },
+      {
+        "hit": [
+          "bg-foreground/4"
+        ],
+        "className": "h-1 w-1 rounded-full bg-foreground/40",
+        "tag": "SPAN",
+        "text": "",
+        "hidden": true
+      }
+    ],
+    "autumnHome": {
+      "surfaces": {
+        "home": true,
+        "projects": false,
+        "contact": false,
+        "overlay": false
+      },
+      "fieldHidden": true,
+      "scene": [
+        "autumn"
+      ]
+    },
+    "mobile": {
+      "summer": {
+        "homeMask": "linear-gradient(rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0) 64svh, rgb(0, 0, 0) 72svh)",
+        "light": {
+          "display": "none",
+          "opacity": "0.5",
+          "visibility": "visible",
+          "left": "auto",
+          "right": "0px",
+          "width": "62.4px",
+          "height": "185.68px",
+          "top": "auto",
+          "bottom": "168.8px",
+          "transform": "none",
+          "position": "absolute",
+          "zIndex": "auto",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "radial-gradient(circle, rgba(255, 236, 196, 0.5), rgba(255, 210, 140, 0.14) 42%, rgba(0, 0, 0, 0) 70%)",
+          "maskImage": "none",
+          "className": "theme-sky__light",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "left": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          "hiddenByAncestor": true,
+          "scene": null,
+          "surface": null
+        },
+        "shore": {
+          "display": "none",
+          "opacity": "1",
+          "visibility": "visible",
+          "left": "0px",
+          "right": "0px",
+          "width": "auto",
+          "height": "135.04px",
+          "top": "auto",
+          "bottom": "120px",
+          "transform": "none",
+          "position": "absolute",
+          "zIndex": "auto",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "linear-gradient(rgba(0, 0, 0, 0), rgba(126, 184, 204, 0.28) 46%, rgba(236, 214, 180, 0.4))",
+          "maskImage": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 12%, rgba(0, 0, 0, 0) 24%, rgba(0, 0, 0, 0) 76%, rgb(0, 0, 0) 88%, rgb(0, 0, 0) 100%)",
+          "className": "theme-sky__shore",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "left": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          "hiddenByAncestor": true,
+          "scene": null,
+          "surface": null
+        },
+        "portrait": {
+          "x": 63,
+          "y": -623,
+          "w": 264,
+          "h": 352,
+          "left": 63,
+          "top": -623,
+          "right": 327,
+          "bottom": -271
+        },
+        "surfaces": {
+          "home": true,
+          "projects": false,
+          "contact": false,
+          "overlay": false
+        },
+        "vw": 390
+      },
+      "spring": {
+        "homeMask": "linear-gradient(rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0) 64svh, rgb(0, 0, 0) 72svh)",
+        "light": {
+          "display": "none",
+          "opacity": "0.65",
+          "visibility": "visible",
+          "left": "auto",
+          "right": "0px",
+          "width": "62.4px",
+          "height": "185.68px",
+          "top": "auto",
+          "bottom": "168.8px",
+          "transform": "none",
+          "position": "absolute",
+          "zIndex": "auto",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "radial-gradient(circle, rgba(255, 244, 236, 0.4), rgba(0, 0, 0, 0) 70%)",
+          "maskImage": "none",
+          "className": "theme-sky__light",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "left": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          "hiddenByAncestor": true,
+          "scene": null,
+          "surface": null
+        },
+        "portrait": {
+          "x": 63,
+          "y": -623,
+          "w": 264,
+          "h": 352,
+          "left": 63,
+          "top": -623,
+          "right": 327,
+          "bottom": -271
+        }
+      }
+    },
+    "reducedMotionContact": {
+      "matchMedia": true,
+      "log": [
+        [
+          {
+            "t": 1356,
+            "op": 1,
+            "vis": "visible",
+            "text": "CONTACT"
+          },
+          {
+            "t": 1356,
+            "op": 1,
+            "vis": "visible",
+            "text": "Let's build something memorable."
+          },
+          {
+            "t": 1356,
+            "op": 1,
+            "vis": "visible",
+            "text": "Available for UI/UX design collaboration"
+          },
+          {
+            "t": 1356,
+            "op": 1,
+            "vis": "visible",
+            "text": "EMAIL hello@mateomiloloza.com LOCATION S"
+          },
+          {
+            "t": 1356,
+            "op": 1,
+            "vis": "visible",
+            "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE"
+          }
+        ],
+        [
+          {
+            "t": 1388,
+            "op": 1,
+            "vis": "visible",
+            "text": "CONTACT"
+          },
+          {
+            "t": 1388,
+            "op": 1,
+            "vis": "visible",
+            "text": "Let's build something memorable."
+          },
+          {
+            "t": 1388,
+            "op": 1,
+            "vis": "visible",
+            "text": "Available for UI/UX design collaboration"
+          },
+          {
+            "t": 1388,
+            "op": 1,
+            "vis": "visible",
+            "text": "EMAIL hello@mateomiloloza.com LOCATION S"
+          },
+          {
+            "t": 1388,
+            "op": 1,
+            "vis": "visible",
+            "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE"
+          }
+        ],
+        [
+          {
+            "t": 1406,
+            "op": 1,
+            "vis": "visible",
+            "text": "CONTACT"
+          },
+          {
+            "t": 1407,
+            "op": 1,
+            "vis": "visible",
+            "text": "Let's build something memorable."
+          },
+          {
+            "t": 1407,
+            "op": 1,
+            "vis": "visible",
+            "text": "Available for UI/UX design collaboration"
+          },
+          {
+            "t": 1407,
+            "op": 1,
+            "vis": "visible",
+            "text": "EMAIL hello@mateomiloloza.com LOCATION S"
+          },
+          {
+            "t": 1407,
+            "op": 1,
+            "vis": "visible",
+            "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE"
+          }
+        ],
+        [
+          {
+            "t": 1421,
+            "op": 1,
+            "vis": "visible",
+            "text": "CONTACT"
+          },
+          {
+            "t": 1421,
+            "op": 1,
+            "vis": "visible",
+            "text": "Let's build something memorable."
+          },
+          {
+            "t": 1421,
+            "op": 1,
+            "vis": "visible",
+            "text": "Available for UI/UX design collaboration"
+          },
+          {
+            "t": 1421,
+            "op": 1,
+            "vis": "visible",
+            "text": "EMAIL hello@mateomiloloza.com LOCATION S"
+          },
+          {
+            "t": 1421,
+            "op": 1,
+            "vis": "visible",
+            "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE"
+          }
+        ],
+        [
+          {
+            "t": 1438,
+            "op": 1,
+            "vis": "visible",
+            "text": "CONTACT"
+          },
+          {
+            "t": 1439,
+            "op": 1,
+            "vis": "visible",
+            "text": "Let's build something memorable."
+          },
+          {
+            "t": 1439,
+            "op": 1,
+            "vis": "visible",
+            "text": "Available for UI/UX design collaboration"
+          },
+          {
+            "t": 1439,
+            "op": 1,
+            "vis": "visible",
+            "text": "EMAIL hello@mateomiloloza.com LOCATION S"
+          },
+          {
+            "t": 1439,
+            "op": 1,
+            "vis": "visible",
+            "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE"
+          }
+        ],
+        [
+          {
+            "t": 1454,
+            "op": 1,
+            "vis": "visible",
+            "text": "CONTACT"
+          },
+          {
+            "t": 1455,
+            "op": 1,
+            "vis": "visible",
+            "text": "Let's build something memorable."
+          },
+          {
+            "t": 1455,
+            "op": 1,
+            "vis": "visible",
+            "text": "Available for UI/UX design collaboration"
+          },
+          {
+            "t": 1455,
+            "op": 1,
+            "vis": "visible",
+            "text": "EMAIL hello@mateomiloloza.com LOCATION S"
+          },
+          {
+            "t": 1455,
+            "op": 1,
+            "vis": "visible",
+            "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE"
+          }
+        ],
+        [
+          {
+            "t": 1473,
+            "op": 1,
+            "vis": "visible",
+            "text": "CONTACT"
+          },
+          {
+            "t": 1473,
+            "op": 1,
+            "vis": "visible",
+            "text": "Let's build something memorable."
+          },
+          {
+            "t": 1473,
+            "op": 1,
+            "vis": "visible",
+            "text": "Available for UI/UX design collaboration"
+          },
+          {
+            "t": 1473,
+            "op": 1,
+            "vis": "visible",
+            "text": "EMAIL hello@mateomiloloza.com LOCATION S"
+          },
+          {
+            "t": 1473,
+            "op": 1,
+            "vis": "visible",
+            "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE"
+          }
+        ],
+        [
+          {
+            "t": 1488,
+            "op": 1,
+            "vis": "visible",
+            "text": "CONTACT"
+          },
+          {
+            "t": 1488,
+            "op": 1,
+            "vis": "visible",
+            "text": "Let's build something memorable."
+          },
+          {
+            "t": 1488,
+            "op": 1,
+            "vis": "visible",
+            "text": "Available for UI/UX design collaboration"
+          },
+          {
+            "t": 1488,
+            "op": 1,
+            "vis": "visible",
+            "text": "EMAIL hello@mateomiloloza.com LOCATION S"
+          },
+          {
+            "t": 1488,
+            "op": 1,
+            "vis": "visible",
+            "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE"
+          }
+        ]
+      ],
+      "items": [
+        {
+          "text": "CONTACT",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(28, 36, 48)",
+          "hidden": false
+        },
+        {
+          "text": "Let's build something memorable.",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(28, 36, 48)",
+          "hidden": false
+        },
+        {
+          "text": "Available for UI/UX design collaborations, product work, and visually ",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "oklab(0.258193 -0.0051406 -0.0249564 / 0.75)",
+          "hidden": false
+        },
+        {
+          "text": "EMAIL hello@mateomiloloza.com LOCATION Split, Croatia",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(28, 36, 48)",
+          "hidden": false
+        },
+        {
+          "text": "SOCIAL LINKEDIN UPWORK DRIBBBLE",
+          "opacity": 1,
+          "visibility": "visible",
+          "color": "rgb(28, 36, 48)",
+          "hidden": false
+        }
+      ],
+      "minOpacity": 1
+    },
+    "contactFirstFrames": {
+      "frames": 62,
+      "min": 1,
+      "first": [
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  "httpStatus": 200,
+  "summerSpringPixels": {
+    "summer": {
+      "label": "summer",
+      "h1Color": "rgb(28, 36, 48)",
+      "h1Opacity": "1",
+      "behindMedian": {
+        "r": 241,
+        "g": 239,
+        "b": 233,
+        "a": 255,
+        "n": 4520
+      },
+      "contrast": 13.58,
+      "whiteRatio": 0.9451327433628318
+    },
+    "spring": {
+      "label": "spring",
+      "h1Color": "rgb(30, 42, 36)",
+      "h1Opacity": "1",
+      "behindMedian": {
+        "r": 242,
+        "g": 246,
+        "b": 240,
+        "a": 255,
+        "n": 4520
+      },
+      "contrast": 13.61,
+      "whiteRatio": 1
+    },
+    "screenshots": [
+      "theme-recheck-shots/summer-home-desktop.png",
+      "theme-recheck-shots/spring-home-desktop.png",
+      "theme-recheck-shots/mobile-home-summer.png",
+      "theme-recheck-shots/mobile-home-spring.png"
+    ]
+  },
+  "gateSummary": {
+    "1_christmas_scrim_snow": "PASS",
+    "2_contact_before_gsap": "PASS",
+    "3_scrim": "PASS",
+    "4_plates": "PASS",
+    "5_themebackdrop_mounts": "PASS",
+    "6_constellation_replace": "PASS",
+    "7_horizon": "PASS",
+    "8_grain_photos": "PASS"
+  }
+}

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import type { PortfolioProject, ProjectImage } from "@/content/portfolio";
+import { ThemeBackdrop } from "./ThemeBackdrop";
 
 type FromRect = { left: number; top: number; width: number; height: number };
 
@@ -173,7 +174,7 @@ export function ProjectDetailOverlay({
               top: dest.top,
               width: dest.width,
               height: dest.height,
-              borderRadius: 24,
+              borderRadius: 12,
               duration: FLIP_DURATION,
               ease: "expo.inOut",
               onComplete: () => {
@@ -446,17 +447,19 @@ export function ProjectDetailOverlay({
       <div
         ref={rootRef}
         data-lenis-prevent
-        className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-black text-white opacity-0 will-change-transform"
+        className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-background text-foreground opacity-0 will-change-transform"
         aria-modal="true"
         role="dialog"
         aria-labelledby={titleId}
         tabIndex={-1}
       >
+        <div className="relative min-h-full">
+        <ThemeBackdrop active surface="overlay" />
         {/* Keyed by slug so a "next project" swap mounts fresh, un-animated nodes */}
         <div
           key={shownProject.slug}
           ref={pageRef}
-          className="relative mx-auto w-full max-w-[100rem] px-5 pb-[calc(4rem+env(safe-area-inset-bottom))] md:px-[4vw] md:pb-24"
+          className="relative z-10 mx-auto w-full max-w-[100rem] px-5 pb-[calc(4rem+env(safe-area-inset-bottom))] md:px-[4vw] md:pb-24"
         >
           {/* Close stays reachable while scrolling (zero-height sticky rail) */}
           <div className="pointer-events-none sticky top-0 z-20 h-0">
@@ -466,7 +469,7 @@ export function ProjectDetailOverlay({
               onClick={requestClose}
               data-cta
               aria-label="Close project"
-              className="group pointer-events-auto absolute right-0 top-[max(1.25rem,env(safe-area-inset-top))] flex min-h-11 shrink-0 items-center gap-2.5 rounded-full border border-white/20 bg-black/55 px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-white/85 backdrop-blur-md transition hover:border-white/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black md:top-7 md:min-h-0 md:px-5 md:py-3"
+              className="group pointer-events-auto absolute right-0 top-[max(1.25rem,env(safe-area-inset-top))] flex min-h-11 shrink-0 items-center gap-2.5 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-foreground/90 backdrop-blur-md transition hover:border-foreground/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:top-7 md:min-h-0 md:px-5 md:py-3"
             >
               <span>Close</span>
               <svg
@@ -486,7 +489,7 @@ export function ProjectDetailOverlay({
 
           <p
             data-intro
-            className="max-w-[60%] pt-[calc(max(1.25rem,env(safe-area-inset-top))+0.7rem)] text-[10px] uppercase tracking-[0.3em] text-white/65 opacity-0 md:pt-[2.5rem] md:tracking-[0.42em]"
+            className="max-w-[60%] pt-[calc(max(1.25rem,env(safe-area-inset-top))+0.7rem)] text-[10px] uppercase tracking-[0.3em] text-foreground/90 opacity-0 md:pt-[2.5rem] md:tracking-[0.42em]"
           >
             {shownProject.year} / {shownProject.category}
           </p>
@@ -495,15 +498,14 @@ export function ProjectDetailOverlay({
           <header className="pt-[9svh] md:pt-[11svh]">
             <p
               data-intro
-              className="text-[11px] uppercase tracking-[0.3em] opacity-0"
-              style={{ color: accent }}
+              className="project-kicker text-[11px] font-medium uppercase tracking-[0.3em] opacity-0"
+              style={{ "--project-accent": accent } as React.CSSProperties}
             >
               {shownProject.cardLabel}
             </p>
             <h2
               id={titleId}
-              data-intro
-              className="-ml-[0.04em] mt-3 max-w-[14ch] text-[3rem] font-semibold leading-[0.92] tracking-tight opacity-0 sm:text-7xl md:text-8xl xl:text-[7.5rem] 2xl:text-[8.5rem]"
+              className="-ml-[0.04em] mt-3 max-w-[14ch] text-[3rem] font-semibold leading-[0.92] tracking-tight sm:text-7xl md:text-8xl xl:text-[7.5rem] 2xl:text-[8.5rem]"
             >
               {shownProject.title}
             </h2>
@@ -518,15 +520,15 @@ export function ProjectDetailOverlay({
                     (shownProject.ctaLabel && shownProject.ctaLabel.trim()) ||
                     "Open live preview"
                   }
-                  className="inline-flex min-h-11 items-center gap-2.5 rounded-full border border-white bg-white px-5 py-3 text-black transition hover:bg-white/90"
+                  className="inline-flex min-h-11 items-center gap-2.5 rounded-full border border-accent bg-accent px-5 py-3 text-accent-foreground transition hover:bg-accent/90"
                 >
-                  <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-black">
+                  <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-foreground">
                     {(shownProject.ctaLabel && shownProject.ctaLabel.trim()) ||
                       "Open live preview"}
                   </span>
                   <svg
                     viewBox="0 0 12 12"
-                    className="h-2.5 w-2.5 shrink-0 text-black"
+                    className="h-2.5 w-2.5 shrink-0 text-accent-foreground"
                     aria-hidden
                   >
                     <path
@@ -546,7 +548,7 @@ export function ProjectDetailOverlay({
           <section className="mt-12 grid gap-10 md:mt-16 md:grid-cols-[1.4fr_0.6fr] md:gap-16 lg:grid-cols-[1.5fr_0.5fr]">
             <p
               data-intro
-              className="max-w-4xl text-lg leading-relaxed text-white/85 opacity-0 md:text-2xl md:leading-[1.5]"
+              className="max-w-4xl text-lg leading-relaxed text-foreground/90 opacity-0 md:text-2xl md:leading-[1.5]"
             >
               {shownProject.summary}
             </p>
@@ -554,14 +556,14 @@ export function ProjectDetailOverlay({
             <aside className="md:pt-1.5">
               <dl>
                 <div data-intro className="opacity-0">
-                  <dt className="text-[10px] uppercase tracking-[0.32em] text-white/65">
+                  <dt className="text-[10px] uppercase tracking-[0.32em] text-foreground/90">
                     Tools
                   </dt>
                   <dd className="mt-3 flex flex-wrap gap-2">
                     {shownProject.tools.map((tool) => (
                       <span
                         key={tool}
-                        className="rounded-full border border-white/14 bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.12em] text-white/72 sm:tracking-[0.18em]"
+                        className="rounded-full border border-foreground/14 bg-background/[0.88] px-3 py-1.5 text-[11px] uppercase tracking-[0.12em] text-foreground/90 sm:tracking-[0.18em]"
                       >
                         {tool}
                       </span>
@@ -572,33 +574,46 @@ export function ProjectDetailOverlay({
             </aside>
           </section>
 
-          {/* Hero under description — shared-element target */}
-          <figure
-            data-overlay-hero
-            className="relative mx-auto mt-12 aspect-[16/10] w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] md:mt-16 md:rounded-3xl"
-          >
-            <Image
-              src={shownProject.heroImage}
-              alt={`${shownProject.title} hero`}
-              fill
-              sizes="(max-width: 768px) 92vw, 768px"
-              className="object-cover"
-              priority
-            />
-          </figure>
-
-          {/* Brand mark + boards */}
-          <section className="mx-auto mt-14 w-full max-w-5xl md:mt-20">
+          {/* Cover + brand mark + boards */}
+          <section className="mt-14 w-full max-w-5xl md:mt-20">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <p className="text-[10px] uppercase tracking-[0.32em] text-white/65">
+              <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/90">
                 Boards
               </p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/45">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/90">
                 Click to enlarge
               </p>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-3 md:mt-5 md:grid-cols-3 md:gap-4">
+            <div className="mt-4 flex flex-wrap justify-start gap-3 md:mt-5 md:gap-4 [&>*]:w-[calc((100%-0.75rem)/2)] md:[&>*]:w-[calc((100%-2rem)/3)]">
+              {/* Shared-element target for the card → page transition */}
+              <button
+                type="button"
+                data-overlay-hero
+                onClick={(event) =>
+                  openZoom(
+                    {
+                      src: shownProject.heroImage,
+                      width: shownProject.heroSize.width,
+                      height: shownProject.heroSize.height,
+                      alt: `${shownProject.title} cover`,
+                    },
+                    event
+                  )
+                }
+                aria-label={`Enlarge ${shownProject.title} cover`}
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-foreground/10 bg-background/[0.88] transition hover:border-foreground/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+              >
+                <Image
+                  src={shownProject.heroImage}
+                  alt={`${shownProject.title} cover`}
+                  fill
+                  sizes="(max-width: 768px) 46vw, 330px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  priority
+                />
+              </button>
+
               {shownProject.mark ? (
                 <button
                   type="button"
@@ -609,7 +624,7 @@ export function ProjectDetailOverlay({
                     }
                   }}
                   aria-label={`Enlarge ${shownProject.mark.alt}`}
-                  className="group relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg border border-white/10 opacity-0 transition hover:border-white/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  className="group relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-foreground/10 opacity-0 transition hover:border-foreground/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
                   style={{
                     background: `radial-gradient(120% 140% at 50% 100%, ${accent}33 0%, ${accent}0d 38%, transparent 70%)`,
                   }}
@@ -632,14 +647,14 @@ export function ProjectDetailOverlay({
                   data-reveal
                   onClick={(event) => openZoom(image, event)}
                   aria-label={`Enlarge ${image.alt}`}
-                  className="group relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-white/[0.03] p-1.5 opacity-0 transition hover:border-white/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white md:p-2"
+                  className="group relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-foreground/10 bg-background/[0.88] p-1.5 opacity-0 transition hover:border-foreground/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground md:p-2"
                 >
                   <Image
                     src={image.src}
                     alt={image.alt}
                     width={image.width}
                     height={image.height}
-                    sizes="(max-width: 768px) 46vw, 320px"
+                    sizes="(max-width: 768px) 46vw, 330px"
                     className="max-h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
                     loading={index === 0 ? "eager" : "lazy"}
                   />
@@ -651,14 +666,14 @@ export function ProjectDetailOverlay({
           {/* Notes */}
           <section
             data-reveal
-            className="mt-16 grid gap-8 border-t border-white/10 pt-10 opacity-0 md:mt-24 md:grid-cols-3 md:gap-12 md:pt-12"
+            className="mt-16 grid gap-8 border-t border-foreground/10 pt-10 opacity-0 md:mt-24 md:grid-cols-3 md:gap-12 md:pt-12"
           >
             {shownProject.details.map((detail, index) => (
               <div key={detail}>
-                <p className="text-[10px] uppercase tracking-[0.32em] text-white/65">
+                <p className="text-[10px] uppercase tracking-[0.32em] text-foreground/90">
                   {String(index + 1).padStart(2, "0")}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-white/72 md:text-[15px]">{detail}</p>
+                <p className="mt-3 text-sm leading-7 text-foreground/90 md:text-[15px]">{detail}</p>
               </div>
             ))}
           </section>
@@ -666,12 +681,12 @@ export function ProjectDetailOverlay({
           {/* Footer nav */}
           <footer
             data-reveal
-            className="mt-16 flex flex-col gap-8 border-t border-white/10 pt-8 opacity-0 md:mt-24 md:flex-row md:items-end md:justify-between md:pt-10"
+            className="mt-16 flex flex-col gap-8 border-t border-foreground/10 pt-8 opacity-0 md:mt-24 md:flex-row md:items-end md:justify-between md:pt-10"
           >
             <button
               type="button"
               onClick={requestClose}
-              className="inline-flex items-center gap-3 self-start text-[11px] uppercase tracking-[0.3em] text-white/65 transition hover:text-white"
+              className="inline-flex items-center gap-3 self-start text-[11px] uppercase tracking-[0.3em] text-foreground/90 transition hover:text-foreground"
             >
               <span aria-hidden>←</span>
               Back to projects
@@ -683,7 +698,7 @@ export function ProjectDetailOverlay({
                 onClick={() => onNavigate(nextProject.slug)}
                 className="group flex items-center gap-5 text-left md:gap-7"
               >
-                <span className="relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-md bg-white/5 sm:block md:h-20 md:w-32">
+                <span className="relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-md bg-foreground/5 sm:block md:h-20 md:w-32">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={nextProject.heroImage}
@@ -693,10 +708,10 @@ export function ProjectDetailOverlay({
                   />
                 </span>
                 <span>
-                  <span className="block text-[10px] uppercase tracking-[0.32em] text-white/65">
+                  <span className="block text-[10px] uppercase tracking-[0.32em] text-foreground/90">
                     Next project
                   </span>
-                  <span className="mt-1.5 flex items-center gap-3 text-2xl font-semibold tracking-tight text-white/90 transition-colors group-hover:text-white md:text-4xl">
+                  <span className="mt-1.5 flex items-center gap-3 text-2xl font-semibold tracking-tight text-foreground/90 transition-colors group-hover:text-foreground md:text-4xl">
                     {nextProject.title}
                     <span
                       aria-hidden
@@ -710,11 +725,12 @@ export function ProjectDetailOverlay({
             ) : null}
           </footer>
         </div>
+        </div>
       </div>
 
       {zoomed ? (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/94 p-4 md:p-10"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-background/94 p-4 md:p-10"
           role="dialog"
           aria-modal="true"
           aria-label={zoomed.alt}
@@ -738,7 +754,7 @@ export function ProjectDetailOverlay({
             ref={zoomCloseRef}
             type="button"
             onClick={closeZoom}
-            className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] flex min-h-11 items-center gap-2.5 rounded-full border border-white/20 bg-black/60 px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-white/85 backdrop-blur-md transition hover:border-white/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white md:right-8 md:top-8"
+            className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] flex min-h-11 items-center gap-2.5 rounded-full border border-foreground/20 bg-background/[0.88] px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-foreground/90 backdrop-blur-md transition hover:border-foreground/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground md:right-8 md:top-8"
           >
             Close
             <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" aria-hidden>

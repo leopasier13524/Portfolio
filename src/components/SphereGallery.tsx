@@ -5,6 +5,12 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import type { PortfolioProject } from "@/content/portfolio";
 import {
+  readThemeColors,
+  subscribeTheme,
+  themeRgba,
+  type ThemeColors,
+} from "@/lib/themes";
+import {
   FISHEYE_STRENGTH,
   FISHEYE_ZOOM,
   displayPointerToLinearNdc,
@@ -253,6 +259,91 @@ function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }
 
+function shuffled(count: number) {
+  const order = Array.from({ length: count }, (_, index) => index);
+  for (let i = order.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+
+/** One permutation of `count` that avoids the per-column forbidden values. */
+function permutationAvoiding(count: number, forbidden: Set<number>[]) {
+  const row: number[] = [];
+  const used = new Set<number>();
+  const fill = (col: number): boolean => {
+    if (col === count) {
+      return true;
+    }
+    for (const value of shuffled(count)) {
+      if (used.has(value) || forbidden[col].has(value)) {
+        continue;
+      }
+      row.push(value);
+      used.add(value);
+      if (fill(col + 1)) {
+        return true;
+      }
+      row.pop();
+      used.delete(value);
+    }
+    return false;
+  };
+  return fill(0) ? row : null;
+}
+
+/**
+ * Random project layout for the infinite wall. The block tiles in both
+ * directions, so wrap-around neighbours are checked too. Each row holds every
+ * project once; rows avoid repeating a project directly or diagonally above.
+ */
+function buildWallPattern(count: number, rows: number) {
+  const blocked = (neighbour: number[] | undefined, col: number, diagonals: boolean) => {
+    if (!neighbour) {
+      return [];
+    }
+    return diagonals
+      ? [neighbour[mod(col - 1, count)], neighbour[col], neighbour[mod(col + 1, count)]]
+      : [neighbour[col]];
+  };
+
+  const build = (diagonals: boolean) => {
+    const pattern: number[][] = [];
+    for (let r = 0; r < rows; r += 1) {
+      const above = pattern[r - 1];
+      const below = r === rows - 1 && r > 0 ? pattern[0] : undefined;
+      const row = permutationAvoiding(
+        count,
+        Array.from(
+          { length: count },
+          (_, col) =>
+            new Set([...blocked(above, col, diagonals), ...blocked(below, col, diagonals)])
+        )
+      );
+      if (!row) {
+        return null;
+      }
+      pattern.push(row);
+    }
+    return pattern;
+  };
+
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    const pattern = build(true);
+    if (pattern) {
+      return pattern;
+    }
+  }
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    const pattern = build(false);
+    if (pattern) {
+      return pattern;
+    }
+  }
+  return Array.from({ length: rows }, () => shuffled(count));
+}
+
 function clearMount(node: HTMLDivElement) {
   while (node.firstChild) {
     node.removeChild(node.firstChild);
@@ -311,7 +402,8 @@ function drawCoverImage(
 function createCardTexture(
   project: PortfolioProject,
   image: HTMLImageElement,
-  maxAnisotropy: number
+  maxAnisotropy: number,
+  paint: ThemeColors
 ): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   const sourceWidth = image.naturalWidth || CARD_TEXTURE_WIDTH;
@@ -334,12 +426,12 @@ function createCardTexture(
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
 
-  ctx.fillStyle = "#080808";
+  ctx.fillStyle = paint.background;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   drawCoverImage(ctx, image, 0, 0, canvasWidth, imageHeight);
 
-  ctx.fillStyle = "#080808";
+  ctx.fillStyle = paint.background;
   ctx.fillRect(0, imageHeight, canvasWidth, canvasHeight - imageHeight);
 
   const footerHeight = canvasHeight - imageHeight;
@@ -347,12 +439,12 @@ function createCardTexture(
   const labelY = imageHeight + footerHeight * 0.72;
   const paddingX = Math.round(28 * layoutScale);
 
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = paint.foreground;
   ctx.font = `600 ${Math.round(42 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
   ctx.textBaseline = "middle";
   ctx.fillText(project.title, paddingX, titleY);
 
-  ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
+  ctx.fillStyle = themeRgba(paint.foreground, 0.82);
   ctx.font = `600 ${Math.round(28 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
   const yearWidth = ctx.measureText(project.year).width;
   ctx.fillText(
@@ -361,12 +453,12 @@ function createCardTexture(
     titleY
   );
 
-  ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
+  ctx.fillStyle = themeRgba(paint.foreground, 0.58);
   ctx.font = `500 ${Math.round(22 * layoutScale)}px system-ui, -apple-system, Segoe UI, Arial, sans-serif`;
   ctx.fillText(project.cardLabel, paddingX, labelY);
 
   const borderWidth = Math.max(2, Math.round(2 * layoutScale));
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+  ctx.strokeStyle = themeRgba(paint.foreground, 0.22);
   ctx.lineWidth = borderWidth;
   ctx.strokeRect(
     borderWidth / 2,
@@ -454,7 +546,7 @@ export function SphereGallery({
     const cardTextures: THREE.CanvasTexture[] = [];
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#050505");
+    scene.background = new THREE.Color(readThemeColors().background);
 
     const camera = new THREE.PerspectiveCamera(
       window.innerWidth < 768 ? 48 : 42,
@@ -547,6 +639,10 @@ export function SphereGallery({
     };
 
     const cardMeshes: CardMesh[] = [];
+    const wallPattern = buildWallPattern(
+      projects.length,
+      Math.max(6, projects.length)
+    );
     const cardCount = RENDER_COLS * RENDER_ROWS;
     const halfCols = Math.floor(RENDER_COLS / 2);
     const halfRows = Math.floor(RENDER_ROWS / 2);
@@ -581,11 +677,10 @@ export function SphereGallery({
 
         const globalCol = stepX + colOffset;
         const globalRow = stepY + rowOffset;
-        // Center row shows each project once; other cells tile for infinite explore.
         const projIdx =
-          globalRow === 0 && Math.abs(globalCol) < projects.length
-            ? mod(globalCol + Math.floor(projects.length / 2), projects.length)
-            : mod(globalCol + globalRow * 7, projects.length);
+          wallPattern[mod(globalRow, wallPattern.length)][
+            mod(globalCol, projects.length)
+          ];
         const project = projects[projIdx];
 
         if (mesh.userData.project.slug !== project.slug) {
@@ -1057,6 +1152,7 @@ export function SphereGallery({
     let meshBuildFrame = 0;
 
     const applyCardTexture = (index: number, cardTexture: THREE.CanvasTexture) => {
+      const previous = cardTextures[index];
       cardTextures[index] = cardTexture;
 
       for (const mesh of cardMeshes) {
@@ -1066,8 +1162,31 @@ export function SphereGallery({
         }
       }
 
+      if (previous && previous !== cardTexture) {
+        previous.dispose();
+      }
+
       updateWallLayout();
     };
+
+    const loadedImages: Array<HTMLImageElement | null> = projects.map(() => null);
+
+    const repaintTheme = () => {
+      const paint = readThemeColors();
+      scene.background = new THREE.Color(paint.background);
+      const anisotropy = renderer.capabilities.getMaxAnisotropy();
+      loadedImages.forEach((image, index) => {
+        if (!image) {
+          return;
+        }
+        applyCardTexture(
+          index,
+          createCardTexture(projects[index], image, anisotropy, paint)
+        );
+      });
+    };
+
+    const unsubscribeTheme = subscribeTheme(repaintTheme);
 
     const buildNextTexture = () => {
       textureBuildFrame = 0;
@@ -1080,7 +1199,8 @@ export function SphereGallery({
       const cardTexture = createCardTexture(
         next.project,
         next.image,
-        renderer.capabilities.getMaxAnisotropy()
+        renderer.capabilities.getMaxAnisotropy(),
+        readThemeColors()
       );
       next.sourceTexture.dispose();
       applyCardTexture(next.index, cardTexture);
@@ -1109,10 +1229,12 @@ export function SphereGallery({
             return;
           }
 
+          const image = loaded.image as HTMLImageElement;
+          loadedImages[index] = image;
           pendingTextureJobs.push({
             index,
             project,
-            image: loaded.image as HTMLImageElement,
+            image,
             sourceTexture: loaded,
           });
 
@@ -1242,6 +1364,7 @@ export function SphereGallery({
     meshBuildFrame = window.requestAnimationFrame(createMeshBatch);
 
     return () => {
+      unsubscribeTheme();
       flushTexturesRef.current = null;
       if (textureBuildFrame !== 0) {
         window.cancelAnimationFrame(textureBuildFrame);
@@ -1307,7 +1430,7 @@ export function SphereGallery({
 
   return (
     <div
-      className={`relative z-0 h-[100dvh] w-full overflow-hidden bg-black ${
+      className={`relative z-0 h-[100dvh] w-full overflow-hidden bg-background ${
         activeProjectSlug ? "pointer-events-none" : ""
       }`}
     >
@@ -1355,7 +1478,7 @@ function ProjectAccessList({
       }
     >
       {visible ? (
-        <p className="mb-6 text-[10px] uppercase tracking-[0.42em] text-white/65">
+        <p className="mb-6 text-[10px] uppercase tracking-[0.42em] text-foreground/65">
           Projects
         </p>
       ) : null}
@@ -1376,7 +1499,7 @@ function ProjectAccessList({
               }}
               className={
                 visible
-                  ? "w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left transition hover:border-white/22 hover:bg-white/[0.05] disabled:opacity-50"
+                  ? "w-full rounded-2xl border border-foreground/10 bg-background/[0.88] px-4 py-4 text-left transition hover:border-foreground/22 hover:bg-foreground/[0.05] disabled:opacity-50"
                   : undefined
               }
             >
@@ -1384,7 +1507,7 @@ function ProjectAccessList({
                 {project.title}
               </span>
               {visible ? (
-                <span className="mt-1 block text-sm text-white/62">
+                <span className="mt-1 block text-sm text-foreground/62">
                   {project.year} / {project.cardLabel}
                 </span>
               ) : (

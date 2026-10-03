@@ -16,6 +16,7 @@ export type PortfolioProject = {
   details: string[];
   accent: string;
   heroImage: string;
+  heroSize: { width: number; height: number };
   /** Transparent brand illustration shown beside the intro copy */
   mark?: ProjectImage;
   /** Design boards shown on the project page */
@@ -101,6 +102,106 @@ export const about = [
 
 export const projects: PortfolioProject[] = [
   {
+    slug: "edcube",
+    title: "Edcube",
+    year: "2026",
+    cardLabel: "Payroll integration",
+    category: "UI/UX Design, Web App",
+    tools: ["Figma", "B2B UX", "Data Flows"],
+    summary:
+      "Edcube connects an accounting firm's pre-systems, such as Personio, to edlohn, so payroll-relevant data flows in automatically. Designed across KanzleiCockpit and MandantenCockpit for eurodata.",
+    details: [
+      "KanzleiCockpit gives the firm one workspace for what needs attention, product contracts, employee access and the connected product ecosystem.",
+      "Firms invite clients to MandantenCockpit, where clients authorize their Personio connection with credential guidance built into the flow.",
+      "Data can be sent on a monthly schedule or manually, with a full transfer history and a guided flow for matching employees between systems.",
+    ],
+    heroImage: "/projects/edcube.webp",
+    heroSize: { width: 1600, height: 1034 },
+    gallery: [
+      {
+        src: "/projects/Edcube/KanzleiCockpit overview and ecosystem.png",
+        width: 2400,
+        height: 1800,
+        alt: "KanzleiCockpit overview with open tasks and the connected product ecosystem",
+      },
+      {
+        src: "/projects/Edcube/Contracts and employee access.png",
+        width: 2400,
+        height: 2160,
+        alt: "KanzleiCockpit product contracts and employee access management",
+      },
+      {
+        src: "/projects/Edcube/Invitation and Personio authorization.png",
+        width: 2400,
+        height: 2160,
+        alt: "MandantenCockpit invitation and Personio authorization flow",
+      },
+      {
+        src: "/projects/Edcube/Integration transmission and history.png",
+        width: 2400,
+        height: 2160,
+        alt: "Edcube pre-system overview, transmission schedule and history",
+      },
+      {
+        src: "/projects/Edcube/Employee matching and task resolution.png",
+        width: 2400,
+        height: 2320,
+        alt: "Employee matching review and task resolution in KanzleiCockpit",
+      },
+    ],
+    accent: "#2fb3c4",
+  },
+  {
+    slug: "tms",
+    title: "TMS",
+    year: "2025",
+    cardLabel: "SaaS platform",
+    category: "UI/UX Design, Web App",
+    tools: ["Figma", "SaaS UX", "Workflow Design"],
+    summary:
+      "TMS is a SaaS product with two modules for everyday work that cannot wait: Backup Buddy for handing payroll clients to a colleague during absences, and HACCP for food-safety forms and documentation.",
+    details: [
+      "Backup Buddy pairs a searchable client overview with a five-step handover: coverage type, dates, clients, colleague and a final review.",
+      "HACCP lets teams build reusable forms and add conditional rules that create corrective subtasks when a value crosses a threshold.",
+      "Documentation views surface completion states such as incomplete or requirements not met, so issues are visible at a glance.",
+    ],
+    heroImage: "/projects/tms.webp",
+    heroSize: { width: 1600, height: 1034 },
+    gallery: [
+      {
+        src: "/projects/tms/TMS product overview.png",
+        width: 2400,
+        height: 1800,
+        alt: "TMS product overview with Backup Buddy and HACCP modules",
+      },
+      {
+        src: "/projects/tms/Backup Buddy overview.png",
+        width: 2400,
+        height: 1800,
+        alt: "Backup Buddy client overview and coverage arrangement",
+      },
+      {
+        src: "/projects/tms/Backup Buddy assignment workflow.png",
+        width: 2400,
+        height: 2160,
+        alt: "Backup Buddy five-step client handover workflow",
+      },
+      {
+        src: "/projects/tms/HACCP form building and rules.png",
+        width: 2400,
+        height: 1800,
+        alt: "HACCP form builder with conditional rules and subtasks",
+      },
+      {
+        src: "/projects/tms/HACCP forms and documentation.png",
+        width: 2400,
+        height: 1800,
+        alt: "HACCP forms list and daily documentation records",
+      },
+    ],
+    accent: "#e2467f",
+  },
+  {
     slug: "mealli-2-0",
     title: "MealLi 2.0",
     year: "2025",
@@ -115,6 +216,7 @@ export const projects: PortfolioProject[] = [
       "Live app preview is optimized for mobile viewing, matching the intended product experience.",
     ],
     heroImage: "/projects/mealli-2-0.webp",
+    heroSize: { width: 1600, height: 1033 },
     gallery: [
       {
         src: "/projects/mealli-2-0/board-1.webp",
@@ -123,7 +225,7 @@ export const projects: PortfolioProject[] = [
         alt: "MealLi 2.0 onboarding, sign in and home screens in dark theme",
       },
     ],
-    externalUrl: "https://mealli-dev-preview.figma.site/",
+    externalUrl: "https://mealli.app",
     ctaLabel: "Open live preview",
     accent: "#df5f38",
   },
@@ -142,6 +244,7 @@ export const projects: PortfolioProject[] = [
       "Notification states are integrated for pickup readiness and delivery progress updates.",
     ],
     heroImage: "/projects/mealli.webp",
+    heroSize: { width: 1600, height: 1034 },
     mark: {
       src: "/projects/mealli/mark.webp",
       width: 1000,
@@ -182,6 +285,7 @@ export const projects: PortfolioProject[] = [
       "Interaction and structure were aligned to stay clear across both mobile and web form factors.",
     ],
     heroImage: "/projects/hbmp.webp",
+    heroSize: { width: 1600, height: 1034 },
     mark: {
       src: "/projects/hbmp/mark.webp",
       width: 1000,
@@ -222,6 +326,7 @@ export const projects: PortfolioProject[] = [
       "Trip history and departure-date tracking help users stay organized after booking.",
     ],
     heroImage: "/projects/travelli.webp",
+    heroSize: { width: 1600, height: 1073 },
     mark: {
       src: "/projects/travelli/mark.webp",
       width: 1000,
@@ -256,6 +361,7 @@ export const projects: PortfolioProject[] = [
       "It explores integration-ready patterns compatible with services like Netflix, Prime, Hulu, and HBO.",
     ],
     heroImage: "/projects/stremio.webp",
+    heroSize: { width: 1600, height: 1073 },
     mark: {
       src: "/projects/stremio/mark.webp",
       width: 1000,
@@ -285,78 +391,6 @@ export const portfolioOwner = {
   heroStatement:
     "Design that balances aesthetics with function — shaping products people feel connected to.",
   portraitImage: "/mateo-portrait.png",
-  email: "hello@mateomiloloza.com",
+  email: "milolozamateo@gmail.com",
   location: "Split, Croatia",
 };
-
-export type MyRoadStop = {
-  id: string;
-  title: string;
-  role: string;
-  dates: string;
-  outcome: string;
-  /**
-   * Tools and stack picked up at this stop. The flight renders one logo per
-   * entry, so every name must exist in `skillIcons`.
-   */
-  skills: string[];
-};
-
-/** Locked journey stops — copy exact; date overlaps are intentional. */
-export const myRoadStops: MyRoadStop[] = [
-  {
-    id: "graduation",
-    title: "Graduation — SSK Livno",
-    role: "Web Designer specialty",
-    dates: "2023",
-    outcome: "Completed Web Designer studies at SSK Livno.",
-    skills: [
-      "HTML",
-      "CSS3",
-      "JavaScript",
-      "PHP",
-      "MySQL",
-      "Photoshop",
-      "Premiere Pro",
-      "After Effects",
-    ],
-  },
-  {
-    id: "zero-to-master",
-    title: "Zero to Master",
-    role: "UI/UX training",
-    dates: "2023",
-    outcome: "Built UI/UX craft through focused training.",
-    skills: ["Figma", "Adobe XD", "Illustrator", "Bootstrap"],
-  },
-  {
-    id: "upwork",
-    title: "Upwork",
-    role: "UI/UX Designer",
-    dates: "Sep 2022–Nov 2024",
-    outcome: "Delivered client UI/UX end-to-end as an independent designer.",
-    skills: ["Figma", "Photoshop", "WordPress", "Blender"],
-  },
-  {
-    id: "tiskara-perisa",
-    title: "Tiskara Perisa",
-    role: "Graphic Designer",
-    dates: "Jan 2023–Apr 2024",
-    outcome: "Shipped graphic design in a production team setting.",
-    skills: ["CorelDraw", "InDesign", "Illustrator", "Microsoft Office"],
-  },
-  {
-    id: "tahoma",
-    title: "Tahoma d.o.o",
-    role: "UI/UX Designer",
-    dates: "Dec 2024–Present",
-    outcome: "Designing UI/UX in product today.",
-    skills: ["Figma", "Jira", "Postman", "VSC"],
-  },
-];
-
-/** Skills along the path — only from tools/stack lists (no invented names). */
-export const myRoadPathSkills: string[] = [
-  ...softwareExperience.slice(0, 8),
-  ...languagesAndFrameworks.slice(0, 6),
-];

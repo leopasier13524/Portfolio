@@ -5,6 +5,12 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { gsap } from "gsap";
 import { portfolioOwner } from "@/content/portfolio";
+import {
+  isLightBackground,
+  parseColor,
+  readThemeColors,
+  subscribeTheme,
+} from "@/lib/themes";
 
 type SpaceFieldProps = {
   splashRootRef: RefObject<HTMLElement | null>;
@@ -152,11 +158,11 @@ function paintVignette(canvas: HTMLCanvasElement, lightweight: boolean) {
   const cx = width * 0.5;
   const cy = height * 0.48;
   const radius = Math.max(width, height) * 0.78;
-  const gradient = ctx.createRadialGradient(cx, cy, radius * 0.12, cx, cy, radius);
+  const { r, g, b } = parseColor(readThemeColors().background);
+  const gradient = ctx.createRadialGradient(cx, cy, radius * 0.42, cx, cy, radius);
   gradient.addColorStop(0, "rgba(0,0,0,0)");
-  gradient.addColorStop(0.4, "rgba(0,0,0,0.14)");
-  gradient.addColorStop(0.7, "rgba(0,0,0,0.5)");
-  gradient.addColorStop(1, "rgba(0,0,0,0.88)");
+  gradient.addColorStop(0.62, "rgba(0,0,0,0)");
+  gradient.addColorStop(1, `rgba(${r},${g},${b},0.55)`);
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
 }
@@ -694,6 +700,18 @@ export function SpaceField({
       toneMapped: false,
     });
 
+    const applyParticleTheme = () => {
+      const colors = readThemeColors();
+      material.color.set(colors.foreground);
+      material.blending = isLightBackground(colors.background)
+        ? THREE.NormalBlending
+        : THREE.AdditiveBlending;
+      material.needsUpdate = true;
+      paintVignette(vignetteCanvas, isMobile);
+    };
+    applyParticleTheme();
+    const unsubscribeTheme = subscribeTheme(applyParticleTheme);
+
     const points = new THREE.Points(geometry, material);
     scene.add(points);
 
@@ -1189,6 +1207,7 @@ export function SpaceField({
     }
 
     return () => {
+      unsubscribeTheme();
       disposed = true;
       skipIntroRef.current = null;
       window.clearTimeout(failSafe);

@@ -1,0 +1,125 @@
+{
+  "samples": [
+    {
+      "theme": "night",
+      "label": "h1",
+      "text": "Hi! I'm Mateo Miloloza",
+      "fontSize": 60,
+      "css": "rgb(245, 245, 245)",
+      "bg": [
+        11,
+        16,
+        23
+      ],
+      "fg": [
+        245,
+        245,
+        245
+      ],
+      "contrast": 17.5,
+      "threshold": 3,
+      "pass": true
+    },
+    {
+      "theme": "night",
+      "label": "kicker",
+      "text": "PORTFOLIO",
+      "fontSize": 11,
+      "css": "oklab(0.970145 0.0000441968 0.0000194311 / 0.75)",
+      "bg": [
+        10,
+        14,
+        20
+      ],
+      "fg": [
+        186,
+        187,
+        189
+      ],
+      "contrast": 10.07,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "theme": "christmas",
+      "label": "h1",
+      "text": "Hi! I'm Mateo Miloloza",
+      "fontSize": 60,
+      "css": "rgb(255, 246, 239)",
+      "bg": [
+        110,
+        16,
+        37
+      ],
+      "fg": [
+        255,
+        246,
+        239
+      ],
+      "contrast": 11.16,
+      "threshold": 3,
+      "pass": true
+    },
+    {
+      "theme": "christmas",
+      "label": "kicker",
+      "text": "PORTFOLIO",
+      "fontSize": 11,
+      "css": "oklab(0.978212 0.00664535 0.0117221 / 0.75)",
+      "bg": [
+        110,
+        17,
+        37
+      ],
+      "fg": [
+        219,
+        189,
+        189
+      ],
+      "contrast": 6.79,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "theme": "summer",
+      "label": "h1",
+      "text": "Hi! I'm Mateo Miloloza",
+      "fontSize": 60,
+      "css": "rgb(28, 36, 48)",
+      "bg": [
+        131,
+        181,
+        215
+      ],
+      "fg": [
+        28,
+        36,
+        48
+      ],
+      "contrast": 7.11,
+      "threshold": 3,
+      "pass": true
+    },
+    {
+      "theme": "summer",
+      "label": "kicker",
+      "text": "PORTFOLIO",
+      "fontSize": 11,
+      "css": "oklab(0.258193 -0.0051406 -0.0249564 / 0.75)",
+      "bg": [
+        130,
+        180,
+        214
+      ],
+      "fg": [
+        54,
+        72,
+        90
+      ],
+      "contrast": 4.23,
+      "threshold": 4.5,
+      "pass": false
+    }
+  ],
+  "picker": "DEFAULT\nCHRISTMAS\nSUMMER\nAUTUMN"
+}

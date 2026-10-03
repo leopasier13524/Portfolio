@@ -31,37 +31,8 @@ export function ProjectsViewToggle({
       <div
         role="group"
         aria-label="Projects layout"
-        className="flex items-center gap-0.5 rounded-full border border-white/20 bg-white/25 p-1 backdrop-blur-md"
+        className="flex items-center gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 backdrop-blur-md"
       >
-        {!hideWall ? (
-          <ToggleButton
-            label="Explore"
-            title="Explore view"
-            pressed={layout === "wall"}
-            hidden={hidden}
-            onClick={() => onChange("wall")}
-          >
-            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
-              <rect x="1.25" y="1.25" width="5.5" height="5.5" rx="0.7" fill="currentColor" />
-              <rect x="9.25" y="1.25" width="5.5" height="5.5" rx="0.7" fill="currentColor" />
-              <rect x="1.25" y="9.25" width="5.5" height="5.5" rx="0.7" fill="currentColor" />
-              <rect x="9.25" y="9.25" width="5.5" height="5.5" rx="0.7" fill="currentColor" />
-            </svg>
-          </ToggleButton>
-        ) : null}
-        <ToggleButton
-          label="List"
-          title="List view"
-          pressed={layout === "list"}
-          hidden={hidden}
-          onClick={() => onChange("list")}
-        >
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
-            <rect x="1.25" y="2.4" width="13.5" height="1.7" rx="0.6" fill="currentColor" />
-            <rect x="1.25" y="7.15" width="13.5" height="1.7" rx="0.6" fill="currentColor" />
-            <rect x="1.25" y="11.9" width="13.5" height="1.7" rx="0.6" fill="currentColor" />
-          </svg>
-        </ToggleButton>
         <ToggleButton
           label="Grid"
           title="Grid view"
@@ -78,6 +49,35 @@ export function ProjectsViewToggle({
             <rect x="11" y="9.4" width="3.8" height="5.2" rx="0.55" fill="currentColor" />
           </svg>
         </ToggleButton>
+        <ToggleButton
+          label="List"
+          title="List view"
+          pressed={layout === "list"}
+          hidden={hidden}
+          onClick={() => onChange("list")}
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
+            <rect x="1.25" y="2.4" width="13.5" height="1.7" rx="0.6" fill="currentColor" />
+            <rect x="1.25" y="7.15" width="13.5" height="1.7" rx="0.6" fill="currentColor" />
+            <rect x="1.25" y="11.9" width="13.5" height="1.7" rx="0.6" fill="currentColor" />
+          </svg>
+        </ToggleButton>
+        {!hideWall ? (
+          <ToggleButton
+            label="Explore"
+            title="Explore view"
+            pressed={layout === "wall"}
+            hidden={hidden}
+            onClick={() => onChange("wall")}
+          >
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
+              <rect x="1.25" y="1.25" width="5.5" height="5.5" rx="0.7" fill="currentColor" />
+              <rect x="9.25" y="1.25" width="5.5" height="5.5" rx="0.7" fill="currentColor" />
+              <rect x="1.25" y="9.25" width="5.5" height="5.5" rx="0.7" fill="currentColor" />
+              <rect x="9.25" y="9.25" width="5.5" height="5.5" rx="0.7" fill="currentColor" />
+            </svg>
+          </ToggleButton>
+        ) : null}
       </div>
     </div>
   );
@@ -109,8 +109,8 @@ function ToggleButton({
       onClick={onClick}
       className={`flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-full text-[10px] uppercase tracking-[0.22em] transition-all duration-300 md:min-h-10 md:min-w-10 ${
         pressed
-          ? "bg-white px-3 text-black md:px-3.5"
-          : "px-2.5 text-white/85 hover:text-white md:px-2.5"
+          ? "bg-accent px-3 text-accent-foreground md:px-3.5"
+          : "px-2.5 text-foreground/85 hover:text-foreground md:px-2.5"
       }`}
     >
       {children}

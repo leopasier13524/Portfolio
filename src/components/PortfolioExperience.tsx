@@ -7,13 +7,14 @@ import { projects } from "@/content/portfolio";
 import { BottomNav, type AppView } from "./BottomNav";
 import { ContactView } from "./ContactView";
 import { HomeView } from "./HomeView";
-import { MyRoadView } from "./MyRoadView";
 import { ProjectDetailOverlay } from "./ProjectDetailOverlay";
 import { ProjectsGridView } from "./ProjectsGridView";
 import { ProjectsListView } from "./ProjectsListView";
 import { ProjectsViewToggle, type ProjectsLayout } from "./ProjectsViewToggle";
 import { SpaceField } from "./SpaceField";
 import { SplashIntro } from "./SplashIntro";
+import { ThemeBackdrop } from "./ThemeBackdrop";
+import { ThemePicker } from "./ThemePicker";
 
 const SphereGallery = dynamic(
   () => import("./SphereGallery").then((mod) => mod.SphereGallery),
@@ -43,11 +44,10 @@ export function PortfolioExperience() {
   const [navView, setNavView] = useState<AppView>("home");
   const [contentView, setContentView] = useState<AppView>("home");
   const [galleryMounted, setGalleryMounted] = useState(false);
-  const [myRoadOpen, setMyRoadOpen] = useState(false);
   const splashRootRef = useRef<HTMLDivElement | null>(null);
   const homeRootRef = useRef<HTMLDivElement | null>(null);
   const contentFrameRef = useRef<number | null>(null);
-  const [projectsLayout, setProjectsLayout] = useState<ProjectsLayout>("wall");
+  const [projectsLayout, setProjectsLayout] = useState<ProjectsLayout>("grid");
   const [activeProjectSlug, setActiveProjectSlug] = useState<string | null>(null);
   const [fromRect, setFromRect] = useState<FromRect | null>(null);
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
@@ -236,9 +236,6 @@ export function PortfolioExperience() {
   };
 
   const handleViewChange = (view: AppView) => {
-    if (myRoadOpen) {
-      setMyRoadOpen(false);
-    }
     if (!introDone || view === navView) {
       return;
     }
@@ -287,7 +284,8 @@ export function PortfolioExperience() {
   const handleIntroComplete = releaseIntro;
 
   return (
-    <div className="relative h-[100dvh] overflow-hidden bg-black text-white">
+    <div className="relative h-[100dvh] overflow-hidden bg-background text-foreground">
+      <ThemeBackdrop fixed particles={false} />
       {spaceActive ? (
         <div
           className="pointer-events-none fixed inset-0 z-30 opacity-100"
@@ -326,13 +324,6 @@ export function PortfolioExperience() {
           rootRef={homeRootRef}
           active={introDone && contentView === "home"}
           portraitMotion={!splashMounted && !reducedMotion}
-          onOpenMyRoad={
-            introDone
-              ? () => {
-                  setMyRoadOpen(true);
-                }
-              : undefined
-          }
         />
       </div>
 
@@ -361,18 +352,18 @@ export function PortfolioExperience() {
           </div>
         ) : wallVisible ? (
           <div
-            className="absolute inset-0 z-[1] flex items-center justify-center bg-black"
+            className="absolute inset-0 z-[1] flex items-center justify-center bg-background"
             role="status"
             aria-live="polite"
           >
             <div className="flex w-full max-w-3xl flex-col gap-3 px-4 md:px-8">
-              <p className="mb-2 text-[10px] uppercase tracking-[0.34em] text-white/65">
+              <p className="mb-2 text-[10px] uppercase tracking-[0.34em] text-foreground/65">
                 Loading explore
               </p>
               {[0, 1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-20 animate-pulse rounded-2xl border border-white/10 bg-white/[0.04]"
+                  className="h-20 animate-pulse rounded-2xl border border-foreground/10 bg-background/[0.88]"
                 />
               ))}
             </div>
@@ -408,21 +399,12 @@ export function PortfolioExperience() {
         </div>
 
         <div
-          className={`pointer-events-none absolute inset-0 z-20 transition-opacity duration-300 ${
-            wallVisible && !projectOpen ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black via-black/50 to-transparent md:h-36" />
-          <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black via-black/55 to-transparent md:h-44" />
-        </div>
-
-        <div
           ref={projectsHintRef}
           className="pointer-events-none absolute inset-x-0 bottom-[calc(6.25rem+env(safe-area-inset-bottom))] z-20 hidden px-4 opacity-0 md:bottom-[6.75rem] md:block md:px-8"
         >
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[10px] uppercase tracking-[0.28em] text-white/68 md:tracking-[0.32em]">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[10px] uppercase tracking-[0.28em] text-foreground/68 md:tracking-[0.32em]">
             <span>Drag to explore · infinite wall</span>
-            <span className="h-1 w-1 rounded-full bg-white/40" />
+            <span className="h-1 w-1 rounded-full bg-foreground/40" />
             <span>Click card to enter project</span>
           </div>
         </div>
@@ -444,8 +426,10 @@ export function PortfolioExperience() {
         activeView={navView}
         onChange={handleViewChange}
         onProjectsIntent={handleProjectsIntent}
-        hidden={!introDone || projectOpen || myRoadOpen}
-      />
+        hidden={!introDone || projectOpen}
+      >
+        <ThemePicker hidden={!introDone || projectOpen} />
+      </BottomNav>
 
       <ProjectDetailOverlay
         project={activeProject}
@@ -455,21 +439,6 @@ export function PortfolioExperience() {
         fromRect={fromRect}
         previewSrc={previewSrc}
       />
-      {myRoadOpen ? (
-        <MyRoadView
-          onClose={() => {
-            setMyRoadOpen(false);
-            setNavView("home");
-            setContentView("home");
-          }}
-          onContact={() => {
-            setMyRoadOpen(false);
-            setNavView("contact");
-            setContentView("contact");
-          }}
-          reducedMotion={reducedMotion}
-        />
-      ) : null}
     </div>
   );
 }

@@ -13,7 +13,7 @@ export function SkillIcon({ name, className = "", size = "sm" }: SkillIconProps)
   if (!icon) {
     return (
       <span
-        className={`inline-flex shrink-0 items-center justify-center rounded-full bg-white/10 text-[9px] font-semibold uppercase text-white/80 ${box} ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-full bg-foreground/10 text-[9px] font-semibold uppercase text-foreground/80 ${box} ${className}`}
         aria-hidden
       >
         {name.slice(0, 2)}

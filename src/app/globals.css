@@ -1,13 +1,25 @@
 @import "tailwindcss";
 
-:root {
+:root,
+[data-theme="night"] {
   --background: #050505;
   --foreground: #f5f5f5;
+  --accent: #ffffff;
+  --accent-foreground: #050505;
+}
+
+[data-theme="christmas"] {
+  --background: #6d1024;
+  --foreground: #fff6ef;
+  --accent: #fff8f2;
+  --accent-foreground: #6d1024;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -64,8 +76,8 @@ button {
 }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: color-mix(in srgb, var(--foreground) 15%, transparent);
+  color: var(--foreground);
 }
 
 
@@ -126,8 +138,16 @@ button {
 }
 
 .ac-home-field__glow {
-  background: radial-gradient(80% 70% at 88% 18%, rgba(255,255,255,0.07), transparent 55%),
-    radial-gradient(70% 60% at 8% 88%, rgba(255,255,255,0.05), transparent 50%);
+  background: radial-gradient(
+      80% 70% at 88% 18%,
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      70% 60% at 8% 88%,
+      color-mix(in srgb, var(--foreground) 5%, transparent),
+      transparent 50%
+    );
 }
 
 /* Keep the lattice strong at the edges and quiet behind the copy column so the
@@ -170,7 +190,100 @@ button {
   }
 
   .ac-home-field__glow {
-    background: radial-gradient(55% 40% at 8% 8%, rgba(255,255,255,0.05), transparent 55%),
-      radial-gradient(50% 35% at 92% 90%, rgba(255,255,255,0.04), transparent 50%);
+    background: radial-gradient(
+        55% 40% at 8% 8%,
+        color-mix(in srgb, var(--foreground) 5%, transparent),
+        transparent 55%
+      ),
+      radial-gradient(
+        50% 35% at 92% 90%,
+        color-mix(in srgb, var(--foreground) 4%, transparent),
+        transparent 50%
+      );
   }
+}
+
+
+
+.theme-backdrop {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100dvh;
+  width: 100%;
+  margin-bottom: -100dvh;
+  overflow: hidden;
+}
+
+.theme-backdrop--fixed {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.theme-backdrop[data-scene="night"] {
+  background-color: #050505;
+}
+
+.theme-backdrop[data-scene="christmas"] {
+  background-color: #6d1024;
+}
+
+.theme-sky__photo,
+.theme-sky__veil,
+.theme-sky__grain {
+  position: absolute;
+  pointer-events: none;
+}
+
+.theme-sky__photo {
+  inset: -8%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(10px);
+  transform: scale(1.04);
+}
+
+html[data-theme="night"] .theme-sky__photo {
+  background-image: url("/themes/night.webp?v=2");
+  background-color: #070b12;
+  filter: blur(20px);
+}
+
+html[data-theme="christmas"] .theme-sky__photo {
+  background-image: url("/themes/christmas.webp?v=2");
+  background-color: #6d1024;
+}
+
+.theme-sky__veil {
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--background) 42%, transparent) 0%,
+    transparent 12%
+  );
+}
+
+.project-kicker {
+  color: var(--project-accent);
+}
+
+.theme-sky__grain {
+  inset: 0;
+  opacity: 0.04;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 480px 480px;
+}
+
+.portrait-mark__frame {
+  background: transparent;
+}
+
+.splash-intro {
+  opacity: 0;
+  visibility: hidden;
 }

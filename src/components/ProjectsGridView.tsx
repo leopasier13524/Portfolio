@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import type { PortfolioProject } from "@/content/portfolio";
+import { ThemeBackdrop } from "./ThemeBackdrop";
 
 type RectLike = { left: number; top: number; width: number; height: number };
 
@@ -62,9 +63,8 @@ export function ProjectsGridView({
 
     gsap.fromTo(
       items,
-      { autoAlpha: 0, y: 12 },
+      { y: 12 },
       {
-        autoAlpha: 1,
         y: 0,
         duration: 0.6,
         ease: "power3.out",
@@ -76,15 +76,17 @@ export function ProjectsGridView({
   return (
     <div
       ref={rootRef}
-      className="relative z-10 h-full min-h-0 overflow-x-hidden overflow-y-auto overscroll-y-contain bg-black text-white"
+      className="relative z-10 h-full min-h-0 overflow-x-hidden overflow-y-auto overscroll-y-contain text-foreground"
     >
+      <div className="relative min-h-full">
+      <ThemeBackdrop active={active} surface="projects" />
       <div
         ref={contentRef}
-        className="mx-auto w-full max-w-6xl px-4 pb-[calc(10.5rem+env(safe-area-inset-bottom))] pt-[max(4.5rem,calc(3.25rem+env(safe-area-inset-top)))] md:px-10 md:pb-44 md:pt-24"
+        className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-[calc(10.5rem+env(safe-area-inset-bottom))] pt-[max(4.5rem,calc(3.25rem+env(safe-area-inset-top)))] md:px-10 md:pb-44 md:pt-24"
       >
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
+        <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-7">
           {projects.map((project) => (
-            <li key={project.slug} data-grid-item className="opacity-0">
+            <li key={project.slug} data-grid-item className="flex">
               <button
                 type="button"
                 onClick={(event) => {
@@ -104,37 +106,57 @@ export function ProjectsGridView({
                     project.heroImage
                   );
                 }}
-                className="group relative w-full cursor-pointer rounded-sm text-left outline-none transition-opacity duration-200 active:opacity-80 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="group relative flex w-full cursor-pointer flex-col rounded-3xl border border-foreground/10 bg-background/[0.84] p-2.5 text-left outline-none backdrop-blur-md transition duration-300 active:opacity-80 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:p-3 [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)_and_(pointer:fine)]:hover:border-foreground/25"
               >
                 <span
-                  className="pointer-events-none absolute inset-0 rounded-sm opacity-0 transition-opacity duration-300 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+                  className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-300 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
                   style={{
-                    background: `linear-gradient(180deg, transparent 35%, ${project.accent}2e 100%)`,
+                    background: `linear-gradient(180deg, transparent 40%, ${project.accent}26 100%)`,
                   }}
                   aria-hidden
                 />
 
                 <span
                   data-grid-thumb
-                  className="relative block aspect-[16/10] overflow-hidden rounded-sm bg-white/5 ring-1 ring-white/10"
+                  className="relative block aspect-[16/10] overflow-hidden rounded-2xl bg-foreground/5 ring-1 ring-foreground/10"
                 >
                   <Image
                     src={project.heroImage}
                     alt=""
                     fill
                     sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 30vw"
-                    className="object-cover opacity-[0.88] transition duration-300 motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.04] [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 motion-reduce:group-hover:scale-100"
+                    className="object-cover opacity-[0.92] transition duration-500 motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.04] [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 motion-reduce:group-hover:scale-100"
                   />
                 </span>
 
-                <span className="relative mt-3 block space-y-1.5">
-                  <span className="block text-lg font-semibold tracking-tight text-white/92 transition-colors duration-300 md:text-xl [@media(hover:hover)_and_(pointer:fine)]:group-hover:text-white">
-                    {project.title}
+                <span className="relative flex flex-1 flex-col px-2.5 pb-3 pt-5 md:px-3.5 md:pb-4 md:pt-6">
+                  <span className="flex items-start justify-between gap-4">
+                    <span className="block text-xl font-semibold tracking-tight text-foreground/92 transition-colors duration-300 md:text-2xl [@media(hover:hover)_and_(pointer:fine)]:group-hover:text-foreground">
+                      {project.title}
+                    </span>
+                    <span
+                      className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-foreground/15 text-foreground/70 transition duration-300 [@media(hover:hover)_and_(pointer:fine)]:group-hover:border-foreground/40 [@media(hover:hover)_and_(pointer:fine)]:group-hover:text-foreground"
+                      aria-hidden
+                    >
+                      <svg
+                        viewBox="0 0 12 12"
+                        className="h-3 w-3 transition-transform duration-300 [@media(hover:hover)_and_(pointer:fine)]:group-hover:translate-x-0.5 [@media(hover:hover)_and_(pointer:fine)]:group-hover:-translate-y-0.5"
+                      >
+                        <path
+                          d="M3.5 8.5 8.5 3.5M4.5 3.5h4v4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
                   </span>
-                  <span className="block text-[10px] uppercase tracking-[0.28em] text-white/75">
+                  <span className="mt-2 block text-[10px] uppercase tracking-[0.28em] text-foreground/75">
                     {project.cardLabel}
                   </span>
-                  <span className="block text-sm leading-snug text-white/70 line-clamp-2">
+                  <span className="mt-4 text-sm leading-relaxed text-foreground/72 line-clamp-2">
                     {outcomeLine(project.summary)}
                   </span>
                 </span>
@@ -142,6 +164,7 @@ export function ProjectsGridView({
             </li>
           ))}
         </ul>
+      </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
 
 export type AppView = "home" | "projects" | "contact";
@@ -10,8 +10,8 @@ type BottomNavProps = {
   onChange: (view: AppView) => void;
   onProjectsIntent?: () => void;
   hidden?: boolean;
-  /** Raise above journey overlay so pointer exit works */
-  elevated?: boolean;
+  /** Rendered beside the nav pill, e.g. the theme picker. */
+  children?: ReactNode;
 };
 
 const items: { id: AppView; label: string }[] = [
@@ -25,7 +25,7 @@ export function BottomNav({
   onChange,
   onProjectsIntent,
   hidden = false,
-  elevated = false,
+  children,
 }: BottomNavProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const buttonRefs = useRef<Record<AppView, HTMLButtonElement | null>>({
@@ -96,50 +96,52 @@ export function BottomNav({
   }, [activeView]);
 
   return (
-    <nav
-      aria-label="Primary"
+    <div
       aria-hidden={hidden || undefined}
       {...(hidden ? { inert: true } : {})}
-      className={`pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 ${elevated ? "z-50" : "z-40"} w-[min(100%-1.5rem,28rem)] -translate-x-1/2 transition-all duration-500 md:bottom-8 md:w-auto ${
+      className={`fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-40 flex w-[min(100%-1.5rem,32rem)] -translate-x-1/2 items-stretch gap-3 transition-all duration-500 md:bottom-8 md:w-auto md:gap-4 ${
         hidden
           ? "pointer-events-none translate-y-8 opacity-0"
-          : "translate-y-0 opacity-100"
+          : "pointer-events-auto translate-y-0 opacity-100"
       }`}
     >
-      <div
-        ref={containerRef}
-        className="relative mx-auto flex w-full items-center justify-between gap-0.5 rounded-full border border-white/20 bg-white/25 p-1 backdrop-blur-md sm:justify-center sm:gap-1"
-      >
-        <span
-          ref={pillRef}
-          aria-hidden
-          className="absolute top-1 bottom-1 left-0 rounded-full bg-white opacity-0"
-        />
-        {items.map((item) => {
-          const isActive = activeView === item.id;
+      <nav aria-label="Primary" className="min-w-0 flex-1 md:flex-none">
+        <div
+          ref={containerRef}
+          className="relative mx-auto flex h-full w-full items-center justify-between gap-0.5 rounded-full border border-foreground/20 bg-background/[0.88] p-1 text-[12px] backdrop-blur-md sm:justify-center sm:gap-1 sm:text-base"
+        >
+          <span
+            ref={pillRef}
+            aria-hidden
+            className="absolute top-1 bottom-1 left-0 rounded-full bg-accent opacity-0"
+          />
+          {items.map((item) => {
+            const isActive = activeView === item.id;
 
-          return (
-            <button
-              key={item.id}
-              ref={(node) => {
-                buttonRefs.current[item.id] = node;
-              }}
-              type="button"
-              aria-current={isActive ? "page" : undefined}
-              onClick={() => onChange(item.id)}
-              onPointerEnter={
-                item.id === "projects" ? onProjectsIntent : undefined
-              }
-              tabIndex={hidden ? -1 : undefined}
-              className={`relative z-10 min-h-11 flex-1 rounded-full px-3 py-2.5 text-[10px] uppercase tracking-[0.22em] transition-colors duration-300 sm:flex-none sm:px-5 sm:tracking-[0.34em] md:min-h-0 md:px-7 md:py-3 md:text-[11px] ${
-                isActive ? "text-black" : "text-white/85 hover:text-white"
-              }`}
-            >
-              {item.label}
-            </button>
-          );
-        })}
-      </div>
-    </nav>
+            return (
+              <button
+                key={item.id}
+                ref={(node) => {
+                  buttonRefs.current[item.id] = node;
+                }}
+                type="button"
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => onChange(item.id)}
+                onPointerEnter={
+                  item.id === "projects" ? onProjectsIntent : undefined
+                }
+                tabIndex={hidden ? -1 : undefined}
+                className={`relative z-10 min-h-11 flex-1 rounded-full px-2 py-2.5 text-[10px] uppercase tracking-[0.16em] transition-colors duration-300 sm:flex-none sm:px-5 sm:tracking-[0.34em] md:min-h-0 md:px-7 md:py-3 md:text-[11px] ${
+                  isActive ? "text-accent-foreground" : "text-foreground/85 hover:text-foreground"
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+      {children}
+    </div>
   );
 }
