@@ -602,7 +602,7 @@ export function ProjectDetailOverlay({
                   )
                 }
                 aria-label={`Enlarge ${shownProject.title} cover`}
-                className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-foreground/10 bg-background/[0.88] transition hover:border-foreground/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+                className="group relative aspect-[4/3] cursor-zoom-in overflow-hidden rounded-xl bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
               >
                 <Image
                   src={shownProject.heroImage}
@@ -624,7 +624,7 @@ export function ProjectDetailOverlay({
                     }
                   }}
                   aria-label={`Enlarge ${shownProject.mark.alt}`}
-                  className="group relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-foreground/10 opacity-0 transition hover:border-foreground/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+                  className="group relative flex aspect-[4/3] cursor-zoom-in items-center justify-center overflow-hidden rounded-xl opacity-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
                   style={{
                     background: `radial-gradient(120% 140% at 50% 100%, ${accent}33 0%, ${accent}0d 38%, transparent 70%)`,
                   }}
@@ -647,15 +647,14 @@ export function ProjectDetailOverlay({
                   data-reveal
                   onClick={(event) => openZoom(image, event)}
                   aria-label={`Enlarge ${image.alt}`}
-                  className="group relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-foreground/10 bg-background/[0.88] p-1.5 opacity-0 transition hover:border-foreground/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground md:p-2"
+                  className="group relative aspect-[4/3] cursor-zoom-in overflow-hidden rounded-xl bg-foreground/5 opacity-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
                 >
                   <Image
                     src={image.src}
                     alt={image.alt}
-                    width={image.width}
-                    height={image.height}
+                    fill
                     sizes="(max-width: 768px) 46vw, 330px"
-                    className="max-h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
                     loading={index === 0 ? "eager" : "lazy"}
                   />
                 </button>
@@ -730,7 +729,7 @@ export function ProjectDetailOverlay({
 
       {zoomed ? (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-background/94 p-4 md:p-10"
+          className="fixed inset-0 z-[70] bg-[#050505]"
           role="dialog"
           aria-modal="true"
           aria-label={zoomed.alt}
@@ -745,10 +744,9 @@ export function ProjectDetailOverlay({
           <Image
             src={zoomed.src}
             alt={zoomed.alt}
-            width={zoomed.width}
-            height={zoomed.height}
-            sizes="96vw"
-            className="pointer-events-none relative max-h-[86svh] w-auto max-w-full object-contain"
+            fill
+            sizes="100vw"
+            className="pointer-events-none object-contain"
           />
           <button
             ref={zoomCloseRef}
