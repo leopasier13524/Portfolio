@@ -96,8 +96,8 @@ export const experience: ExperienceItem[] = [
 
 export const about = [
   "I am a graduate of Silvija Strahimira Kranjčevića Technical High School in Livno, where I specialized as a Web Designer. In “SSK” I studied programming, mobile and web design, as well as graphic design, video and audio editing and animations.",
-  "After graduating in “SSK”, I later enrolled in the Zero to Master Academy for UI/UX design, where I completed a comprehensive course in web and mobile design.",
-  "Design, for me, goes beyond solving problems. It's about improving user experiences, striking the perfect balance between aesthetics and functionality, and even creating products that form emotional connections with users.",
+  "After graduating, I later enrolled in the Zero to Master Academy for UI/UX design, where I completed a comprehensive course in web and mobile design.",
+  "Design, for me, goes beyond solving problems. It's about improving user experiences, striking the perfect balance between aesthetics and functionality.",
 ];
 
 export const projects: PortfolioProject[] = [
@@ -154,25 +154,25 @@ export const projects: PortfolioProject[] = [
   {
     slug: "tms",
     title: "TMS",
-    year: "2025",
-    cardLabel: "SaaS platform",
+    year: "2026",
+    cardLabel: "Task management system",
     category: "UI/UX Design, Web App",
-    tools: ["Figma", "SaaS UX", "Workflow Design"],
+    tools: ["Figma", "Workflow Design", "Form Design"],
     summary:
-      "TMS is a SaaS product with two modules for everyday work that cannot wait: Backup Buddy for handing payroll clients to a colleague during absences, and HACCP for food-safety forms and documentation.",
+      "TMS is a task management system. I worked on two of its features: Backup Buddy, for handing payroll clients to a colleague during absences, and HACCP, for food-safety checks and documentation.",
     details: [
       "Backup Buddy pairs a searchable client overview with a five-step handover: coverage type, dates, clients, colleague and a final review.",
-      "HACCP lets teams build reusable forms and add conditional rules that create corrective subtasks when a value crosses a threshold.",
-      "Documentation views surface completion states such as incomplete or requirements not met, so issues are visible at a glance.",
+      "In HACCP, teams build reusable forms and add rules that create a corrective subtask when a value crosses a set limit.",
+      "HACCP records flag entries as incomplete or requirements not met, so issues are easy to spot.",
     ],
-    heroImage: "/projects/tms.webp",
+    heroImage: "/projects/tms-cover.webp",
     heroSize: { width: 1600, height: 1034 },
     gallery: [
       {
         src: "/projects/tms/TMS product overview.png",
         width: 2400,
         height: 1800,
-        alt: "TMS product overview with Backup Buddy and HACCP modules",
+        alt: "Overview of the Backup Buddy and HACCP features in TMS",
       },
       {
         src: "/projects/tms/Backup Buddy overview.png",
@@ -209,11 +209,11 @@ export const projects: PortfolioProject[] = [
     category: "UI/UX Design, Mobile",
     tools: ["Figma", "Prototype", "UX Audit"],
     summary:
-      "Complete redesign of the MealLi app with added features, UX and UI improvements, and a fresh visual direction across light and dark themes.",
+      "MealLi 2.0 is my full redesign of the app, now live at mealli.app and ready for the market. It adds new features, clearer flows and a refreshed look in light and dark themes.",
     details: [
-      "Built as a full visual and flow refresh to make the product feel more modern, clearer, and more scalable.",
-      "Focused on interaction clarity and stronger hierarchy so core tasks are easier to complete.",
-      "Live app preview is optimized for mobile viewing, matching the intended product experience.",
+      "Sign-in offers email, Google, Apple or guest access, so new users can start ordering right away.",
+      "Restaurant pages show the rating and wait time up front, with the menu grouped into categories.",
+      "Order Insights is a new feature that tracks spending, order count and a weekly food budget.",
     ],
     heroImage: "/projects/mealli-2-0.webp",
     heroSize: { width: 1600, height: 1033 },
@@ -226,7 +226,7 @@ export const projects: PortfolioProject[] = [
       },
     ],
     externalUrl: "https://mealli.app",
-    ctaLabel: "Open live preview",
+    ctaLabel: "Visit mealli.app",
     accent: "#df5f38",
   },
   {
@@ -237,11 +237,11 @@ export const projects: PortfolioProject[] = [
     category: "UI/UX Design, Mobile",
     tools: ["Mobile UX", "Wireframes", "Design System"],
     summary:
-      "MealLi is a food ordering app designed for a seamless online ordering experience with simple navigation, discovery, and order customization.",
+      "The first version of MealLi, a food ordering app for browsing restaurants, customizing dishes and ordering in a few steps.",
     details: [
-      "Users can browse cuisines, search dishes/restaurants, and place orders in only a few steps.",
-      "The interface emphasizes clean navigation, clear pricing, and preference-based customization.",
-      "Notification states are integrated for pickup readiness and delivery progress updates.",
+      "Users browse trending dishes and categories, search restaurants, and pick a size and ingredients before adding to the cart.",
+      "Checkout covers the cart, payment by card, PayPal or bank transfer, and a transaction history with monthly spending.",
+      "Notifications tell users when an order is ready for pickup and how delivery is progressing.",
     ],
     heroImage: "/projects/mealli.webp",
     heroSize: { width: 1600, height: 1034 },
@@ -278,11 +278,11 @@ export const projects: PortfolioProject[] = [
     category: "UI/UX Design, Web & Mobile",
     tools: ["Responsive UX", "Figma", "Research"],
     summary:
-      "Happy Baby Mobile Phones is an ecommerce app and web concept built for fast product browsing and easy online shopping.",
+      "Happy Baby Mobile Phones is an ecommerce website and mobile app designed for a client, covering phones, accessories and checkout.",
     details: [
-      "Designed to make electronic products easy to discover, compare, and purchase in a few steps.",
-      "Includes promotional and event-oriented states such as weekly offers and seasonal campaigns.",
-      "Interaction and structure were aligned to stay clear across both mobile and web form factors.",
+      "The website and the mobile app share one structure, so shopping feels familiar on either device.",
+      "Shoppers browse categories such as phones, cases, chargers and screen protection, or search for a product directly.",
+      "The home screen highlights new arrivals, a Deal of the Week and seasonal campaigns such as Black Friday.",
     ],
     heroImage: "/projects/hbmp.webp",
     heroSize: { width: 1600, height: 1034 },
@@ -319,11 +319,11 @@ export const projects: PortfolioProject[] = [
     category: "UI/UX Design, Mobile",
     tools: ["Journey Mapping", "App UX", "Branding"],
     summary:
-      "Travelli is a travel booking app concept for finding destinations, discovering hotels, and planning trips through an intuitive guided flow.",
+      "A travel booking app concept for finding destinations, comparing hotels and planning trips.",
     details: [
-      "The product includes a continent-based destination filter for quickly narrowing results.",
-      "Hotel cards and detail views surface ratings, facilities, and booking-relevant information clearly.",
-      "Trip history and departure-date tracking help users stay organized after booking.",
+      "A continent filter narrows destinations quickly, and each destination has a gallery, details and comments.",
+      "Hotel pages show the nightly price, rating, photos and facilities in one place.",
+      "Trip history and departure dates help travelers stay organized after booking.",
     ],
     heroImage: "/projects/travelli.webp",
     heroSize: { width: 1600, height: 1073 },
@@ -354,11 +354,11 @@ export const projects: PortfolioProject[] = [
     category: "UI/UX Design, Desktop App",
     tools: ["Desktop UX", "Interaction Design", "Layout"],
     summary:
-      "Stremio is a streaming app concept focused on easy discovery of movies and TV series with a clean and approachable interface.",
+      "Stremio is a desktop streaming app concept focused on finding movies and series and picking up where you left off.",
     details: [
-      "Users can browse by category, save favorites, and jump back in with Continue Watching.",
-      "The concept is structured to reduce friction between browsing, choosing, and resuming content.",
-      "It explores integration-ready patterns compatible with services like Netflix, Prime, Hulu, and HBO.",
+      "Users browse by category, save titles to their library and jump back in with Continue Watching.",
+      "Title pages show the year, genres, rating and description, with seasons and episodes in scrollable rows.",
+      "A slim side menu keeps Discover, Library and Settings within reach on every screen.",
     ],
     heroImage: "/projects/stremio.webp",
     heroSize: { width: 1600, height: 1073 },

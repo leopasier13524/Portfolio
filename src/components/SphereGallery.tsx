@@ -1045,8 +1045,12 @@ export function SphereGallery({
       }
     };
 
-    const onLostPointerCapture = () => {
-      pointerDown = false;
+    const onLostPointerCapture = (event: PointerEvent) => {
+      // Touch input is implicitly captured by the canvas; moving that capture
+      // to the mount fires a bubbling lostpointercapture from the canvas.
+      if (event.target === mount) {
+        pointerDown = false;
+      }
     };
 
     const onContextLost = (event: Event) => {
